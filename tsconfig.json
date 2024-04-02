@@ -9,6 +9,17 @@
     "strictNullChecks": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "skipDefaultLibCheck": true
-  }
+    "skipDefaultLibCheck": true,
+    "outDir": "./dist", // Output directory for compiled JavaScript files
+    "rootDir": "./src" // Root directory of your source files
+  },
+  "exclude": [
+    "node_modules",
+    "playground",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "prettier.config.cjs",
+    "build.config.ts",
+    "dist", // exclude the dist directory
+  ]
 }
