@@ -44,12 +44,17 @@ try {
   // });
   // console.log(aliasRoute);
 
-    // Add Alias Route
-    const aliases = await postalPuppet.getAliases({
-      puppetInstance,
-      domain: "postalmail.anonacy.com"
-    });
-    console.log(aliases);
+  // Get Aliases Route
+  const aliases = await postalPuppet.getAliases({
+    puppetInstance
+  });
+  console.log(aliases);
+
+  // Add Alias Route
+  const endpoints = await postalPuppet.getAddressEndpoints({
+    puppetInstance
+  });
+  console.log(endpoints);
 
   // Find Alias ID
   // const addressEndpointID = await postalPuppet.findAddressEndpointID({

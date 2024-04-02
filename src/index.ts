@@ -7,6 +7,7 @@ import { addAliasRoute } from './api/addAliasRoute';
 import { findAliasID } from './api/findAliasID';
 import { findAddressEndpointID } from './api/findAddressEndpointID';
 import { getAliases } from './api/getAliases';
+import { getAddressEndpoints } from './api/getAddressEndpoints';
 
 export type PuppetInstance = {
   browser: Browser;
@@ -21,5 +22,6 @@ export const postalPuppet = {
   addAliasRoute,
   findAliasID,
   findAddressEndpointID,
-  getAliases
+  getAliases,
+  getAddressEndpoints
 };
