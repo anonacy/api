@@ -18,7 +18,6 @@
     "playground",
     "**/*.spec.ts",
     "**/*.test.ts",
-    "prettier.config.cjs",
     "build.config.ts",
     "dist", // exclude the dist directory
   ]

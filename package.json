@@ -34,7 +34,8 @@
     "npm": ">=8"
   },
   "scripts": {
-    "start": "npx tsx playground/index.ts",
+    "start": "npx tsx src/app.ts",
+    "dev": "npx tsx playground/index.ts",
     "build:puppet": "unbuild",
     "dev:puppet": "unbuild --stub",
     "lint": "eslint .",
@@ -67,6 +68,7 @@
     "*": "eslint --fix"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "puppeteer": "22.3.0"
   }

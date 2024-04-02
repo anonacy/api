@@ -5,10 +5,10 @@ const config = useRuntimeConfig();
 
 console.time('⏱️ Time to run');
 const { puppetInstance } = await postalPuppet.initPuppet({
-  postalControlPanel: config.postalControlPanel,
-  postalUrl: config.postalUrl,
-  postalUser: config.postalUser,
-  postalPass: config.postalPass
+  postalControlPanel: process.env.POSTAL_CONTROL_PANEL || '',
+  postalUrl: process.env.POSTAL_URL || '',
+  postalUser: process.env.POSTAL_USER || '',
+  postalPass: process.env.POSTAL_PASS || ''
 });
 if (!puppetInstance) throw new Error(`Failed to initialize puppet:`);
 

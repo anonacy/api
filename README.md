@@ -1,3 +1,3 @@
-# Postal Puppet
+# Puppet For Postal
 
-A simple PostalServer API via Puppeteer
+A puppeteer api for postal server

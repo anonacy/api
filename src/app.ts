@@ -1,9 +1,8 @@
 import express from 'express';
+import dotenv from 'dotenv';
 import { postalPuppet } from './index';
-import { useRuntimeConfig } from './config';
 
-const config = useRuntimeConfig();
-
+dotenv.config();
 const app = express();
 const port = 3001;
 
@@ -11,10 +10,10 @@ app.use(express.json()); // for parsing application/json
 
 async function initPuppetWithConfig() {
   const { puppetInstance } = await postalPuppet.initPuppet({
-    postalControlPanel: config.postalControlPanel,
-    postalUrl: config.postalUrl,
-    postalUser: config.postalUser,
-    postalPass: config.postalPass
+    postalControlPanel: process.env.POSTAL_CONTROL_PANEL || '',
+    postalUrl: process.env.POSTAL_URL || '',
+    postalUser: process.env.POSTAL_USER || '',
+    postalPass: process.env.POSTAL_PASS || ''
   });
   if (!puppetInstance) throw new Error(`Failed to initialize puppet:`);
   return puppetInstance;
