@@ -1,5 +1,3 @@
-// Ran to create a new alias
-
 import type { PuppetInstance } from '../index';
 import { Utils } from '../utils';
 

@@ -1,5 +1,3 @@
-// Ran to create a new alias
-
 import type { PuppetInstance } from '../index';
 import { findAddressEndpointID } from './findAddressEndpointID';
 import { findAliasID } from './findAliasID';
@@ -8,7 +6,7 @@ import { Utils } from '../utils';
 const URL_ADD_ROUTE = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes/new";
 const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
 
-
+// Ran to create a new alias
 export async function addAlias(options: {
   puppetInstance: PuppetInstance;
   alias: string; //email alias

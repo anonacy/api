@@ -1,6 +1,5 @@
 // to be run when a user signs up, to add email to destinations available for forwarding in a route
 
-// TODO: Add a check to see if the email already exists in the address endpoints
 import type { PuppetInstance } from '../index';
 import { findAddressEndpointID } from './findAddressEndpointID';
 import { Utils } from '../utils';

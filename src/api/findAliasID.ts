@@ -1,15 +1,9 @@
-// Ran to create a new alias
-
 import type { PuppetInstance } from '../index';
+import { Utils } from '../utils';
 
 const URL_START = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
 
-function getIdFromUrl(url: string) {
-  const urlObj = new URL(url, 'http://postal.anonacy.com');  // Add dummy base URL to make it a valid URL
-  const pathParts = urlObj.pathname.split('/');
-  return pathParts[pathParts.length - 2];  // The ID is the second last part of the path
-}
-
+// Ran to find ID of an alias
 export async function findAliasID(options: {
   puppetInstance: PuppetInstance;
   alias: string;
@@ -50,7 +44,7 @@ export async function findAliasID(options: {
         // Extract ID from a href
         const href = await options.puppetInstance.page.evaluate(el => el.getAttribute('href'), pTag);
         if(href){
-          routeID = getIdFromUrl(href)
+          routeID = Utils.getIdFromUrl(href)
         }
       }
     }

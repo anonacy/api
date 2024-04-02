@@ -1,13 +1,10 @@
-// Ran to create a new alias
-
 import type { PuppetInstance } from '../index';
-import { Utils } from '../utils';
 import { findAliasID } from './findAliasID';
 
 const URL_BASE = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
 const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
 
-
+// Ran to delete an alias
 export async function deleteAlias(options: {
   puppetInstance: PuppetInstance;
   alias: string;

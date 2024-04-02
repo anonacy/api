@@ -1,13 +1,11 @@
-// Ran to create a new alias
-
 import type { PuppetInstance } from '../index';
-import { Utils } from '../utils';
 import { findAliasID } from './findAliasID';
 import { findAddressEndpointID } from './findAddressEndpointID';
 
 const URL_BASE = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
 const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
 
+// Ran to re-enable an alias
 export async function enableAlias(options: {
   puppetInstance: PuppetInstance;
   alias: string;

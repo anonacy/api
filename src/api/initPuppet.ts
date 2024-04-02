@@ -1,6 +1,7 @@
 import type { PuppetInstance } from '../index';
 import puppeteer from 'puppeteer';
 
+// Initialize the puppet session by logging into the postal control panel
 export async function initPuppet(options: {
   postalControlPanel: string;
   postalUrl: string;

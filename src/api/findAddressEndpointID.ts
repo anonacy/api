@@ -1,16 +1,10 @@
-// Ran to create a new alias
-
 import type { PuppetInstance } from '../index';
+import { Utils } from '../utils';
 
-// List of address endpoints
 const URL_START = "https://postal.anonacy.com/org/anonacy/servers/anonacy/address_endpoints";
 
-function getIdFromUrl(url: string) {
-  const urlObj = new URL(url, 'http://postal.anonacy.com');  // Add dummy base URL to make it a valid URL
-  const pathParts = urlObj.pathname.split('/');
-  return pathParts[pathParts.length - 2];  // The ID is the second last part of the path
-}
 
+// Get a list of all address endpoints
 export async function findAddressEndpointID(options: {
   puppetInstance: PuppetInstance;
   endpoint: string; // email endpoint (forwardTo email)
@@ -50,7 +44,7 @@ export async function findAddressEndpointID(options: {
         // Extract ID from a href
         const href = await options.puppetInstance.page.evaluate(el => el.getAttribute('href'), pTag);
         if(href){
-          addressEndpointID = getIdFromUrl(href)
+          addressEndpointID = Utils.getIdFromUrl(href)
         }
       }
     }

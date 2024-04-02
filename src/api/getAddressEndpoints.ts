@@ -1,10 +1,9 @@
-// Ran to create a new alias
-
 import type { PuppetInstance } from '../index';
 import { Utils } from '../utils';
 
 const URL_START = "https://postal.anonacy.com/org/anonacy/servers/anonacy/address_endpoints";
 
+// Get a list of all address endpoints
 export async function getAddressEndpoints(options: {
   puppetInstance: PuppetInstance;
   domain?: string;

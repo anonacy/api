@@ -12,4 +12,10 @@ export class Utils {
       domain: split[1]
     };
   }
+
+  static getIdFromUrl(url: string, placement: number = 2) {
+    const urlObj = new URL(url, 'http://postal.anonacy.com');  // Add dummy base URL to make it a valid URL
+    const pathParts = urlObj.pathname.split('/');
+    return pathParts[pathParts.length - placement];  // The ID is the second last part of the path
+  }
 }

@@ -1,20 +1,7 @@
 import { postalPuppet } from '../src';
 import { useRuntimeConfig } from './config';
-import { Utils } from '../src/utils';
-
-const delaySeconds = 0;
 
 const config = useRuntimeConfig();
-
-const tempVars = {
-  orgId: 'anonacy',
-  orgPublicId: 'anonacy',
-  defaultPoolId: 'ip_pool_2',
-  domainName: 'postal.anonacy.com',
-  domainPostalId: '544db0b9-9d84-401f-86a2-469697261521',
-  mailServerId: 'm74negvx9jxg150x',
-  mailBridgeUrl: 'https://mail.bridge.uninbox.dev'
-};
 
 console.time('⏱️ Time to run');
 const { puppetInstance } = await postalPuppet.initPuppet({
