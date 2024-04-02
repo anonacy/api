@@ -9,6 +9,7 @@ import { findAddressEndpointID } from './api/findAddressEndpointID';
 import { getAliases } from './api/getAliases';
 import { getAddressEndpoints } from './api/getAddressEndpoints';
 import { disableAlias } from './api/disableAlias';
+import { enableAlias } from './api/enableAlias';
 
 export type PuppetInstance = {
   browser: Browser;
@@ -25,5 +26,6 @@ export const postalPuppet = {
   findAddressEndpointID,
   getAliases,
   getAddressEndpoints,
-  disableAlias
+  disableAlias,
+  enableAlias
 };

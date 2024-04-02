@@ -43,13 +43,24 @@ try {
   // console.log(endpoints);
 
   // disable an alias
-  const disableThisAlias = "reject@postalmail.anonacy.com";
-  console.log("Disabling alias: ", disableThisAlias);
-  const disable = await postalPuppet.disableAlias({
+  // const disableThisAlias = "reject@postalmail.anonacy.com";
+  // console.log("Disabling alias: ", disableThisAlias);
+  // const disable = await postalPuppet.disableAlias({
+  //   puppetInstance,
+  //   alias: disableThisAlias
+  // });
+  // console.log(disable);
+
+  // enable an alias
+  const enableThisAlias = "random2@postalmail.anonacy.com";
+  const enableThisEndpoint = "hew@hiddenlogin.com";
+  console.log("Enable alias: ", enableThisAlias, " with endpoint: ", enableThisEndpoint);
+  const enable = await postalPuppet.enableAlias({
     puppetInstance,
-    alias: disableThisAlias
+    alias: enableThisAlias,
+    endpoint: enableThisEndpoint
   });
-  console.log(disable);
+  console.log(enable);
 
   // const addressEndpoint = await postalPuppet.addAddressEndpoint({
   //   puppetInstance,
