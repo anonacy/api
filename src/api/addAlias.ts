@@ -2,6 +2,7 @@
 
 import type { PuppetInstance } from '../index';
 import { findAddressEndpointID } from './findAddressEndpointID';
+import { findAliasID } from './findAliasID';
 import { Utils } from '../utils';
 
 const URL_ADD_ROUTE = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes/new";
@@ -15,6 +16,7 @@ export async function addAlias(options: {
 }): Promise<{
   success: boolean;
   alias: string;
+  id: string;
   endpoint: string;
 }> {
   const { username, domain } = await Utils.decomposeEmail(options.alias);
@@ -69,13 +71,45 @@ export async function addAlias(options: {
 
   // Submit
   await options.puppetInstance.page.click('[name="commit"]');
-  await options.puppetInstance.page.waitForNavigation();
 
+  /*
+    INFO:
+    After clicking submit, there are 2 cases:
+      - case 1 (success): The page refreshes and the URL changes to URL_CONFIRM
+      - case 2 (error): The page doesn't refresh, and an error message is shown
+    To check we watch for both cases, in case either happens with promise.race
+  */
 
-  const success = (await options.puppetInstance.page.url() == URL_CONFIRM) ? true : false;
+  // Set up the promises
+  const navigationPromise = options.puppetInstance.page.waitForNavigation();
+  const errorMessagePromise = options.puppetInstance.page.waitForSelector('.formErrors');
+
+  // Race the promises
+  await Promise.race([navigationPromise, errorMessagePromise]);
+
+  // Check the current page URL
+  const url = await options.puppetInstance.page.url();
+  if (url !== URL_CONFIRM) {
+    // This case means the page didn't refresh, there should be an error message
+    const errorMessageElement = await options.puppetInstance.page.$('.formErrors');
+    if (errorMessageElement) {
+      // The error message promise resolved first, an error message showed up
+      const errorMessage = await options.puppetInstance.page.evaluate(el => el.textContent, errorMessageElement);
+      throw new Error(errorMessage ? errorMessage : 'An error occurred');
+    }
+  }
+
+  // Final check to make sure alias exists
+  const aliasID = await findAliasID({
+    puppetInstance: options.puppetInstance,
+    alias: options.alias
+  })
+  const success = aliasID ? true : false;
+
   return {
     success,
     alias: options.alias,
+    id: aliasID.id,
     endpoint: options.endpoint
   };
 

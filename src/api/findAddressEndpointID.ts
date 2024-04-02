@@ -14,7 +14,7 @@ function getIdFromUrl(url: string) {
 export async function findAddressEndpointID(options: {
   puppetInstance: PuppetInstance;
   endpoint: string; // email endpoint (forwardTo email)
-  skipLoad: boolean;
+  skipLoad?: boolean;
 }): Promise<{
   success: boolean;
   id: string;

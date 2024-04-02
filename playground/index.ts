@@ -52,15 +52,15 @@ try {
   // console.log(disable);
 
   // enable an alias
-  const enableThisAlias = "random2@postalmail.anonacy.com";
-  const enableThisEndpoint = "hew@hiddenlogin.com";
-  console.log("Enable alias: ", enableThisAlias, " with endpoint: ", enableThisEndpoint);
-  const enable = await postalPuppet.enableAlias({
-    puppetInstance,
-    alias: enableThisAlias,
-    endpoint: enableThisEndpoint
-  });
-  console.log(enable);
+  // const enableThisAlias = "random2@postalmail.anonacy.com";
+  // const enableThisEndpoint = "hew@hiddenlogin.com";
+  // console.log("Enable alias: ", enableThisAlias, " with endpoint: ", enableThisEndpoint);
+  // const enable = await postalPuppet.enableAlias({
+  //   puppetInstance,
+  //   alias: enableThisAlias,
+  //   endpoint: enableThisEndpoint
+  // });
+  // console.log(enable);
 
   // const addressEndpoint = await postalPuppet.addAddressEndpoint({
   //   puppetInstance,
@@ -70,12 +70,12 @@ try {
   // console.log(addressEndpoint.id);
 
   // Add Alias Route
-  // const aliasRoute = await postalPuppet.addAlias({
-  //   puppetInstance, 
-  //   alias: "bounce@postalmail.anonacy.com",
-  //   endpoint: "hew@hiddenlogin.com"
-  // });
-  // console.log(aliasRoute);
+  const aliasRoute = await postalPuppet.addAlias({
+    puppetInstance, 
+    alias: "random3@postalmail.anonacy.com",
+    endpoint: "hew@hiddenlogin.com"
+  });
+  console.log(aliasRoute);
 
   // Find Endpoint ID
   // const addressEndpointID = await postalPuppet.findAddressEndpointID({

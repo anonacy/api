@@ -13,6 +13,7 @@ function getIdFromUrl(url: string) {
 export async function findAliasID(options: {
   puppetInstance: PuppetInstance;
   alias: string;
+  skipLoad?: boolean;
 }): Promise<{
   success: boolean;
   id: string;
@@ -21,8 +22,10 @@ export async function findAliasID(options: {
   let routeID = '';
 
   // Go to route list page
-  await options.puppetInstance.page.goto(URL_START);
-  await options.puppetInstance.page.waitForNetworkIdle();
+  if(!options.skipLoad) {
+    await options.puppetInstance.page.goto(URL_START);
+    await options.puppetInstance.page.waitForNetworkIdle();
+  }
 
   // NEXT: Find Alias ID
 
