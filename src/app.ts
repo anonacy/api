@@ -19,6 +19,9 @@ async function initPuppetWithConfig() {
   return puppetInstance;
 }
 
+app.get('/health', (req, res) => {
+  res.status(200).send({ status: 200 });
+});
 
 app.post('/addAlias', async (req, res) => {
   console.time('⏱️ Time to run');
