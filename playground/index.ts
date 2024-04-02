@@ -1,5 +1,6 @@
 import { postalPuppet } from '../src';
 import { useRuntimeConfig } from './config';
+import { Utils } from '../src/utils';
 
 const delaySeconds = 0;
 
@@ -25,9 +26,31 @@ const { puppetInstance } = await postalPuppet.initPuppet({
 if (!puppetInstance) throw new Error(`Failed to initialize puppet:`);
 
 const newEmail = "hew+5@hiddenlogin.com";
+const { username, domain } = Utils.decomposeEmail(newEmail);
 
-// Add Address Endpoint
 try {
+
+  // Get Aliases list
+  // const aliases = await postalPuppet.getAliases({
+  //   puppetInstance
+  // });
+  // console.log(aliases);
+
+  // Add Enpoints list
+  // const endpoints = await postalPuppet.getAddressEndpoints({
+  //   puppetInstance
+  // });
+  // console.log(endpoints);
+
+  // disable an alias
+  const disableThisAlias = "reject@postalmail.anonacy.com";
+  console.log("Disabling alias: ", disableThisAlias);
+  const disable = await postalPuppet.disableAlias({
+    puppetInstance,
+    alias: disableThisAlias
+  });
+  console.log(disable);
+
   // const addressEndpoint = await postalPuppet.addAddressEndpoint({
   //   puppetInstance,
   //   username,
@@ -36,27 +59,14 @@ try {
   // console.log(addressEndpoint.id);
 
   // Add Alias Route
-  // const aliasRoute = await postalPuppet.addAliasRoute({
-  //   puppetInstance,
-  //   alias: "random2@postal.anonacy.com",
-  //   endpoint: "hew@hiddenlogin.com",
-  //   endpoint_id: "be1bb0e3-35c4-4bdf-b5f9-e38b4ef3e7bd"
+  // const aliasRoute = await postalPuppet.addAlias({
+  //   puppetInstance, 
+  //   alias: "bounce@postalmail.anonacy.com",
+  //   endpoint: "hew@hiddenlogin.com"
   // });
   // console.log(aliasRoute);
 
-  // Get Aliases Route
-  const aliases = await postalPuppet.getAliases({
-    puppetInstance
-  });
-  console.log(aliases);
-
-  // Add Alias Route
-  const endpoints = await postalPuppet.getAddressEndpoints({
-    puppetInstance
-  });
-  console.log(endpoints);
-
-  // Find Alias ID
+  // Find Endpoint ID
   // const addressEndpointID = await postalPuppet.findAddressEndpointID({
   //   puppetInstance,
   //   username,
@@ -65,7 +75,6 @@ try {
   // });
   // console.log("addressEndpointID: ", addressEndpointID.id);
 
-
   // Find Alias ID
   // const routeID = await postalPuppet.findAliasID({
   //   puppetInstance,
@@ -73,8 +82,6 @@ try {
   //   domain: "postalmail.anonacy.com"
   // });
   // console.log("routeID: ", routeID.id);
-
-
 
 
   // console.log('⏱️ Delaying...');
@@ -87,23 +94,6 @@ try {
 await postalPuppet.closePuppet(puppetInstance);
 console.timeEnd('⏱️ Time to run');
 
-//* Create Org
-// const org = await postalPuppet.createOrg(
-//   puppetInstance,
-//   tempVars.orgId,
-//   tempVars.orgPublicId
-// );
-// console.log(org);
-
-//* Set OrgIP Pools
-// const ipPools = await postalPuppet.setOrgIpPools(
-//   puppetInstance,
-//   tempVars.orgId,
-//   tempVars.orgPublicId,
-//   tempVars.defaultPoolId
-// );
-// console.log(ipPools);
-
 //* Add Domain
 // const domain = await postalPuppet.addDomain(
 //   puppetInstance,
@@ -112,87 +102,5 @@ console.timeEnd('⏱️ Time to run');
 //   tempVars.domainName
 // );
 // console.log(domain);
-
-// //* Add Mail Server
-// const mailServer = await postalPuppet.addMailServer(
-//   puppetInstance,
-//   tempVars.orgId,
-//   tempVars.orgPublicId,
-//   tempVars.mailServerId,
-//   tempVars.defaultPoolId
-// );
-// console.log(mailServer);
-
-//* Set mail server config
-// const mailServerConfig = await postalPuppet.setMailServerConfig(
-//   puppetInstance,
-//   tempVars.orgId,
-//   tempVars.orgPublicId,
-//   tempVars.mailServerId,
-//   30,
-//   10,
-//   7,
-//   7,
-//   256
-// );
-// console.log(mailServerConfig);
-
-//* Set Mailserver event Webhook
-// const mailServerEventWebhooks = await postalPuppet.setMailServerEventWebhooks(
-//   puppetInstance,
-//   tempVars.orgId,
-//   tempVars.orgPublicId,
-//   tempVars.mailServerId,
-//   tempVars.mailBridgeUrl
-// );
-// console.log(mailServerEventWebhooks);
-
-//* Set mail server API key
-// const mailServerApiKey = await postalPuppet.setMailServerApiKey(
-//   puppetInstance,
-//   tempVars.orgId,
-//   tempVars.orgPublicId,
-//   tempVars.mailServerId
-// );
-// console.log(mailServerApiKey);
-
-//* Set mail server SMTP key
-// const mailServerSmtpKey = await postalPuppet.setMailServerSmtpKey(
-//   puppetInstance,
-//   tempVars.orgId,
-//   tempVars.orgPublicId,
-//   tempVars.mailServerId
-// );
-// console.log(mailServerSmtpKey);
-
-//* Set the servers httpEndpoint to mailbridge
-// const mailServerRoutingHttpEndpoint = await postalPuppet.setMailServerRoutingHttpEndpoint(
-//   puppetInstance,
-//   tempVars.orgId,
-//   tempVars.orgPublicId,
-//   tempVars.mailServerId,
-//   tempVars.mailBridgeUrl
-// );
-// console.log(mailServerRoutingHttpEndpoint);
-
-//! * Set the mail server routes
-// const mailServerRoute = await postalPuppet.setMailServerRoute(
-//   puppetInstance,
-//   tempVars.orgId,
-//   tempVars.orgPublicId,
-//   tempVars.mailServerId,
-//   tempVars.mailBridgeUrl
-// );
-// console.log(mailServerRoute);
-
-//* Set the mail server route for domain
-// const mailServerRoute = await postalPuppet.setMailServerRouteForDomain(
-//   puppetInstance,
-//   tempVars.orgId,
-//   tempVars.orgPublicId,
-//   tempVars.mailServerId,
-//   tempVars.domainName
-// );
-// console.log(mailServerRoute);
 
 

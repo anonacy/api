@@ -13,14 +13,12 @@ function getIdFromUrl(url: string) {
 
 export async function findAddressEndpointID(options: {
   puppetInstance: PuppetInstance;
-  username: string;
-  domain: string;
+  endpoint: string; // email endpoint (forwardTo email)
   skipLoad: boolean;
 }): Promise<{
   success: boolean;
   id: string;
 }> {
-  const alias = `${options.username}@${options.domain}`;
   let addressEndpointID = '';
 
   // Go to route list page
@@ -47,7 +45,7 @@ export async function findAddressEndpointID(options: {
     
     // Check if the p tag contains the alias
     if (pElementInnerHTML) {
-      if(pElementInnerHTML.trim() == alias) {
+      if(pElementInnerHTML.trim() == options.endpoint) {
         // ALIAS FOUND
         // Extract ID from a href
         const href = await options.puppetInstance.page.evaluate(el => el.getAttribute('href'), pTag);

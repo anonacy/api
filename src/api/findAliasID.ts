@@ -12,13 +12,12 @@ function getIdFromUrl(url: string) {
 
 export async function findAliasID(options: {
   puppetInstance: PuppetInstance;
-  username: string;
-  domain: string;
+  alias: string;
 }): Promise<{
   success: boolean;
   id: string;
 }> {
-  const alias = `${options.username}@${options.domain}`;
+  const alias = options.alias;
   let routeID = '';
 
   // Go to route list page
@@ -55,6 +54,7 @@ export async function findAliasID(options: {
   }
 
   const success = routeID != '' ? true : false;
+  if(!success) throw new Error(`Alias ${alias} not found`);
   return {
     success,
     id: routeID

@@ -3,6 +3,7 @@
 // TODO: Add a check to see if the email already exists in the address endpoints
 import type { PuppetInstance } from '../index';
 import { findAddressEndpointID } from './findAddressEndpointID';
+import { Utils } from '../utils';
 
 const URL_add = "https://postal.anonacy.com/org/anonacy/servers/anonacy/address_endpoints/new";
 const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/address_endpoints";
@@ -10,15 +11,15 @@ const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/addr
 // This function adds an email address to the address endpoints, finds and returns the postal id
 export async function addAddressEndpoint(options: {
   puppetInstance: PuppetInstance;
-  username: string;
-  domain: string;
+  endpoint: string; // email endpoint (forwardTo email)
 }): Promise<{
   success: boolean;
   email: string;
   id: string;
   error: string;
 }> {
-  const email = `${options.username}@${options.domain}`;
+  const email = options.endpoint;
+  const { username, domain } = await Utils.decomposeEmail(email);
   console.log("Adding address endpoint for email: ", email);
 
   await options.puppetInstance.page.goto(URL_add);
@@ -36,8 +37,7 @@ export async function addAddressEndpoint(options: {
   let addressEndpointID = '';
   let ID_res = await findAddressEndpointID({
     puppetInstance: options.puppetInstance,
-    username: options.username,
-    domain: options.domain,
+    endpoint: email,
     skipLoad: true
   });
 
