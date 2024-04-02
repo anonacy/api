@@ -25,7 +25,6 @@ const { puppetInstance } = await postalPuppet.initPuppet({
 if (!puppetInstance) throw new Error(`Failed to initialize puppet:`);
 
 const newEmail = "hew+5@hiddenlogin.com";
-let [username, domain] = newEmail.split('@');
 
 // Add Address Endpoint
 try {
@@ -37,14 +36,20 @@ try {
   // console.log(addressEndpoint.id);
 
   // Add Alias Route
-  const aliasRoute = await postalPuppet.addAliasRoute({
-    puppetInstance,
-    username: "random2",
-    domain: "postal.anonacy.com",
-    endpoint: "hew@hiddenlogin.com",
-    endpoint_id: "be1bb0e3-35c4-4bdf-b5f9-e38b4ef3e7bd"
-  });
-  console.log(aliasRoute);
+  // const aliasRoute = await postalPuppet.addAliasRoute({
+  //   puppetInstance,
+  //   alias: "random2@postal.anonacy.com",
+  //   endpoint: "hew@hiddenlogin.com",
+  //   endpoint_id: "be1bb0e3-35c4-4bdf-b5f9-e38b4ef3e7bd"
+  // });
+  // console.log(aliasRoute);
+
+    // Add Alias Route
+    const aliases = await postalPuppet.getAliases({
+      puppetInstance,
+      domain: "postalmail.anonacy.com"
+    });
+    console.log(aliases);
 
   // Find Alias ID
   // const addressEndpointID = await postalPuppet.findAddressEndpointID({

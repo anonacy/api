@@ -5,7 +5,7 @@ export class Utils {
     return new Promise(resolve => setTimeout(resolve, seconds * 1000));
   }
 
-  static async decomposeEmail(email: string) {
+  static decomposeEmail(email: string) {
     const split = email.split('@');
     return {
       username: split[0],
