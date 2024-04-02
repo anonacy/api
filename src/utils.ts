@@ -18,4 +18,10 @@ export class Utils {
     const pathParts = urlObj.pathname.split('/');
     return pathParts[pathParts.length - placement];  // The ID is the second last part of the path
   }
+
+  static getBaseURL(fullURL: string) {
+    const url = new URL(fullURL);
+    const baseUrl = url.origin + url.pathname;
+    return baseUrl;
+  }
 }

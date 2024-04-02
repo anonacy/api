@@ -114,5 +114,6 @@ app.post('/getAliases', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`[server]: Puppet Server is running at http://localhost:${port}`);
+  console.log("-------------------------");
+  console.log(`Puppet Server is running at http://localhost:${port}`);
 });

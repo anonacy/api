@@ -15,10 +15,9 @@
   },
   "exclude": [
     "node_modules",
-    "playground",
     "**/*.spec.ts",
     "**/*.test.ts",
     "build.config.ts",
-    "dist", // exclude the dist directory
+    "dist" // exclude the dist directory
   ]
 }
