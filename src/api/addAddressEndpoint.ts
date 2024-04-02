@@ -7,6 +7,7 @@ import { findAddressEndpointID } from './findAddressEndpointID';
 const URL_add = "https://postal.anonacy.com/org/anonacy/servers/anonacy/address_endpoints/new";
 const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/address_endpoints";
 
+// This function adds an email address to the address endpoints, finds and returns the postal id
 export async function addAddressEndpoint(options: {
   puppetInstance: PuppetInstance;
   username: string;
