@@ -1,6 +1,8 @@
 import type { PuppetInstance } from '../index';
 import puppeteer from 'puppeteer';
 
+const runHeadless: boolean = true;
+
 // Initialize the puppet session by logging into the postal control panel
 export async function initPuppet(options: {
   postalControlPanel: string;
@@ -13,7 +15,7 @@ export async function initPuppet(options: {
   try {
     const url = `https://${options.postalControlPanel}.${options.postalUrl}`;
     const browser = await puppeteer.launch({
-      headless: process.env.NODE_ENV === 'production' ? true : false
+      headless: (process.env.NODE_ENV === 'production' ? true : false) || runHeadless
     });
     const [page] = await browser.pages();
     await page.goto(`${url}/login`);

@@ -1,5 +1,5 @@
 import type { PuppetInstance } from '../index';
-import { findAddressEndpointID } from './findAddressEndpointID';
+import { findEndpointID } from './findEndpointID';
 import { findAliasID } from './findAliasID';
 import { Utils } from '../utils';
 
@@ -20,7 +20,7 @@ export async function addAlias(options: {
   const { username, domain } = await Utils.decomposeEmail(options.alias);
 
   // Get Endpoint ID
-  const addressEndpointID = (await findAddressEndpointID({
+  const addressEndpointID = (await findEndpointID({
     puppetInstance: options.puppetInstance,
     endpoint: options.endpoint,
     skipLoad: false
@@ -64,7 +64,7 @@ export async function addAlias(options: {
   await options.puppetInstance.page.waitForSelector('select[id="route__endpoint"]');
   await options.puppetInstance.page.select(
     'select[id="route__endpoint"]',
-    `AddressEndpoint#${addressEndpointID}`
+    `Endpoint#${addressEndpointID}`
   );
 
   // Submit

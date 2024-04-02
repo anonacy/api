@@ -2,12 +2,12 @@ import type { Browser, Page } from 'puppeteer';
 
 import { initPuppet } from './api/initPuppet';
 import { closePuppet } from './api/closePuppet';
-import { addAddressEndpoint } from './api/addAddressEndpoint';
+import { addEndpoint } from './api/addEndpoint';
 import { addAlias } from './api/addAlias';
 import { findAliasID } from './api/findAliasID';
-import { findAddressEndpointID } from './api/findAddressEndpointID';
+import { findEndpointID } from './api/findEndpointID';
 import { getAliases } from './api/getAliases';
-import { getAddressEndpoints } from './api/getAddressEndpoints';
+import { getEndpoints } from './api/getEndpoints';
 import { disableAlias } from './api/disableAlias';
 import { enableAlias } from './api/enableAlias';
 import { deleteAlias } from './api/deleteAlias';
@@ -21,12 +21,12 @@ export type PuppetInstance = {
 export const postalPuppet = {
   initPuppet,
   closePuppet,
-  addAddressEndpoint,
+  addEndpoint,
   addAlias,
   findAliasID,
-  findAddressEndpointID,
+  findEndpointID,
   getAliases,
-  getAddressEndpoints,
+  getEndpoints,
   disableAlias,
   enableAlias,
   deleteAlias

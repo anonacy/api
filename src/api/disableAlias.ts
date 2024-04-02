@@ -3,7 +3,7 @@ import { findAliasID } from './findAliasID';
 
 const URL_BASE = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
 const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
-const DISABLE_SETTING = 'Reject'; // Can be: Aceept, Hold, Bounce, Reject
+const DISABLE_SETTING = 'Hold'; // Can be: Accept, Hold, Bounce, Reject
 
 // Function to disable an alias
 export async function disableAlias(options: {

@@ -12,6 +12,7 @@ export async function getAliases(options: {
   domain?: string;
 }): Promise<{
   success: boolean;
+  count: number;
   aliases: string[];
 }> {
 
@@ -77,6 +78,7 @@ export async function getAliases(options: {
 
   return {
     success: true,
+    count: aliases.length,
     aliases
   };
 }

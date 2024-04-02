@@ -8,16 +8,16 @@
 //     console.log(aliases);
 //   }
 
-//   static async getAddressEndpoints() {
+//   static async getEndpoints() {
 //     // Add Alias Route
-//     const endpoints = await postalPuppet.getAddressEndpoints({
+//     const endpoints = await postalPuppet.getEndpoints({
 //       puppetInstance
 //     });
 //     console.log(endpoints);
 //   }
 
 //   static async addAddressEnpoint() {
-//     const addressEndpoint = await postalPuppet.addAddressEndpoint({
+//     const addressEndpoint = await postalPuppet.addEndpoint({
 //       puppetInstance,
 //       username,
 //       domain
@@ -38,7 +38,7 @@
 
 //   // Find Alias ID
 //   static async findAliasID() {
-//     const addressEndpointID = await postalPuppet.findAddressEndpointID({
+//     const addressEndpointID = await postalPuppet.findEndpointID({
 //       puppetInstance,
 //       username,
 //       domain,

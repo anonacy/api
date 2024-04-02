@@ -24,12 +24,12 @@ try {
   // console.log(aliases);
 
   // Get Endpoints list
-  // const endpoints = await postalPuppet.getAddressEndpoints({
+  // const endpoints = await postalPuppet.getEndpoints({
   //   puppetInstance
   // });
   // console.log(endpoints);
 
-  // const addressEndpoint = await postalPuppet.addAddressEndpoint({
+  // const addressEndpoint = await postalPuppet.addEndpoint({
   //   puppetInstance,
   //   username,
   //   domain
@@ -37,14 +37,21 @@ try {
   // console.log(addressEndpoint.id);
 
   // Add Alias Route
-  // const aliasRoute = await postalPuppet.addAlias({
-  //   puppetInstance, 
-  //   alias: "random3@postalmail.anonacy.com",
-  //   endpoint: "hew@hiddenlogin.com"
-  // });
-  // console.log(aliasRoute);
+  const aliasRoute = await postalPuppet.addAlias({
+    puppetInstance, 
+    alias: "forward@postalmail.anonacy.com",
+    endpoint: "hew@hiddenlogin.com"
+  });
+  console.log(aliasRoute);
 
-    // disable an alias
+  // Delete Alias Route
+  // const didDeleteAlias = await postalPuppet.deleteAlias({
+  //   puppetInstance, 
+  //   alias: "random3@postalmail.anonacy.com"
+  // });
+  // console.log(didDeleteAlias);
+
+  // disable an alias
   // const disableThisAlias = "reject@postalmail.anonacy.com";
   // console.log("Disabling alias: ", disableThisAlias);
   // const disable = await postalPuppet.disableAlias({
@@ -64,15 +71,8 @@ try {
   // });
   // console.log(enable);
 
-  // Delete Alias Route
-  // const didDeleteAlias = await postalPuppet.deleteAlias({
-  //   puppetInstance, 
-  //   alias: "random3@postalmail.anonacy.com"
-  // });
-  // console.log(didDeleteAlias);
-
   // Find Endpoint ID
-  // const addressEndpointID = await postalPuppet.findAddressEndpointID({
+  // const addressEndpointID = await postalPuppet.findEndpointID({
   //   puppetInstance,
   //   username,
   //   domain,

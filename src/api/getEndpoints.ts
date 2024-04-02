@@ -4,11 +4,12 @@ import { Utils } from '../utils';
 const URL_START = "https://postal.anonacy.com/org/anonacy/servers/anonacy/address_endpoints";
 
 // Get a list of all address endpoints
-export async function getAddressEndpoints(options: {
+export async function getEndpoints(options: {
   puppetInstance: PuppetInstance;
   domain?: string;
 }): Promise<{
   success: boolean;
+  count: number;
   endpoints: string[];
 }> {
 
@@ -48,6 +49,7 @@ export async function getAddressEndpoints(options: {
 
   return {
     success: true,
+    count: endpoints.length,
     endpoints
   };
 }

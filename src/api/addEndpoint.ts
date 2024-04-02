@@ -1,14 +1,14 @@
 // to be run when a user signs up, to add email to destinations available for forwarding in a route
 
 import type { PuppetInstance } from '../index';
-import { findAddressEndpointID } from './findAddressEndpointID';
+import { findEndpointID } from './findEndpointID';
 import { Utils } from '../utils';
 
 const URL_add = "https://postal.anonacy.com/org/anonacy/servers/anonacy/address_endpoints/new";
 const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/address_endpoints";
 
 // This function adds an email address to the address endpoints, finds and returns the postal id
-export async function addAddressEndpoint(options: {
+export async function addEndpoint(options: {
   puppetInstance: PuppetInstance;
   endpoint: string; // email endpoint (forwardTo email)
 }): Promise<{
@@ -34,7 +34,7 @@ export async function addAddressEndpoint(options: {
   }
 
   let addressEndpointID = '';
-  let ID_res = await findAddressEndpointID({
+  let ID_res = await findEndpointID({
     puppetInstance: options.puppetInstance,
     endpoint: email,
     skipLoad: true

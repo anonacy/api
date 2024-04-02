@@ -5,7 +5,7 @@ const URL_START = "https://postal.anonacy.com/org/anonacy/servers/anonacy/addres
 
 
 // Get a list of all address endpoints
-export async function findAddressEndpointID(options: {
+export async function findEndpointID(options: {
   puppetInstance: PuppetInstance;
   endpoint: string; // email endpoint (forwardTo email)
   skipLoad?: boolean;
