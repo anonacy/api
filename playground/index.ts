@@ -26,7 +26,7 @@ const { puppetInstance } = await postalPuppet.initPuppet({
 if (!puppetInstance) throw new Error(`Failed to initialize puppet:`);
 
 const newEmail = "hew+5@hiddenlogin.com";
-const { username, domain } = Utils.decomposeEmail(newEmail);
+// const { username, domain } = Utils.decomposeEmail(newEmail);
 
 try {
 
@@ -36,13 +36,28 @@ try {
   // });
   // console.log(aliases);
 
-  // Add Enpoints list
+  // Get Endpoints list
   // const endpoints = await postalPuppet.getAddressEndpoints({
   //   puppetInstance
   // });
   // console.log(endpoints);
 
-  // disable an alias
+  // const addressEndpoint = await postalPuppet.addAddressEndpoint({
+  //   puppetInstance,
+  //   username,
+  //   domain
+  // });
+  // console.log(addressEndpoint.id);
+
+  // Add Alias Route
+  // const aliasRoute = await postalPuppet.addAlias({
+  //   puppetInstance, 
+  //   alias: "random3@postalmail.anonacy.com",
+  //   endpoint: "hew@hiddenlogin.com"
+  // });
+  // console.log(aliasRoute);
+
+    // disable an alias
   // const disableThisAlias = "reject@postalmail.anonacy.com";
   // console.log("Disabling alias: ", disableThisAlias);
   // const disable = await postalPuppet.disableAlias({
@@ -62,20 +77,12 @@ try {
   // });
   // console.log(enable);
 
-  // const addressEndpoint = await postalPuppet.addAddressEndpoint({
-  //   puppetInstance,
-  //   username,
-  //   domain
+  // Delete Alias Route
+  // const didDeleteAlias = await postalPuppet.deleteAlias({
+  //   puppetInstance, 
+  //   alias: "random3@postalmail.anonacy.com"
   // });
-  // console.log(addressEndpoint.id);
-
-  // Add Alias Route
-  const aliasRoute = await postalPuppet.addAlias({
-    puppetInstance, 
-    alias: "random3@postalmail.anonacy.com",
-    endpoint: "hew@hiddenlogin.com"
-  });
-  console.log(aliasRoute);
+  // console.log(didDeleteAlias);
 
   // Find Endpoint ID
   // const addressEndpointID = await postalPuppet.findAddressEndpointID({
@@ -104,14 +111,3 @@ try {
 
 await postalPuppet.closePuppet(puppetInstance);
 console.timeEnd('⏱️ Time to run');
-
-//* Add Domain
-// const domain = await postalPuppet.addDomain(
-//   puppetInstance,
-//   tempVars.orgId,
-//   tempVars.orgPublicId,
-//   tempVars.domainName
-// );
-// console.log(domain);
-
-

@@ -10,6 +10,7 @@ import { getAliases } from './api/getAliases';
 import { getAddressEndpoints } from './api/getAddressEndpoints';
 import { disableAlias } from './api/disableAlias';
 import { enableAlias } from './api/enableAlias';
+import { deleteAlias } from './api/deleteAlias';
 
 export type PuppetInstance = {
   browser: Browser;
@@ -27,5 +28,6 @@ export const postalPuppet = {
   getAliases,
   getAddressEndpoints,
   disableAlias,
-  enableAlias
+  enableAlias,
+  deleteAlias
 };
