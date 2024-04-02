@@ -4,8 +4,7 @@ import { postalPuppet } from './index';
 
 dotenv.config();
 const app = express();
-const port = 3001;
-
+const port = process.env.PORT || 3000;
 app.use(express.json()); // for parsing application/json
 
 async function initPuppetWithConfig() {
@@ -118,5 +117,7 @@ app.post('/getAliases', async (req, res) => {
 
 app.listen(port, () => {
   console.log("-------------------------");
+  console.log('headless: ', process.env.NODE_ENV === 'production' ? true : false)
+  console.log("NODE_ENV: ", process.env.NODE_ENV);
   console.log(`Puppet Server is running at http://localhost:${port}`);
 });

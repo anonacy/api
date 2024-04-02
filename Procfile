@@ -1,1 +1,1 @@
-web: tsx src/index.ts
+web: node dist/app.mjs 

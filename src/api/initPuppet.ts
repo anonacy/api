@@ -2,7 +2,6 @@ import type { PuppetInstance } from '../index';
 import { Utils } from '../utils';
 import puppeteer from 'puppeteer';
 
-const runHeadless: boolean = false;
 let cookies: any = null;
 
 // Initialize the puppet session by logging into the postal control panel
@@ -44,7 +43,8 @@ export async function initPuppet(options: {
         // load homepage using cookies
         const url = `https://${options.postalControlPanel}.${options.postalUrl}`;
         const browser = await puppeteer.launch({
-          headless: (process.env.NODE_ENV === 'production' ? true : false) || runHeadless
+          args: ['--no-sandbox'],
+          headless: (process.env.NODE_ENV === 'production' ? true : false)
         });
         const [page] = await browser.pages();
         await page.setCookie(...cookies);
@@ -65,7 +65,8 @@ export async function initPuppet(options: {
     // No cookies, login
     const url = `https://${options.postalControlPanel}.${options.postalUrl}`;
     const browser = await puppeteer.launch({
-      headless: (process.env.NODE_ENV === 'production' ? true : false) || runHeadless
+      args: ['--no-sandbox'],
+      headless: (process.env.NODE_ENV === 'production' ? true : false)
     });
     const [page] = await browser.pages();
     await page.goto(`${url}/login`);

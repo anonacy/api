@@ -10,19 +10,19 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "types": "./dist/app.d.ts",
+      "import": "./dist/app.mjs",
+      "require": "./dist/app.cjs"
     }
   },
-  "main": "./dist/index.mjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/app.mjs",
+  "module": "./dist/app.mjs",
+  "types": "./dist/app.d.ts",
   "typesVersions": {
     "*": {
       "*": [
         "./dist/*",
-        "./dist/index.d.ts"
+        "./dist/app.d.ts"
       ]
     }
   },
@@ -35,15 +35,12 @@
   },
   "scripts": {
     "start": "npx cowsay -f elephant2 Starting Puppet! && npx tsx src/app.ts",
-    "dev": "npx tsx playground/index.ts",
-    "build:puppet": "unbuild",
-    "dev:puppet": "unbuild --stub",
+    "build": "unbuild",
     "lint": "eslint .",
-    "prepublishOnly": "nr build",
-    "release": "bumpp && npm publish",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
-    "postinstall": "puppeteer browsers install chrome"
+    "heroku-postbuild": "npm run build && mkdir ./.cache && mv /app/.cache/puppeteer ./.cache",
+    "postinstall": "npx puppeteer browsers install chrome"
   },
   "devDependencies": {
     "@antfu/eslint-config": "2.6.4",
