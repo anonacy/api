@@ -56,10 +56,20 @@ export class Utils {
       "aliasDetail": `https://postal.anonacy.com/org/${org}/servers/${server}/routes/${id}/edit`,
       "addDomain": `https://postal.anonacy.com/org/${org}/servers/${server}/domains/new`,
       "domainList": `https://postal.anonacy.com/org/${org}/servers/${server}/domains`,
+      "domainDetail": `https://postal.anonacy.com/org/${org}/servers/${server}/domains/${id}/setup`,
       "addEndpoint": `https://postal.anonacy.com/org/${org}/servers/${server}/address_endpoints/new`,
       "endpointList": `https://postal.anonacy.com/org/${org}/servers/${server}/address_endpoints`,
-    };
+    }
+
+    if(action.toLowerCase().includes("detail") && !id) {
+      throw new Error("ID is required for detail actions")
+    }
+
     return URL_Dict[action];
+  }
+
+  static removeNewLines(str: string) {
+    return str.replace(/\n/g, "");
   }
 
 }

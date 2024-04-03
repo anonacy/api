@@ -1,6 +1,6 @@
 import type { PuppetInstance } from '../index';
-import { Utils } from '../utils';
 import puppeteer from 'puppeteer';
+import { Utils } from '../utils';
 
 let cookies: any = null;
 
@@ -24,10 +24,9 @@ export async function initPuppet(options: {
 }> {
   try {
     if(cookies) {
-
+      // check if cookie is expired
       let isExpired = false;
 
-      // check if cookie is expired
       for (const cookie of cookies) {
         if(cookie.name == 'browser_id') {
           if (cookie.expires !== -1 && cookie.expires < Date.now() / 1000) {

@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { postalPuppet } from './index';
 
@@ -18,16 +18,30 @@ async function initPuppetWithConfig() {
   return puppetInstance;
 }
 
-app.get('/health', (req, res) => {
+// This is a higher-order function that takes an async function and returns a new function that catches any errors and passes them to next()
+// ** It also times the response
+function catchErrors(fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) {
+  return async function(req: Request, res: Response, next: NextFunction) {
+    console.time('⏱️ Time to run');
+    try {
+      await fn(req, res, next);
+    } catch (err) {
+      next(err);
+    } finally {
+      console.timeEnd('⏱️ Time to run');
+    }
+  }
+}
+
+app.get('/health', catchErrors( async (req, res) => {
   res.status(200).send({ status: 200 });
-});
+}));
 
-app.post('/health', (req, res) => {
+app.post('/health', catchErrors( async (req, res) => {
   res.status(201).send({ status: 201 });
-});
+}));
 
-app.post('/addAlias', async (req, res) => {
-  console.time('⏱️ Time to run');
+app.post('/addAlias', catchErrors( async (req, res) => {
   const { alias, endpoint } = req.body;
   const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.addAlias({
@@ -37,11 +51,9 @@ app.post('/addAlias', async (req, res) => {
   });
   res.json(result);
   await postalPuppet.closePuppet(puppetInstance);
-  console.timeEnd('⏱️ Time to run');
-});
+}));
 
-app.post('/deleteAlias', async (req, res) => {
-  console.time('⏱️ Time to run');
+app.post('/deleteAlias', catchErrors( async (req, res) => {
   const { alias } = req.body;
   const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.deleteAlias({
@@ -50,11 +62,9 @@ app.post('/deleteAlias', async (req, res) => {
   });
   res.json(result);
   await postalPuppet.closePuppet(puppetInstance);
-  console.timeEnd('⏱️ Time to run');
-});
+}));
 
-app.post('/enableAlias', async (req, res) => {
-  console.time('⏱️ Time to run');
+app.post('/enableAlias', catchErrors( async (req, res) => {
   const { alias, endpoint } = req.body;
   const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.enableAlias({
@@ -64,11 +74,9 @@ app.post('/enableAlias', async (req, res) => {
   });
   res.json(result);
   await postalPuppet.closePuppet(puppetInstance);
-  console.timeEnd('⏱️ Time to run');
-});
+}));
 
-app.post('/disableAlias', async (req, res) => {
-  console.time('⏱️ Time to run');
+app.post('/disableAlias', catchErrors( async (req, res) => {
   const { alias } = req.body;
   const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.disableAlias({
@@ -77,11 +85,9 @@ app.post('/disableAlias', async (req, res) => {
   });
   res.json(result);
   await postalPuppet.closePuppet(puppetInstance);
-  console.timeEnd('⏱️ Time to run');
-});
+}));
 
-app.post('/addEndpoint', async (req, res) => {
-  console.time('⏱️ Time to run');
+app.post('/addEndpoint', catchErrors( async (req, res) => {
   const { endpoint } = req.body;
   const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.addEndpoint({
@@ -90,11 +96,9 @@ app.post('/addEndpoint', async (req, res) => {
   });
   res.json(result);
   await postalPuppet.closePuppet(puppetInstance);
-  console.timeEnd('⏱️ Time to run');
-});
+}));
 
-app.post('/getAliases', async (req, res) => {
-  console.time('⏱️ Time to run');
+app.post('/getAliases', catchErrors( async (req, res) => {
   const { domain } = req.body;
   const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.getAliases({
@@ -103,11 +107,9 @@ app.post('/getAliases', async (req, res) => {
   });
   res.json(result);
   await postalPuppet.closePuppet(puppetInstance);
-  console.timeEnd('⏱️ Time to run');
-});
+}));
 
-app.post('/getAliases', async (req, res) => {
-  console.time('⏱️ Time to run');
+app.post('/getAliases', catchErrors( async (req, res) => {
   const { domain } = req.body;
   const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.getEndpoints({
@@ -116,11 +118,9 @@ app.post('/getAliases', async (req, res) => {
   });
   res.json(result);
   await postalPuppet.closePuppet(puppetInstance);
-  console.timeEnd('⏱️ Time to run');
-});
+}));
 
-app.post('/addDomain', async (req, res) => {
-  console.time('⏱️ Time to run');
+app.post('/addDomain', catchErrors( async (req, res) => {
   const { domain } = req.body;
   const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.addDomain({
@@ -129,11 +129,9 @@ app.post('/addDomain', async (req, res) => {
   });
   res.json(result);
   await postalPuppet.closePuppet(puppetInstance);
-  console.timeEnd('⏱️ Time to run');
-});
+}));
 
-app.post('/checkDomain', async (req, res) => {
-  console.time('⏱️ Time to run');
+app.post('/checkDomain', catchErrors( async (req, res) => {
   const { domain } = req.body;
   const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.checkDomain({
@@ -142,10 +140,15 @@ app.post('/checkDomain', async (req, res) => {
   });
   res.json(result);
   await postalPuppet.closePuppet(puppetInstance);
-  console.timeEnd('⏱️ Time to run');
+}));
+
+// Error handling middleware
+app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
+  console.error(err.stack); // Log error stack to console
+  res.status(500).send({ error: err.message }); // Send error message to client
 });
 
 app.listen(port, () => {
   console.log("-------------------------");
-  console.log(`Puppet Server is running  at http://localhost:${port}`);
+  console.log(`Puppet Server is running  at ${process.env.API_DOMAIN}${process.env.NODE_ENV == 'production' ? '' : ':' + port}`);
 });
