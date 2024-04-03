@@ -60,7 +60,18 @@ app.post('/deleteAlias', catchErrors( async (req, res) => {
     puppetInstance,
     alias
   });
-  res.json(result);
+  res.status(201).json(result);
+  await postalPuppet.closePuppet(puppetInstance);
+}));
+
+app.post('/deleteEndpoint', catchErrors( async (req, res) => {
+  const { endpoint } = req.body;
+  const puppetInstance = await initPuppetWithConfig();
+  const result = await postalPuppet.deleteEndpoint({
+    puppetInstance,
+    endpoint
+  });
+  res.status(201).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
