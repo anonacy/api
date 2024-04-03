@@ -151,6 +151,17 @@ app.post('/checkDomain', catchErrors( async (req, res) => {
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
+app.post('/deleteDomain', catchErrors( async (req, res) => {
+  const { domain } = req.body;
+  const puppetInstance = await initPuppetWithConfig();
+  const result = await postalPuppet.deleteDomain({
+    puppetInstance,
+    domain
+  });
+  res.json(result);
+  await postalPuppet.closePuppet(puppetInstance);
+}));
+
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
   console.error(err.stack); // Log error stack to console

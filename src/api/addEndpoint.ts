@@ -12,7 +12,6 @@ export async function addEndpoint(options: {
   success: boolean;
   email: string;
   id: string;
-  error: string;
 }> {
   const email = options.endpoint;
   const { username, domain } = await Utils.decomposeEmail(email);
@@ -45,7 +44,6 @@ export async function addEndpoint(options: {
   return {
     success,
     email: email,
-    id: addressEndpointID,
-    error: ''
+    id: addressEndpointID
   };
 }

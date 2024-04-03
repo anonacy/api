@@ -22,26 +22,37 @@ export async function getDomains(options: {
 
   for(let liItem of liItems) {
     const { href, innerHTML, dnsChecks } = await options.puppetInstance.page.evaluate(el => {
+
+      // extract the domain name and the ID
       const pElement = el.querySelector('p.domainList__name');
       const aElement = pElement?.querySelector('a')
       const liElements = Array.from(el.querySelectorAll('li.domainList__check'));
+
+      // Go through DNS statuses
       let dnsChecks: Record<string, boolean> = {};
-      liElements.forEach((liElement, i) => {
-        let key: string = ''
-        let status: boolean = liElement.classList.contains("domainList__check--ok");
-        if(status) {
-          // formatted a little different for good and bad status
-          key = liElement.innerHTML
-        } else {
-          // there is a nest "a" tag in the not good statuses:
-          const dns_aElement = liElement.querySelector('a');
-          if(dns_aElement?.innerHTML) {
-            key = dns_aElement.innerHTML
+
+      // Just after adding a domain, these don't show up at all, check for length
+      if(liElements.length == 0) {
+        dnsChecks = {"SPF": false, "DKIM": false, "MX": false, "RP": false}
+      } else {
+        // If they are there, check each status:
+        liElements.forEach((liElement, i) => {
+          let key: string = ''
+          let status: boolean = liElement.classList.contains("domainList__check--ok");
+          if(status) {
+            // formatted a little different for good and bad status
+            key = liElement.innerHTML
+          } else {
+            // there is a nest "a" tag in the not good statuses:
+            const dns_aElement = liElement.querySelector('a');
+            if(dns_aElement?.innerHTML) {
+              key = dns_aElement.innerHTML
+            }
           }
-        }
-        if(key == "Return Path") key = "RP";
-        dnsChecks[key] = status;
-      });
+          if(key == "Return Path") key = "RP";
+          dnsChecks[key] = status;
+        });
+      }
       return {
         href: aElement?.getAttribute('href'),
         innerHTML: aElement?.innerHTML,

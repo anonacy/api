@@ -11,6 +11,7 @@ export async function addDomain(options: {
   success: boolean;
   domain: string;
   id: string;
+  note: string;
 }> {
   await options.puppetInstance.page.goto(Utils.urlDictionary('addDomain'));
   await options.puppetInstance.page.waitForSelector('input[id="domain_name"]');
@@ -34,6 +35,7 @@ export async function addDomain(options: {
   return {
     success,
     domain: options.domain,
-    id: domainID
+    id: domainID,
+    note: "Domain added to system, please use the checkDomain endpoint to setup DNS"
   };
 }

@@ -23,7 +23,7 @@ export async function deleteAlias(options: {
     await options.puppetInstance.page.goto(Utils.urlDictionary("aliasDetail", aliasID));
     await options.puppetInstance.page.waitForNetworkIdle();
 
-    // Set up the dialog event handler
+    // Set up the dialog event handler, this auto clicks the "are you sure" popup
     options.puppetInstance.page.on('dialog', async dialog => {
       await dialog.accept();
     });

@@ -15,6 +15,7 @@ import { addDomain } from './api/addDomain';
 import { findDomainID } from './api/findDomainID';
 import { checkDomain } from './api/checkDomain';
 import { getDomains } from './api/getDomains';
+import { deleteDomain } from './api/deleteDomain';
 
 export type PuppetInstance = {
   browser: Browser;
@@ -37,5 +38,6 @@ export const postalPuppet = {
   addDomain,
   findDomainID,
   checkDomain,
-  getDomains
+  getDomains,
+  deleteDomain
 };
