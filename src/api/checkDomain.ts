@@ -21,6 +21,7 @@ export async function checkDomain(options: {
   domainID?: string;
 }): Promise<{
   success: boolean;
+  ok: boolean;
   dnsRecords: DnsRecord[];
   domain: string;
   id: string;
@@ -99,9 +100,9 @@ export async function checkDomain(options: {
   */
 
   // Uncomment this to log the 23 elements:
-  pageInnerHtmlList.forEach((element: string, index: number) => {
-    console.log(`${index}: ${element}`);
-  });
+  // pageInnerHtmlList.forEach((element: string, index: number) => {
+  //   console.log(`${index}: ${element}`);
+  // });
 
   // need to build out this dns array, with the 4 objects:
   let dnsRecords: DnsRecord[] = [];
@@ -155,10 +156,12 @@ export async function checkDomain(options: {
   });
   
   // check if all records are ok
-  const success = dnsRecords.every(record => record.ok);
+  const ok = dnsRecords.every(record => record.ok);
+  const success = true;
 
   return {
     success,
+    ok,
     dnsRecords,
     domain: options.domain,
     id: domainID

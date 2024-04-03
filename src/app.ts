@@ -22,13 +22,13 @@ async function initPuppetWithConfig() {
 // ** It also times the response
 function catchErrors(fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) {
   return async function(req: Request, res: Response, next: NextFunction) {
-    console.time('⏱️ Time to run');
+    // console.time('⏱️ Time to run');
     try {
       await fn(req, res, next);
     } catch (err) {
       next(err);
     } finally {
-      console.timeEnd('⏱️ Time to run');
+      // console.timeEnd('⏱️ Time to run');
     }
   }
 }
@@ -136,7 +136,7 @@ app.post('/addDomain', catchErrors( async (req, res) => {
     puppetInstance,
     domain
   });
-  res.json(result);
+  res.status(201).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
@@ -158,7 +158,7 @@ app.post('/deleteDomain', catchErrors( async (req, res) => {
     puppetInstance,
     domain
   });
-  res.json(result);
+  res.status(201).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
