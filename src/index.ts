@@ -11,6 +11,7 @@ import { getEndpoints } from './api/getEndpoints';
 import { disableAlias } from './api/disableAlias';
 import { enableAlias } from './api/enableAlias';
 import { deleteAlias } from './api/deleteAlias';
+import { deleteEndpoint } from './api/deleteEndpoint';
 import { addDomain } from './api/addDomain';
 import { findDomainID } from './api/findDomainID';
 import { checkDomain } from './api/checkDomain';
@@ -39,5 +40,6 @@ export const postalPuppet = {
   findDomainID,
   checkDomain,
   getDomains,
-  deleteDomain
+  deleteDomain,
+  deleteEndpoint
 };

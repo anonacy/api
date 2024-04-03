@@ -59,6 +59,7 @@ export class Utils {
       "domainDetail": `https://postal.anonacy.com/org/${org}/servers/${server}/domains/${id}/setup`,
       "addEndpoint": `https://postal.anonacy.com/org/${org}/servers/${server}/address_endpoints/new`,
       "endpointList": `https://postal.anonacy.com/org/${org}/servers/${server}/address_endpoints`,
+      "endpointDetail": `https://postal.anonacy.com/org/${org}/servers/${server}/address_endpoints/${id}/edit`
     }
 
     if(action.toLowerCase().includes("detail") && !id) {
