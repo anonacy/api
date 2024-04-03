@@ -184,4 +184,4 @@ const server = app.listen(port, () => {
   console.log(`Puppet Server is running  at ${process.env.API_DOMAIN}${process.env.NODE_ENV == 'production' ? '' : ':' + port}`);
 });
 
-export { app, server };
+// export { app, server };
