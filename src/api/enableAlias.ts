@@ -1,6 +1,7 @@
 import type { PuppetInstance } from '../index';
 import { findAliasID } from './findAliasID';
 import { findEndpointID } from './findEndpointID';
+import { Utils } from '../utils';
 
 const URL_BASE = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
 const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
@@ -9,6 +10,7 @@ const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/rout
 export async function enableAlias(options: {
   puppetInstance: PuppetInstance;
   alias: string;
+  aliasID?: string;
   endpoint: string; //email endpoint (forwardTo email)
 }): Promise<{
   success: boolean;
@@ -16,10 +18,13 @@ export async function enableAlias(options: {
   try {
 
     // Get Alias ID
-    const aliasID = await findAliasID({
-      puppetInstance: options.puppetInstance,
-      alias: options.alias
-    })
+    let aliasID = options.aliasID || '';
+    if(!aliasID) {
+      aliasID = (await findAliasID({
+        puppetInstance: options.puppetInstance,
+        alias: options.alias
+      })).id
+    }
 
     // Get Endpoint ID
     const addressEndpointID = (await findEndpointID({
@@ -29,14 +34,14 @@ export async function enableAlias(options: {
     })).id;
 
     // Go to edit alias page
-    await options.puppetInstance.page.goto(`${URL_BASE}/${aliasID.id}/edit`);
+    await options.puppetInstance.page.goto(`${URL_BASE}/${aliasID}/edit`);
     await options.puppetInstance.page.waitForNetworkIdle();
 
     // Set Endpoint Address to Endpoint
    await options.puppetInstance.page.waitForSelector('select[id="route__endpoint"]');
    await options.puppetInstance.page.select(
      'select[id="route__endpoint"]',
-     `Endpoint#${addressEndpointID}`
+     `AddressEndpoint#${addressEndpointID}`
    );
 
     // Submit

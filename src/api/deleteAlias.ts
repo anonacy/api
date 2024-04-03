@@ -8,17 +8,21 @@ const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/rout
 export async function deleteAlias(options: {
   puppetInstance: PuppetInstance;
   alias: string;
+  aliasID?: string;
 }): Promise<{
   success: boolean;
 }> {
   try {
-    const aliasID = await findAliasID({
-      puppetInstance: options.puppetInstance,
-      alias: options.alias
-    })
+    let aliasID = options.aliasID || '';
+    if(!aliasID) {
+      aliasID = (await findAliasID({
+        puppetInstance: options.puppetInstance,
+        alias: options.alias
+      })).id
+    }
 
     // Go to edit alias page
-    await options.puppetInstance.page.goto(`${URL_BASE}/${aliasID.id}/edit`);
+    await options.puppetInstance.page.goto(`${URL_BASE}/${aliasID}/edit`);
     await options.puppetInstance.page.waitForNetworkIdle();
 
     // Set up the dialog event handler

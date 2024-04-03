@@ -9,17 +9,21 @@ const DISABLE_SETTING = 'Hold'; // Can be: Accept, Hold, Bounce, Reject
 export async function disableAlias(options: {
   puppetInstance: PuppetInstance;
   alias: string;
+  aliasID?: string;
 }): Promise<{
   success: boolean;
 }> {
   try {
-    const aliasID = await findAliasID({
-      puppetInstance: options.puppetInstance,
-      alias: options.alias
-    })
+    let aliasID = options.aliasID || '';
+    if(!aliasID) {
+      aliasID = (await findAliasID({
+        puppetInstance: options.puppetInstance,
+        alias: options.alias
+      })).id
+    }
 
     // Go to edit alias page
-    await options.puppetInstance.page.goto(`${URL_BASE}/${aliasID.id}/edit`);
+    await options.puppetInstance.page.goto(`${URL_BASE}/${aliasID}/edit`);
     await options.puppetInstance.page.waitForNetworkIdle();
 
     // Set Endpoint Address to Blocking Mode

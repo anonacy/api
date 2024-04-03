@@ -64,7 +64,7 @@ export async function addAlias(options: {
   await options.puppetInstance.page.waitForSelector('select[id="route__endpoint"]');
   await options.puppetInstance.page.select(
     'select[id="route__endpoint"]',
-    `Endpoint#${addressEndpointID}`
+    `AddressEndpoint#${addressEndpointID}`
   );
 
   // Submit
