@@ -120,6 +120,15 @@ app.post('/getAliases', catchErrors( async (req, res) => {
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
+app.post('/getDomains', catchErrors( async (req, res) => {
+  const puppetInstance = await initPuppetWithConfig();
+  const result = await postalPuppet.getDomains({
+    puppetInstance
+  });
+  res.json(result);
+  await postalPuppet.closePuppet(puppetInstance);
+}));
+
 app.post('/addDomain', catchErrors( async (req, res) => {
   const { domain } = req.body;
   const puppetInstance = await initPuppetWithConfig();
