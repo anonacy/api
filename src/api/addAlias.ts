@@ -22,9 +22,7 @@ export async function addAlias(options: {
     endpoint: options.endpoint,
     skipLoad: false
   })).id;
-
-  console.log(`Adding alias {${username}@${domain}} for endpoint: ${options.endpoint} (${addressEndpointID})`);
-
+  
   // Go to new route page
   await options.puppetInstance.page.goto(Utils.urlDictionary('addAlias'));
   await options.puppetInstance.page.waitForNetworkIdle();

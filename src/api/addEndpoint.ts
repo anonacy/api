@@ -10,16 +10,15 @@ export async function addEndpoint(options: {
   endpoint: string; // email endpoint (forwardTo email)
 }): Promise<{
   success: boolean;
-  email: string;
+  endpoint: string;
   id: string;
 }> {
-  const email = options.endpoint;
-  const { username, domain } = await Utils.decomposeEmail(email);
-  console.log("Adding address endpoint for email: ", email);
+  const endpoint = options.endpoint;
+  const { username, domain } = await Utils.decomposeEmail(endpoint);
 
   await options.puppetInstance.page.goto(Utils.urlDictionary('addEndpoint'));
   await options.puppetInstance.page.waitForSelector('input[id="address_endpoint_address"]');
-  await options.puppetInstance.page.type('input[id="address_endpoint_address"]', email);
+  await options.puppetInstance.page.type('input[id="address_endpoint_address"]', endpoint);
   await options.puppetInstance.page.click('[name="commit"]');
   try {
     await options.puppetInstance.page.waitForNavigation({ timeout: 3000, waitUntil: 'networkidle0' });
@@ -29,21 +28,21 @@ export async function addEndpoint(options: {
     };
   }
 
-  let addressEndpointID = '';
+  let endpointID = '';
   let ID_res = await findEndpointID({
     puppetInstance: options.puppetInstance,
-    endpoint: email,
+    endpoint,
     skipLoad: true
   });
 
   if(ID_res.success) {
-    addressEndpointID = ID_res.id;
+    endpointID = ID_res.id;
   }
 
   const success = (await options.puppetInstance.page.url() == Utils.urlDictionary("endpointList")) ? true : false;
   return {
     success,
-    email: email,
-    id: addressEndpointID
+    endpoint,
+    id: endpointID
   };
 }

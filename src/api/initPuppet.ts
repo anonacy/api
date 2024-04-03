@@ -30,7 +30,7 @@ export async function initPuppet(options: {
       for (const cookie of cookies) {
         if(cookie.name == 'browser_id') {
           if (cookie.expires !== -1 && cookie.expires < Date.now() / 1000) {
-            console.log(`Cookie ${cookie.name} is expired.`);
+            // console.log(`Cookie ${cookie.name} is expired.`);
             isExpired = true;
           }
         }
@@ -80,7 +80,7 @@ export async function initPuppet(options: {
     };
 
   } catch (error: any) {
-    console.log('Postal: initPuppet Error:', error);
+    // console.log('Postal: initPuppet Error:', error);
     throw new Error(error);
   }
 }

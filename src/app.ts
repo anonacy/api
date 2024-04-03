@@ -49,7 +49,7 @@ app.post('/addAlias', catchErrors( async (req, res) => {
     alias,
     endpoint
   });
-  res.json(result);
+  res.status(201).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
@@ -83,7 +83,7 @@ app.post('/enableAlias', catchErrors( async (req, res) => {
     alias,
     endpoint
   });
-  res.json(result);
+  res.status(201).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
@@ -94,7 +94,7 @@ app.post('/disableAlias', catchErrors( async (req, res) => {
     puppetInstance,
     alias
   });
-  res.json(result);
+  res.status(201).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
@@ -105,7 +105,7 @@ app.post('/addEndpoint', catchErrors( async (req, res) => {
     puppetInstance,
     endpoint
   });
-  res.json(result);
+  res.status(201).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
@@ -116,18 +116,18 @@ app.post('/getAliases', catchErrors( async (req, res) => {
     puppetInstance,
     domain
   });
-  res.json(result);
+  res.status(200).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
-app.post('/getAliases', catchErrors( async (req, res) => {
+app.post('/getEndpoints', catchErrors( async (req, res) => {
   const { domain } = req.body;
   const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.getEndpoints({
     puppetInstance,
     domain
   });
-  res.json(result);
+  res.status(200).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
