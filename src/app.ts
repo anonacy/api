@@ -168,7 +168,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
   res.status(500).send({ error: err.message }); // Send error message to client
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log("-------------------------");
   console.log(`Puppet Server is running  at ${process.env.API_DOMAIN}${process.env.NODE_ENV == 'production' ? '' : ':' + port}`);
 });
+
+export { app, server };
