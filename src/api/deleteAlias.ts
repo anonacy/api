@@ -1,8 +1,6 @@
 import type { PuppetInstance } from '../index';
 import { findAliasID } from './findAliasID';
-
-const URL_BASE = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
-const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
+import { Utils } from '../utils';
 
 // Ran to delete an alias
 export async function deleteAlias(options: {
@@ -22,7 +20,7 @@ export async function deleteAlias(options: {
     }
 
     // Go to edit alias page
-    await options.puppetInstance.page.goto(`${URL_BASE}/${aliasID}/edit`);
+    await options.puppetInstance.page.goto(Utils.urlDictionary("aliasDetail", aliasID));
     await options.puppetInstance.page.waitForNetworkIdle();
 
     // Set up the dialog event handler
@@ -34,7 +32,7 @@ export async function deleteAlias(options: {
     await options.puppetInstance.page.click('.button.button--danger');
     await options.puppetInstance.page.waitForNavigation();
 
-    const success = (await options.puppetInstance.page.url() == URL_CONFIRM) ? true : false;
+    const success = (await options.puppetInstance.page.url() == Utils.urlDictionary("aliasList")) ? true : false;
 
     return {
       success

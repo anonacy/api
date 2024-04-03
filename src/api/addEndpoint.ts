@@ -4,9 +4,6 @@ import type { PuppetInstance } from '../index';
 import { findEndpointID } from './findEndpointID';
 import { Utils } from '../utils';
 
-const URL_add = "https://postal.anonacy.com/org/anonacy/servers/anonacy/address_endpoints/new";
-const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/address_endpoints";
-
 // This function adds an email address to the address endpoints, finds and returns the postal id
 export async function addEndpoint(options: {
   puppetInstance: PuppetInstance;
@@ -21,7 +18,7 @@ export async function addEndpoint(options: {
   const { username, domain } = await Utils.decomposeEmail(email);
   console.log("Adding address endpoint for email: ", email);
 
-  await options.puppetInstance.page.goto(URL_add);
+  await options.puppetInstance.page.goto(Utils.urlDictionary('addEndpoint'));
   await options.puppetInstance.page.waitForSelector('input[id="address_endpoint_address"]');
   await options.puppetInstance.page.type('input[id="address_endpoint_address"]', email);
   await options.puppetInstance.page.click('[name="commit"]');
@@ -44,7 +41,7 @@ export async function addEndpoint(options: {
     addressEndpointID = ID_res.id;
   }
 
-  const success = (await options.puppetInstance.page.url() == URL_CONFIRM) ? true : false;
+  const success = (await options.puppetInstance.page.url() == Utils.urlDictionary("endpointList")) ? true : false;
   return {
     success,
     email: email,

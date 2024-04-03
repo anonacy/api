@@ -1,9 +1,6 @@
 import type { PuppetInstance } from '../index';
 import { Utils } from '../utils';
 
-const URL_START = "https://postal.anonacy.com/org/anonacy/servers/anonacy/address_endpoints";
-
-
 // Get ID of specific endpoint
 export async function findEndpointID(options: {
   puppetInstance: PuppetInstance;
@@ -13,15 +10,14 @@ export async function findEndpointID(options: {
   success: boolean;
   id: string;
 }> {
-  let addressEndpointID = '';
-
   // Go to route list page
   if(!options.skipLoad) {
-    await options.puppetInstance.page.goto(URL_START);
+    await options.puppetInstance.page.goto(Utils.urlDictionary('endpointList'));
     await options.puppetInstance.page.waitForNetworkIdle();
   }
 
-  // NEXT: Find Alias ID
+  // NEXT: Find Endpoint ID
+  let addressEndpointID = '';
 
   // get all a tags from endpoints list
   const pTags = await options.puppetInstance.page.$$('a.endpointList__link');
@@ -40,7 +36,7 @@ export async function findEndpointID(options: {
     // Check if the p tag contains the alias
     if (pElementInnerHTML) {
       if(pElementInnerHTML.trim() == options.endpoint) {
-        // ALIAS FOUND
+        // ENDPOINT FOUND
         // Extract ID from a href
         const href = await options.puppetInstance.page.evaluate(el => el.getAttribute('href'), pTag);
         if(href){

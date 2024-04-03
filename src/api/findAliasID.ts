@@ -1,8 +1,6 @@
 import type { PuppetInstance } from '../index';
 import { Utils } from '../utils';
 
-const URL_START = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
-
 // Get ID of a specific alias
 export async function findAliasID(options: {
   puppetInstance: PuppetInstance;
@@ -13,15 +11,15 @@ export async function findAliasID(options: {
   id: string;
 }> {
   const alias = options.alias;
-  let routeID = '';
 
   // Go to route list page
   if(!options.skipLoad) {
-    await options.puppetInstance.page.goto(URL_START);
+    await options.puppetInstance.page.goto(Utils.urlDictionary("aliasList"));
     await options.puppetInstance.page.waitForNetworkIdle();
   }
 
   // NEXT: Find Alias ID
+  let aliasID = '';
 
   // get all a tags from routes list
   const pTags = await options.puppetInstance.page.$$('a.routeList__link');
@@ -44,17 +42,17 @@ export async function findAliasID(options: {
         // Extract ID from a href
         const href = await options.puppetInstance.page.evaluate(el => el.getAttribute('href'), pTag);
         if(href){
-          routeID = Utils.getIdFromUrl(href)
+          aliasID = Utils.getIdFromUrl(href)
         }
       }
     }
   }
 
-  const success = routeID != '' ? true : false;
+  const success = aliasID != '' ? true : false;
   if(!success) throw new Error(`Alias ${alias} not found`);
   return {
     success,
-    id: routeID
+    id: aliasID
   };
 
 

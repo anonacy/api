@@ -3,9 +3,6 @@
 import type { PuppetInstance } from '../index';
 import { Utils } from '../utils';
 
-const URL_add = "https://postal.anonacy.com/org/anonacy/servers/anonacy/domains/new";
-const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/address_endpoints";
-
 // This function adds an email address to the address endpoints, finds and returns the postal id
 export async function addDomain(options: {
   puppetInstance: PuppetInstance;
@@ -15,9 +12,7 @@ export async function addDomain(options: {
   domain: string;
   id: string;
 }> {
-  console.log("Adding new domain: ", options.domain);
-
-  await options.puppetInstance.page.goto(URL_add);
+  await options.puppetInstance.page.goto(Utils.urlDictionary('addDomain'));
   await options.puppetInstance.page.waitForSelector('input[id="domain_name"]');
   await options.puppetInstance.page.type('input[id="domain_name"]', options.domain);
   await options.puppetInstance.page.click('[name="commit"]');
@@ -34,10 +29,8 @@ export async function addDomain(options: {
     throw new Error("Failed to add domain");
   }
   let domainID = await Utils.getIdFromUrl(options.puppetInstance.page.url());
-  console.log("Domain ID: ", domainID);
 
-
-  const success = (await options.puppetInstance.page.url() == URL_CONFIRM) ? true : false;
+  const success = domainID ? true : false;
   return {
     success,
     domain: options.domain,

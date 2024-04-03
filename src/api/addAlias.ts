@@ -3,9 +3,6 @@ import { findEndpointID } from './findEndpointID';
 import { findAliasID } from './findAliasID';
 import { Utils } from '../utils';
 
-const URL_ADD_ROUTE = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes/new";
-const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
-
 // Ran to create a new alias
 export async function addAlias(options: {
   puppetInstance: PuppetInstance;
@@ -29,7 +26,7 @@ export async function addAlias(options: {
   console.log(`Adding alias {${username}@${domain}} for endpoint: ${options.endpoint} (${addressEndpointID})`);
 
   // Go to new route page
-  await options.puppetInstance.page.goto(URL_ADD_ROUTE);
+  await options.puppetInstance.page.goto(Utils.urlDictionary('addAlias'));
   await options.puppetInstance.page.waitForNetworkIdle();
 
   // Enter Username
@@ -87,7 +84,7 @@ export async function addAlias(options: {
 
   // Check the current page URL
   const url = await options.puppetInstance.page.url();
-  if (url !== URL_CONFIRM) {
+  if (url !== Utils.urlDictionary('aliasList')) {
     // This case means the page didn't refresh, there should be an error message
     const errorMessageElement = await options.puppetInstance.page.$('.formErrors');
     if (errorMessageElement) {

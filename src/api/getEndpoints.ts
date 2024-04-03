@@ -1,8 +1,6 @@
 import type { PuppetInstance } from '../index';
 import { Utils } from '../utils';
 
-const URL_START = "https://postal.anonacy.com/org/anonacy/servers/anonacy/address_endpoints";
-
 // Get a list of all address endpoints
 export async function getEndpoints(options: {
   puppetInstance: PuppetInstance;
@@ -14,7 +12,7 @@ export async function getEndpoints(options: {
 }> {
 
   // Go to new route list
-  await options.puppetInstance.page.goto(URL_START);
+  await options.puppetInstance.page.goto(Utils.urlDictionary('endpointList'));
   await options.puppetInstance.page.waitForNetworkIdle();
 
   // NEXT: Find Aliases

@@ -1,8 +1,6 @@
 import type { PuppetInstance } from '../index';
 import { Utils } from '../utils';
 
-const URL_START = "https://postal.anonacy.com/org/anonacy/servers/anonacy/domains";
-
 // Get ID of a specific domain
 export async function findDomainID(options: {
   puppetInstance: PuppetInstance;
@@ -12,15 +10,14 @@ export async function findDomainID(options: {
   success: boolean;
   id: string;
 }> {
-  let domainID = '';
-
   // Go to domain list page
   if(!options.skipLoad) {
-    await options.puppetInstance.page.goto(URL_START);
+    await options.puppetInstance.page.goto(Utils.urlDictionary("domainList"));
     await options.puppetInstance.page.waitForNetworkIdle();
   }
 
   // NEXT: Find Domain ID
+  let domainID = '';
 
   // get all a tags from endpoints list
   const liItems = await options.puppetInstance.page.$$('li.domainList__item');

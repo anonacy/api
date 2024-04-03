@@ -1,8 +1,7 @@
 import type { PuppetInstance } from '../index';
 import { findAliasID } from './findAliasID';
+import { Utils } from '../utils';
 
-const URL_BASE = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
-const URL_CONFIRM = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
 const DISABLE_SETTING = 'Hold'; // Can be: Accept, Hold, Bounce, Reject
 
 // Function to disable an alias
@@ -23,7 +22,7 @@ export async function disableAlias(options: {
     }
 
     // Go to edit alias page
-    await options.puppetInstance.page.goto(`${URL_BASE}/${aliasID}/edit`);
+    await options.puppetInstance.page.goto(Utils.urlDictionary("aliasDetail", aliasID));
     await options.puppetInstance.page.waitForNetworkIdle();
 
     // Set Endpoint Address to Blocking Mode
@@ -47,7 +46,7 @@ export async function disableAlias(options: {
     await options.puppetInstance.page.click('[name="commit"]');
     await options.puppetInstance.page.waitForNavigation();
 
-    const success = (await options.puppetInstance.page.url() == URL_CONFIRM) ? true : false;
+    const success = (await options.puppetInstance.page.url() == Utils.urlDictionary("aliasList")) ? true : false;
 
     return {
       success

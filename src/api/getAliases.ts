@@ -17,7 +17,7 @@ export async function getAliases(options: {
 }> {
 
   // Go to new route list
-  await options.puppetInstance.page.goto(URL_START);
+  await options.puppetInstance.page.goto(Utils.urlDictionary('aliasList'));
   await options.puppetInstance.page.waitForNetworkIdle();
 
 

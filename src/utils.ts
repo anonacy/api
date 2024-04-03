@@ -44,4 +44,22 @@ export class Utils {
     return URL_PATTERNS[urlCheckName].test(url);
   }
 
+  static urlDictionary(
+    action: string, 
+    id?: string, // optional, for urls that include ids
+    org: string = "anonacy", // optional, postal organization
+    server: string = "anonacy" // option, postal mail server (within organization)
+  ) {
+    const URL_Dict: { [key: string]: string } = {
+      "addAlias": `https://postal.anonacy.com/org/${org}/servers/${server}/routes/new`,
+      "aliasList": `https://postal.anonacy.com/org/${org}/servers/${server}/routes`,
+      "aliasDetail": `https://postal.anonacy.com/org/${org}/servers/${server}/routes/${id}/edit`,
+      "addDomain": `https://postal.anonacy.com/org/${org}/servers/${server}/domains/new`,
+      "domainList": `https://postal.anonacy.com/org/${org}/servers/${server}/domains`,
+      "addEndpoint": `https://postal.anonacy.com/org/${org}/servers/${server}/address_endpoints/new`,
+      "endpointList": `https://postal.anonacy.com/org/${org}/servers/${server}/address_endpoints`,
+    };
+    return URL_Dict[action];
+  }
+
 }
