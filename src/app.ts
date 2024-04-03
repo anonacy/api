@@ -22,13 +22,13 @@ async function initPuppetWithConfig() {
 // ** It also times the response
 function catchErrors(fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) {
   return async function(req: Request, res: Response, next: NextFunction) {
-    console.time('⏱️ Time to run');
+    // console.time('⏱️ Time to run');
     try {
       await fn(req, res, next);
     } catch (err) {
       next(err);
     } finally {
-      console.timeEnd('⏱️ Time to run');
+      // console.timeEnd('⏱️ Time to run');
     }
   }
 }
@@ -49,7 +49,7 @@ app.post('/addAlias', catchErrors( async (req, res) => {
     alias,
     endpoint
   });
-  res.json(result);
+  res.status(201).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
@@ -83,7 +83,7 @@ app.post('/enableAlias', catchErrors( async (req, res) => {
     alias,
     endpoint
   });
-  res.json(result);
+  res.status(201).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
@@ -94,7 +94,7 @@ app.post('/disableAlias', catchErrors( async (req, res) => {
     puppetInstance,
     alias
   });
-  res.json(result);
+  res.status(201).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
@@ -105,7 +105,7 @@ app.post('/addEndpoint', catchErrors( async (req, res) => {
     puppetInstance,
     endpoint
   });
-  res.json(result);
+  res.status(201).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
@@ -116,18 +116,18 @@ app.post('/getAliases', catchErrors( async (req, res) => {
     puppetInstance,
     domain
   });
-  res.json(result);
+  res.status(200).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
-app.post('/getAliases', catchErrors( async (req, res) => {
+app.post('/getEndpoints', catchErrors( async (req, res) => {
   const { domain } = req.body;
   const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.getEndpoints({
     puppetInstance,
     domain
   });
-  res.json(result);
+  res.status(200).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
@@ -147,7 +147,7 @@ app.post('/addDomain', catchErrors( async (req, res) => {
     puppetInstance,
     domain
   });
-  res.json(result);
+  res.status(201).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
@@ -169,7 +169,7 @@ app.post('/deleteDomain', catchErrors( async (req, res) => {
     puppetInstance,
     domain
   });
-  res.json(result);
+  res.status(201).json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
@@ -179,7 +179,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
   res.status(500).send({ error: err.message }); // Send error message to client
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log("-------------------------");
   console.log(`Puppet Server is running  at ${process.env.API_DOMAIN}${process.env.NODE_ENV == 'production' ? '' : ':' + port}`);
 });
+
+export { app, server };
