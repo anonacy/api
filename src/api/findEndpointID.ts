@@ -4,7 +4,7 @@ import { Utils } from '../utils';
 const URL_START = "https://postal.anonacy.com/org/anonacy/servers/anonacy/address_endpoints";
 
 
-// Get a list of all address endpoints
+// Get ID of specific endpoint
 export async function findEndpointID(options: {
   puppetInstance: PuppetInstance;
   endpoint: string; // email endpoint (forwardTo email)

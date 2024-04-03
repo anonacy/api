@@ -34,8 +34,8 @@
     "npm": ">=8"
   },
   "scripts": {
-    "start": "npx cowsay -f elephant2 Starting Puppet! && npx tsx src/app.ts",
-    "build": "unbuild",
+    "start": "npx cowsay -f elephant2 Starting Puppet! && npx nodemon --watch 'src/**/*.ts' --exec 'npx tsx' src/app.ts",
+    "build": "npx unbuild",
     "lint": "eslint .",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
@@ -53,6 +53,7 @@
     "eslint": "^8.56.0",
     "esno": "^4.0.0",
     "lint-staged": "^15.2.2",
+    "nodemon": "^3.1.0",
     "pnpm": "^8.15.3",
     "rimraf": "^5.0.5",
     "simple-git-hooks": "^2.9.0",

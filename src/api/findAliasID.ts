@@ -3,7 +3,7 @@ import { Utils } from '../utils';
 
 const URL_START = "https://postal.anonacy.com/org/anonacy/servers/anonacy/routes";
 
-// Ran to find ID of an alias
+// Get ID of a specific alias
 export async function findAliasID(options: {
   puppetInstance: PuppetInstance;
   alias: string;

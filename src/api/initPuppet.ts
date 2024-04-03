@@ -44,7 +44,7 @@ export async function initPuppet(options: {
         const url = `https://${options.postalControlPanel}.${options.postalUrl}`;
         const browser = await puppeteer.launch({
           args: ['--no-sandbox'],
-          headless: (process.env.NODE_ENV === 'production' ? true : false)
+          headless: ((process.env.NODE_ENV === 'production' || process.env.RUN_HEADLESS == "TRUE") ? true : false)
         });
         const [page] = await browser.pages();
         await page.setCookie(...cookies);
@@ -66,7 +66,7 @@ export async function initPuppet(options: {
     const url = `https://${options.postalControlPanel}.${options.postalUrl}`;
     const browser = await puppeteer.launch({
       args: ['--no-sandbox'],
-      headless: (process.env.NODE_ENV === 'production' ? true : false)
+      headless: ((process.env.NODE_ENV === 'production' || process.env.RUN_HEADLESS == "TRUE") ? true : false)
     });
     const [page] = await browser.pages();
     await page.goto(`${url}/login`);

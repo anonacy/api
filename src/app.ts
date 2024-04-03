@@ -22,6 +22,10 @@ app.get('/health', (req, res) => {
   res.status(200).send({ status: 200 });
 });
 
+app.post('/health', (req, res) => {
+  res.status(201).send({ status: 201 });
+});
+
 app.post('/addAlias', async (req, res) => {
   console.time('⏱️ Time to run');
   const { alias, endpoint } = req.body;
@@ -115,9 +119,33 @@ app.post('/getAliases', async (req, res) => {
   console.timeEnd('⏱️ Time to run');
 });
 
+app.post('/addDomain', async (req, res) => {
+  console.time('⏱️ Time to run');
+  const { domain } = req.body;
+  const puppetInstance = await initPuppetWithConfig();
+  const result = await postalPuppet.addDomain({
+    puppetInstance,
+    domain
+  });
+  res.json(result);
+  await postalPuppet.closePuppet(puppetInstance);
+  console.timeEnd('⏱️ Time to run');
+});
+
+app.post('/checkDomain', async (req, res) => {
+  console.time('⏱️ Time to run');
+  const { domain } = req.body;
+  const puppetInstance = await initPuppetWithConfig();
+  const result = await postalPuppet.checkDomain({
+    puppetInstance,
+    domain
+  });
+  res.json(result);
+  await postalPuppet.closePuppet(puppetInstance);
+  console.timeEnd('⏱️ Time to run');
+});
+
 app.listen(port, () => {
   console.log("-------------------------");
-  console.log('headless: ', process.env.NODE_ENV === 'production' ? true : false)
-  console.log("NODE_ENV: ", process.env.NODE_ENV);
-  console.log(`Puppet Server is running at http://localhost:${port}`);
+  console.log(`Puppet Server is running  at http://localhost:${port}`);
 });
