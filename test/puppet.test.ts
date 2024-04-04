@@ -49,10 +49,10 @@ describe('API Tests', function() {
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
-        expect(res.body.count).to.be.greaterThan(0);
+        expect(res.body.length).to.be.greaterThan(0);
 
         // Find the domain in the array
-        const domain = res.body.domains.find((x) => x.domain === VARS.domain);
+        const domain = res.body.find((x) => x.domain === VARS.domain);
         expect(domain).to.exist;
         done();
       });
@@ -99,10 +99,10 @@ describe('API Tests', function() {
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
-        expect(res.body.count).to.be.greaterThan(0);
+        expect(res.body.length).to.be.greaterThan(0);
 
         // Find the endpoint in the array
-        const endpoint = res.body.endpoints.find((x) => x.endpoint === VARS.endpoint);
+        const endpoint = res.body.find((x) => x.endpoint === VARS.endpoint);
         expect(endpoint).to.exist;
         done();
       });
@@ -128,10 +128,10 @@ describe('API Tests', function() {
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
-        expect(res.body.count).to.be.greaterThan(0);
+        expect(res.body.length).to.be.greaterThan(0);
 
         // Find the endpoint in the array
-        const alias = res.body.aliases.find((x) => x.alias === VARS.alias);
+        const alias = res.body.find((x) => x.alias === VARS.alias);
         expect(alias).to.exist;
         done();
       });
@@ -154,9 +154,9 @@ describe('API Tests', function() {
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
-        expect(res.body.count).to.be.greaterThan(0);
-        const alias = res.body.aliases.find((x) => x.alias === VARS.alias);
-        expect(alias.isActive).to.be.false;
+        expect(res.body.length).to.be.greaterThan(0);
+        const alias = res.body.find((x) => x.alias === VARS.alias);
+        expect(alias.enabled).to.equal(0);
         expect(alias.endpoint).to.be.null;
         done();
       });
@@ -179,9 +179,9 @@ describe('API Tests', function() {
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
-        expect(res.body.count).to.be.greaterThan(0);
-        const alias = res.body.aliases.find((x) => x.alias === VARS.alias);
-        expect(alias.isActive).to.be.true;
+        expect(res.body.length).to.be.greaterThan(0);
+        const alias = res.body.find((x) => x.alias === VARS.alias);
+        expect(alias.enabled).to.equal(1);
         expect(alias.endpoint).to.exist;
         expect(alias.endpoint).to.equal(VARS.endpoint);
         done();
@@ -205,7 +205,7 @@ describe('API Tests', function() {
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
-        const alias = res.body.aliases.find((x) => x.alias === VARS.alias);
+        const alias = res.body.find((x) => x.alias === VARS.alias);
         expect(alias).to.not.exist;
         done();
       });
@@ -228,7 +228,7 @@ describe('API Tests', function() {
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
-        const endpoint = res.body.endpoints.find((x) => x.endpoint === VARS.endpoint);
+        const endpoint = res.body.find((x) => x.endpoint === VARS.endpoint);
         expect(endpoint).to.not.exist;
         done();
       });
@@ -252,7 +252,7 @@ describe('API Tests', function() {
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
-        const domain = res.body.domains.find((x) => x.domain === VARS.domain);
+        const domain = res.body.find((x) => x.domain === VARS.domain);
         expect(domain).to.not.exist;
         done();
       });

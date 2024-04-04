@@ -1,7 +1,7 @@
 // to be run when a user signs up, to add email to destinations available for forwarding in a route
 
 import type { PuppetInstance } from '../index';
-import { findEndpointID } from './findEndpointID';
+import DB from '../db/db';
 import { Utils } from '../utils';
 
 // This function adds an email address to the address endpoints, finds and returns the postal id
@@ -13,6 +13,8 @@ export async function addEndpoint(options: {
   endpoint: string;
   id: string;
 }> {
+  const db = DB.getInstance();
+
   const endpoint = options.endpoint;
   // const { username, domain } = await Utils.decomposeEmail(endpoint);
 
@@ -34,21 +36,12 @@ export async function addEndpoint(options: {
     };
   }
 
-  let endpointID = '';
-  let ID_res = await findEndpointID({
-    puppetInstance: options.puppetInstance,
-    endpoint,
-    skipLoad: true
-  });
+  // check db for endpoint
+  let endpointID = await db.endpoint.id(endpoint);
 
-  if(ID_res.success) {
-    endpointID = ID_res.id;
-  }
-
-  const success = (await options.puppetInstance.page.url() == Utils.urlDictionary("endpointList")) ? true : false;
   return {
-    success,
+    success: endpointID ? true : false,
     endpoint,
-    id: endpointID
+    id: endpointID ? endpointID : ''
   };
 }
