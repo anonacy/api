@@ -20,6 +20,8 @@ export async function getAliases(options: {
   await options.puppetInstance.page.goto(Utils.urlDictionary('aliasList'));
   await options.puppetInstance.page.waitForNetworkIdle();
 
+  // Check if on login page (redirected because not authenticated), login if yes
+  options.puppetInstance = await Utils.checkIfLoginPage(options.puppetInstance);
 
   // NEXT: Find Aliases
   let aliases: any = [];

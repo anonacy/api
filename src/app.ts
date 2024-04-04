@@ -8,6 +8,7 @@ const app = express();
 const port = process.env.PORT || 3001;
 app.use(express.json()); // for parsing application/json
 
+let cookies: any = null;
 
 // FUNCTIONS ------------------------------------------------------------------
 
@@ -43,6 +44,14 @@ function catchErrors(fn: (req: Request, res: Response, next: NextFunction) => Pr
 // GET ------------------------------------------------------------------------
 
 app.get('/health', catchErrors( async (req, res) => {
+  res.status(200).send({ status: 200 });
+}));
+
+app.get('/test', catchErrors( async (req, res) => {
+  const puppetInstance = await initPuppetWithConfig();
+  console.log("waiting for 20 seconds...");
+  await Utils.wait(20);
+  console.log("Done waiting, browser should have closed");
   res.status(200).send({ status: 200 });
 }));
 

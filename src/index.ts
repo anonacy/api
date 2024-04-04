@@ -1,6 +1,7 @@
 import type { Browser, Page } from 'puppeteer';
 
 import { initPuppet } from './api/initPuppet';
+import { loginPuppet } from './api/loginPuppet';
 import { closePuppet } from './api/closePuppet';
 import { addEndpoint } from './api/addEndpoint';
 import { addAlias } from './api/addAlias';
@@ -26,6 +27,7 @@ export type PuppetInstance = {
 
 export const postalPuppet = {
   initPuppet,
+  loginPuppet,
   closePuppet,
   addEndpoint,
   addAlias,

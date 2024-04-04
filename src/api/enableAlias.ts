@@ -13,7 +13,9 @@ export async function enableAlias(options: {
   success: boolean;
 }> {
   try {
-
+    // Check if on login page (redirected because not authenticated), login if yes
+    options.puppetInstance = await Utils.checkIfLoginPage(options.puppetInstance);
+    
     // Get Alias ID
     let aliasID = options.aliasID || '';
     if(!aliasID) {

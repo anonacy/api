@@ -16,6 +16,9 @@ export async function findDomainID(options: {
     await options.puppetInstance.page.waitForNetworkIdle();
   }
 
+  // Check if on login page (redirected because not authenticated), login if yes
+  options.puppetInstance = await Utils.checkIfLoginPage(options.puppetInstance);
+
   // NEXT: Find Domain ID
   let domainID = '';
 

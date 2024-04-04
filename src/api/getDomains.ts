@@ -13,6 +13,9 @@ export async function getDomains(options: {
   // Go to new route list
   await options.puppetInstance.page.goto(Utils.urlDictionary('domainList'));
   await options.puppetInstance.page.waitForNetworkIdle();
+  
+  // Check if on login page (redirected because not authenticated), login if yes
+  options.puppetInstance = await Utils.checkIfLoginPage(options.puppetInstance);
 
   // NEXT: Find Domains
   let domains: any[] = [];

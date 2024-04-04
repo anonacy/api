@@ -1,8 +1,9 @@
-import type { PuppetInstance } from '../index';
 import puppeteer from 'puppeteer';
-import { Utils } from '../utils';
+import type { PuppetInstance } from '../index';
+import { loginPuppet } from './loginPuppet';
+import Cookies from '../cookies';
 
-let cookies: any = null;
+// let cookies: any = null;
 
 // Initialize the puppet session by logging into the postal control panel
 /*
@@ -19,15 +20,18 @@ export async function initPuppet(options: {
   postalUrl: string;
   postalUser: string;
   postalPass: string;
+  clearCookies?: boolean;
 }): Promise<{
   puppetInstance: PuppetInstance;
 }> {
   try {
-    if(cookies) {
+    // Check if cookies are saved
+    const globalCookies = Cookies.getInstance();
+    if(globalCookies.cookies && !options.clearCookies) {
       // check if cookie is expired
       let isExpired = false;
 
-      for (const cookie of cookies) {
+      for (const cookie of globalCookies.cookies) {
         if(cookie.name == 'browser_id') {
           if (cookie.expires !== -1 && cookie.expires < Date.now() / 1000) {
             // console.log(`Cookie ${cookie.name} is expired.`);
@@ -38,25 +42,16 @@ export async function initPuppet(options: {
       
       if(!isExpired) {
         // cookies saved and still valid, should already be logged in
-
-        // load homepage using cookies
         const url = `https://${options.postalControlPanel}.${options.postalUrl}`;
         const browser = await puppeteer.launch({
           args: ['--no-sandbox'],
           headless: ((process.env.NODE_ENV === 'production' || process.env.RUN_HEADLESS == "TRUE") ? true : false)
         });
         const [page] = await browser.pages();
-        await page.setCookie(...cookies);
-        await page.goto(`${url}/org/anonacy/servers/anonacy`);
-        await page.waitForNetworkIdle();
-
-        // last check to make sure we aren't on the login page
-        let baseURL = Utils.getBaseURL(await page.url());
-        if(!baseURL.includes('login')) {
-          return {
-            puppetInstance: { browser, page, url } as PuppetInstance
-          };
-        }
+        await page.setCookie(...globalCookies.cookies);
+        return {
+          puppetInstance: { browser, page, url } as PuppetInstance
+        };
       }
     }
 
@@ -67,16 +62,21 @@ export async function initPuppet(options: {
       args: ['--no-sandbox'],
       headless: ((process.env.NODE_ENV === 'production' || process.env.RUN_HEADLESS == "TRUE") ? true : false)
     });
+
     const [page] = await browser.pages();
-    await page.goto(`${url}/login`);
-    await page.locator(`[name="email_address"]`).fill(options.postalUser);
-    await page.locator('[name="password"]').fill(options.postalPass);
-    await page.click('[name="commit"]');
-    await page.waitForNetworkIdle();
-    cookies = await page.cookies();
+
+    const puppetInstance: PuppetInstance = (await loginPuppet({
+      puppetInstance: { browser, page, url } as PuppetInstance 
+    })).puppetInstance;
+    
+    // close the browser after a certain amount of time to clear memory
+    // if error occurs, browsers will stay open and eventually crash the server, otherwise
+    setTimeout(() => {
+      browser.close();
+    }, ((Number(process.env.BROWSER_TIMEOUT) || 30) * 1000)); // default is 30 seconds
 
     return {
-      puppetInstance: { browser, page, url } as PuppetInstance
+      puppetInstance: puppetInstance
     };
 
   } catch (error: any) {

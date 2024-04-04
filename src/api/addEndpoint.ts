@@ -14,9 +14,15 @@ export async function addEndpoint(options: {
   id: string;
 }> {
   const endpoint = options.endpoint;
-  const { username, domain } = await Utils.decomposeEmail(endpoint);
+  // const { username, domain } = await Utils.decomposeEmail(endpoint);
 
   await options.puppetInstance.page.goto(Utils.urlDictionary('addEndpoint'));
+  await options.puppetInstance.page.waitForNetworkIdle();
+  
+  // Check if on login page (redirected because not authenticated), login if yes
+  options.puppetInstance = await Utils.checkIfLoginPage(options.puppetInstance);
+
+
   await options.puppetInstance.page.waitForSelector('input[id="address_endpoint_address"]');
   await options.puppetInstance.page.type('input[id="address_endpoint_address"]', endpoint);
   await options.puppetInstance.page.click('[name="commit"]');

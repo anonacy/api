@@ -18,7 +18,7 @@ const VARS = {
 }
 
 describe('API Tests', function() {
-  this.timeout(20000); // 20 seconds
+  this.timeout(30000); // 30 seconds
 
   it('health check', (done) => {
     request(URL)

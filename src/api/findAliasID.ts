@@ -18,6 +18,9 @@ export async function findAliasID(options: {
     await options.puppetInstance.page.waitForNetworkIdle();
   }
 
+  // Check if on login page (redirected because not authenticated), login if yes
+  options.puppetInstance = await Utils.checkIfLoginPage(options.puppetInstance);
+
   // NEXT: Find Alias ID
   let aliasID = '';
 

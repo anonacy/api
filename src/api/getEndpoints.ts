@@ -20,6 +20,9 @@ export async function getEndpoints(options: {
   await options.puppetInstance.page.goto(Utils.urlDictionary('endpointList'));
   await options.puppetInstance.page.waitForNetworkIdle();
 
+  // Check if on login page (redirected because not authenticated), login if yes
+  options.puppetInstance = await Utils.checkIfLoginPage(options.puppetInstance);
+
   // NEXT: Find Aliases
   let endpoints: EndpointObject[] = [];
 

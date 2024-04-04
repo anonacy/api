@@ -27,6 +27,9 @@ export async function addAlias(options: {
   await options.puppetInstance.page.goto(Utils.urlDictionary('addAlias'));
   await options.puppetInstance.page.waitForNetworkIdle();
 
+  // Check if on login page (redirected because not authenticated), login if yes
+  options.puppetInstance = await Utils.checkIfLoginPage(options.puppetInstance);
+
   // Enter Username
   await options.puppetInstance.page.waitForSelector('input[id="route_name"]');
   await options.puppetInstance.page.type('input[id="route_name"]', username);

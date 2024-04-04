@@ -23,6 +23,9 @@ export async function deleteEndpoint(options: {
     await options.puppetInstance.page.goto(Utils.urlDictionary("endpointDetail", endpointID));
     await options.puppetInstance.page.waitForNetworkIdle();
 
+    // Check if on login page (redirected because not authenticated), login if yes
+    options.puppetInstance = await Utils.checkIfLoginPage(options.puppetInstance);
+
     // Set up the dialog event handler, this auto clicks the "are you sure" popup
     options.puppetInstance.page.on('dialog', async dialog => {
       await dialog.accept();

@@ -1,5 +1,7 @@
 // Utility functions
 import { NextFunction, Request, Response } from 'express';
+import type { PuppetInstance } from './index';
+import { loginPuppet } from './api/loginPuppet';
 import chalk from 'chalk';
 
 export class Utils {
@@ -53,6 +55,7 @@ export class Utils {
     server: string = "anonacy" // option, postal mail server (within organization)
   ) {
     const URL_Dict: { [key: string]: string } = {
+      "login": `https://postal.anonacy.com/login`,
       "addAlias": `https://postal.anonacy.com/org/${org}/servers/${server}/routes/new`,
       "aliasList": `https://postal.anonacy.com/org/${org}/servers/${server}/routes`,
       "aliasDetail": `https://postal.anonacy.com/org/${org}/servers/${server}/routes/${id}/edit`,
@@ -69,6 +72,17 @@ export class Utils {
     }
 
     return URL_Dict[action];
+  }
+
+  // this function checks to see if the initial page load redirected to login page, meaning puppeteer is not authenticated and needs to login.
+  static async checkIfLoginPage(puppetInstance: PuppetInstance): Promise<PuppetInstance> {
+    let baseURL = Utils.getBaseURL(await puppetInstance.page.url());
+    if(baseURL.includes('login')) {
+      // if not logged in, log in (this will also save cookies)
+      return (await loginPuppet({puppetInstance})).puppetInstance;;
+    } else {
+      return puppetInstance;
+    }
   }
 
   static removeNewLines(str: string) {

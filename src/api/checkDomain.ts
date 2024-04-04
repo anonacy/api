@@ -43,6 +43,9 @@ export async function checkDomain(options: {
   await options.puppetInstance.page.goto(Utils.urlDictionary('domainDetail', domainID));
   await options.puppetInstance.page.waitForNetworkIdle();
 
+  // Check if on login page (redirected because not authenticated), login if yes
+  options.puppetInstance = await Utils.checkIfLoginPage(options.puppetInstance);
+
   // click refresh button and wait for dns check
   let buttonText = "Check my records are correct";
   await options.puppetInstance.page.$$eval('a.button', (buttons, buttonText) => {

@@ -14,6 +14,11 @@ export async function addDomain(options: {
   note: string;
 }> {
   await options.puppetInstance.page.goto(Utils.urlDictionary('addDomain'));
+  await options.puppetInstance.page.waitForNetworkIdle();
+  
+  // Check if on login page (redirected because not authenticated), login if yes
+  options.puppetInstance = await Utils.checkIfLoginPage(options.puppetInstance);
+
   await options.puppetInstance.page.waitForSelector('input[id="domain_name"]');
   await options.puppetInstance.page.type('input[id="domain_name"]', options.domain);
   await options.puppetInstance.page.click('[name="commit"]');
