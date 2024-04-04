@@ -124,19 +124,20 @@ app.post('/alias', catchErrors( async (req, res) => {
 
 app.put('/alias/enable', catchErrors( async (req, res) => {
   const { alias, endpoint } = req.body;
-  const result = await postalPuppet.enableAlias({
-    alias,
-    endpoint
-  });
-  res.status(200).json(result);
+  const success = await db.alias.enable(alias, endpoint);
+  res.status(200).json({success});
 }));
 
 app.put('/alias/disable', catchErrors( async (req, res) => {
   const { alias } = req.body;
-  const result = await postalPuppet.disableAlias({
-    alias
-  });
-  res.status(200).json(result);
+  const success = await db.alias.disable(alias);
+  res.status(200).json({success});
+}));
+
+app.put('/alias/toggle', catchErrors( async (req, res) => {
+  const { alias, endpoint } = req.body;
+  const success = await db.alias.toggle(alias, endpoint);
+  res.status(200).json({success});
 }));
 
 // DELETE --------------------------------------------------------------------
