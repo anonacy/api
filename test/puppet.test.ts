@@ -9,7 +9,6 @@ const request = chai.request;
 // FIXME: Need to have server already running for now, export from app.ts breaking build
 // Can also test the prod api by changing URL
 const URL = "http://localhost:3001";
-// const URL = "https://api.postal.anonacy.com";
 
 const VARS = {
   domain: "testing.anonacy.com",

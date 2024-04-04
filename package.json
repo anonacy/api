@@ -37,6 +37,7 @@
     "start": "npx cowsay -f elephant2 Starting Puppet! && npx nodemon --watch 'src/**/*.ts' --exec 'npx tsx' src/app.ts",
     "build": "npx unbuild",
     "test": "npx mocha --import=tsx test/*.test.ts",
+    "logs": "heroku logs --dyno=web --tail",
     "typecheck": "tsc --noEmit",
     "heroku-postbuild": "npm run build && mkdir ./.cache && mv /app/.cache/puppeteer ./.cache",
     "postinstall": "npx puppeteer browsers install chrome"
