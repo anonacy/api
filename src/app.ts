@@ -7,7 +7,8 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 app.use(express.json()); // for parsing application/json
-
+import DB from './db';
+const db = DB.getInstance();
 
 // FUNCTIONS ------------------------------------------------------------------
 
@@ -44,12 +45,12 @@ app.get('/health', catchErrors( async (req, res) => {
   res.status(200).send({ status: 200 });
 }));
 
-app.get('/test', catchErrors( async (req, res) => {
-  const puppetInstance = await initPuppetWithConfig();
-  console.log("waiting for 20 seconds...");
-  await Utils.wait(20);
-  console.log("Done waiting, browser should have closed");
-  res.status(200).send({ status: 200 });
+app.post('/db', catchErrors( async (req, res) => {
+  const { alias, domain, endpoint } = req.body;
+  let aliasID = await db.getAliasID(alias);
+  let domainID = await db.getDomainID(domain);
+  let endpointID = await db.getEndpointID(endpoint);
+  res.status(200).json({ aliasID, domainID, endpointID });
 }));
 
 app.get('/domains', catchErrors( async (req, res) => {
