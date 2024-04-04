@@ -1,5 +1,18 @@
-// Create a singleton class to store cookies
-// This class maintains its own global instance
+/* INFO:
+  - Create a singleton class to store cookies
+  - This class maintains its own global instance, can be accessed and set from anywhere
+  - These cookies are used to maintain authentication with postal server, so a login isn't needed except for first time after server startup
+  ---------------
+  usage: 
+    import Cookies from './cookies';
+    globalCookies = Cookies.getInstance();
+
+    -- get cookies --
+    const cookies = globalCookies.cookies;
+
+    -- set cookies --
+    globalCookies.cookies = cookies;
+*/
 
 class Cookies {
   private static instance: Cookies;

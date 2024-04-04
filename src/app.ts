@@ -8,10 +8,10 @@ const app = express();
 const port = process.env.PORT || 3001;
 app.use(express.json()); // for parsing application/json
 
-let cookies: any = null;
 
 // FUNCTIONS ------------------------------------------------------------------
 
+// Function to initialize puppet with config
 async function initPuppetWithConfig() {
   const { puppetInstance } = await postalPuppet.initPuppet({
     postalControlPanel: process.env.POSTAL_CONTROL_PANEL || '',
@@ -23,19 +23,16 @@ async function initPuppetWithConfig() {
   return puppetInstance;
 }
 
+// Request logging middleware
 app.use(Utils.logRequest);
 
 // This is a higher-order function that takes an async function and returns a new function that catches any errors and passes them to next()
-// ** It also times the response
 function catchErrors(fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) {
   return async function(req: Request, res: Response, next: NextFunction) {
-    // console.time('⏱️ Time to run');
     try {
       await fn(req, res, next);
     } catch (err) {
       next(err);
-    } finally {
-      // console.timeEnd('⏱️ Time to run');
     }
   }
 }
@@ -215,8 +212,9 @@ const server = app.listen(port, () => {
 /* 
   FIXME:
   This export breaks unbuild. not really sure why.
-  Its needed to run mocha tests
+  It is needed to run self served mocha tests
   Remove it for prod builds for now, Ill fix it later
+  In the meantime, just do tests by running localhost server and using URL
 */
 
 // export { app, server };

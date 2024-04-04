@@ -4,8 +4,12 @@ import type { PuppetInstance } from './index';
 import { loginPuppet } from './api/loginPuppet';
 import chalk from 'chalk';
 
+/* INFO:
+  - This class contains utility functions that are used throughout the project.
+  - All functions are static and can be called without instantiating the class.
+*/
+
 export class Utils {
-  
   // delays for seconds
   static async wait(seconds: number) {
     return new Promise(resolve => setTimeout(resolve, seconds * 1000));
@@ -48,6 +52,7 @@ export class Utils {
     return URL_PATTERNS[urlCheckName].test(url);
   }
 
+  // Returns URL based on action and ID (if needed)
   static urlDictionary(
     action: string, 
     id?: string, // optional, for urls that include ids
@@ -74,7 +79,10 @@ export class Utils {
     return URL_Dict[action];
   }
 
-  // this function checks to see if the initial page load redirected to login page, meaning puppeteer is not authenticated and needs to login.
+  /* Checks to see if the initial page load redirected to login page
+     This would mean puppeteer is not authenticated and needs to login
+     In theory, this should never happen, since cookies expiry date is checked in initPuppet
+     it is run in every route after the initial page load, as a safety measure */
   static async checkIfLoginPage(puppetInstance: PuppetInstance): Promise<PuppetInstance> {
     let baseURL = Utils.getBaseURL(await puppetInstance.page.url());
     if(baseURL.includes('login')) {
@@ -85,10 +93,12 @@ export class Utils {
     }
   }
 
+  // Removes new lines (\n) from a string
   static removeNewLines(str: string) {
     return str.replace(/\n/g, "");
   }
 
+  // This formats the server logs, used on every incoming request
   static logRequest(req: Request, res: Response, next: NextFunction) {
     let color = chalk.white;
     switch (req.method) {
