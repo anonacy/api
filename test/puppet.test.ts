@@ -10,12 +10,12 @@ const request = chai.request;
 // Can also test the prod api by changing URL
 const URL = "http://localhost:3001";
 
+const randomNumber = Math.floor(Math.random() * 10000);
 const VARS = {
-  domain: "testing.anonacy.com",
-  endpoint: "testing@anonacy.com",
-  alias: "testing@testing.anonacy.com",
+  domain: `test${randomNumber}.anonacy.com`,
+  endpoint: `test${randomNumber}@anonacy.com`,
+  alias: `test${randomNumber}@test${randomNumber}.anonacy.com`,
 }
-
 
 describe('API Tests', function() {
   this.timeout(20000); // 20 seconds
