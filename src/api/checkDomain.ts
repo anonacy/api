@@ -26,7 +26,7 @@ export async function checkDomain(options: {
 }> {
 
   const db = DB.getInstance();
-  let domainID = await db.getDomainID(options.domain);
+  let domainID = await db.domain.id(options.domain);
   if(!domainID) throw new Error('Domain not found');
 
   // Go to domain page

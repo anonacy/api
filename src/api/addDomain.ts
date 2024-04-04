@@ -39,7 +39,7 @@ export async function addDomain(options: {
   }
   let domainID = await Utils.getIdFromUrl(options.puppetInstance.page.url());
 
-  let domainID2 = await db.getDomainID(options.domain);
+  let domainID2 = await db.domain.id(options.domain);
 
   if(domainID !== domainID2) {
     throw new Error("Domain ID mismatch");

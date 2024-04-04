@@ -11,7 +11,7 @@ export async function deleteAlias(options: {
 }> {
   try {
     const db = DB.getInstance();
-    const success = await db.deleteAlias(options.alias);
+    const success = await db.alias.delete(options.alias);
     return { success };
   } catch (e: any) {
     throw new Error(e.message);

@@ -14,7 +14,7 @@ export async function deleteDomain(options: {
 }> {
   try {
     const db = DB.getInstance();
-    const domainID = await db.getDomainID(options.domain);
+    const domainID = await db.domain.id(options.domain);
 
     // Go to list of domains (no delete button on setup page)
     await options.puppetInstance.page.goto(Utils.urlDictionary("domainList"));
@@ -47,7 +47,7 @@ export async function deleteDomain(options: {
     await options.puppetInstance.page.waitForNavigation();
 
     // check db that domain is gone
-    const exists = await db.getDomainID(options.domain); // should be null
+    const exists = await db.domain.id(options.domain); // should be null
     if(exists) throw new Error("Domain still exists");
 
     return {

@@ -12,7 +12,7 @@ export async function deleteEndpoint(options: {
 }> {
   try {
     const db = DB.getInstance();
-    const endpointID = await db.getEndpointID(options.endpoint);
+    const endpointID = await db.endpoint.id(options.endpoint);
     if(!endpointID) throw new Error('Endpoint not found');
 
     // Go to edit alias page
@@ -32,7 +32,7 @@ export async function deleteEndpoint(options: {
     await options.puppetInstance.page.waitForNavigation();
 
     // check db that endpoint is gone
-    const exists = await db.getEndpointID(options.endpoint); // should be null
+    const exists = await db.endpoint.id(options.endpoint); // should be null
     if(exists) throw new Error("Endpoint still exists");
 
     return {

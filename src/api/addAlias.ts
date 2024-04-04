@@ -92,7 +92,7 @@ export async function addAlias(options: {
   }
 
   // Final, check db to make sure alias exists
-  const aliasID = await db.getAliasID(options.alias);
+  const aliasID = await db.alias.id(options.alias);
 
   return {
     success: aliasID ? true : false,

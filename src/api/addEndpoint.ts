@@ -37,7 +37,7 @@ export async function addEndpoint(options: {
   }
 
   // check db for endpoint
-  let endpointID = await db.getEndpointID(endpoint);
+  let endpointID = await db.endpoint.id(endpoint);
 
   return {
     success: endpointID ? true : false,
