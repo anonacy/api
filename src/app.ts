@@ -184,4 +184,11 @@ const server = app.listen(port, () => {
   console.log(`Puppet Server is running  at ${process.env.API_DOMAIN}${process.env.NODE_ENV == 'production' ? '' : ':' + port}`);
 });
 
+/* 
+  FIXME:
+  This export breaks unbuild. not really sure why.
+  Its needed to run mocha tests
+  Remove it for prod builds for now, Ill fix it later
+*/
+
 // export { app, server };

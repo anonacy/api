@@ -8,8 +8,8 @@
     "strict": true,
     "strictNullChecks": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
+    "skipLibCheck": false,
+    "skipDefaultLibCheck": false,
     "outDir": "./dist", // Output directory for compiled JavaScript files
     "rootDir": "./src" // Root directory of your source files
   },
