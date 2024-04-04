@@ -50,5 +50,23 @@ async function getAllEndpoints(pool: Pool): Promise<any[]> {
   }
 }
 
+async function deleteEndpoint(endpoint: string, pool: Pool): Promise<boolean> {
+  const endpointID = await getEndpointID(endpoint, pool);
+  if (!endpointID) throw new Error('Endpoint not found');
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const result = await conn.query(`
+      DELETE FROM address_endpoints
+      WHERE uuid = ?
+    `, [endpointID]);
+    return result.affectedRows > 0;
+  } catch (err: any) {
+    throw new Error(err);
+  } finally {
+    if (conn) conn.end();
+  }
+}
 
-export { getEndpointID, getEndpointRootID, getAllEndpoints };
+
+export { getEndpointID, getEndpointRootID, getAllEndpoints, deleteEndpoint };

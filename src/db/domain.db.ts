@@ -55,4 +55,22 @@ async function getAllDomains(pool: Pool): Promise<any[]> {
   }
 }
 
-export { getDomainID, getDomainRootID, getAllDomains };
+async function deleteDomain(domain: string, pool: Pool): Promise<boolean> {
+  const domainID = await getDomainID(domain, pool);
+  if (!domainID) throw new Error('Domain not found');
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const result = await conn.query(`
+      DELETE FROM domains
+      WHERE uuid = ?
+    `, [domainID]);
+    return result.affectedRows > 0;
+  } catch (err: any) {
+    throw new Error(err);
+  } finally {
+    if (conn) conn.end();
+  }
+}
+
+export { getDomainID, getDomainRootID, getAllDomains, deleteDomain };

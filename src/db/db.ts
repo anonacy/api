@@ -15,8 +15,8 @@
 
 import mariadb, { Pool } from 'mariadb';
 import { getAliasID, deleteAlias, disableAlias, enableAlias, getAliasStatus, getAllAliases } from './alias.db';
-import { getDomainID, getDomainRootID, getAllDomains } from './domain.db';
-import { getEndpointID, getEndpointRootID, getAllEndpoints } from './endpoint.db';
+import { getDomainID, getDomainRootID, getAllDomains, deleteDomain } from './domain.db';
+import { getEndpointID, getEndpointRootID, getAllEndpoints, deleteEndpoint } from './endpoint.db';
 
 class DB {
   private static instance: DB;
@@ -103,6 +103,10 @@ class Domain {
   async all(): Promise<string[]> {
     return getAllDomains(this._pool);
   }
+
+  async delete(domain: string): Promise<boolean> {
+    return deleteDomain(domain, this._pool);
+  }
 }
 
 class Endpoint {
@@ -118,6 +122,10 @@ class Endpoint {
 
   async all(): Promise<string[]> {
     return getAllEndpoints(this._pool);
+  }
+
+  async delete(endpoint: string): Promise<boolean> {
+    return deleteEndpoint(endpoint, this._pool);
   }
 }
 

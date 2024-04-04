@@ -143,35 +143,20 @@ app.put('/alias/disable', catchErrors( async (req, res) => {
 
 app.delete('/domain', catchErrors( async (req, res) => {
   const { domain } = req.body;
-  const puppetInstance = await initPuppetWithConfig();
-  const result = await postalPuppet.deleteDomain({
-    puppetInstance,
-    domain
-  });
-  res.status(200).json(result);
-  await postalPuppet.closePuppet(puppetInstance);
+  const success = await db.domain.delete(domain);
+  res.status(200).json({success});
 }));
 
 app.delete('/endpoint', catchErrors( async (req, res) => {
   const { endpoint } = req.body;
-  const puppetInstance = await initPuppetWithConfig();
-  const result = await postalPuppet.deleteEndpoint({
-    puppetInstance,
-    endpoint
-  });
-  res.status(200).json(result);
-  await postalPuppet.closePuppet(puppetInstance);
+  const success = await db.endpoint.delete(endpoint);
+  res.status(200).json({success});
 }));
 
 app.delete('/alias', catchErrors( async (req, res) => {
   const { alias } = req.body;
-  const puppetInstance = await initPuppetWithConfig();
-  const result = await postalPuppet.deleteAlias({
-    puppetInstance,
-    alias
-  });
-  res.status(200).json(result);
-  await postalPuppet.closePuppet(puppetInstance);
+  const success = await db.alias.delete(alias);
+  res.status(200).json({success});
 }));
 
 // DONE -------------------------------------------------------------------------

@@ -17,7 +17,7 @@ export async function addAlias(options: {
   const db = DB.getInstance();
 
   // Get Endpoint ID
-  const endpointID = await db.getEndpointID(options.endpoint);
+  const endpointID = await db.endpoint.id(options.endpoint);
   
   // Go to new route page
   await options.puppetInstance.page.goto(Utils.urlDictionary('addAlias'));
