@@ -14,9 +14,9 @@
 */
 
 import mariadb, { Pool } from 'mariadb';
-import { getAliasID, deleteAlias, disableAlias, enableAlias, getAliasStatus } from './alias.db';
-import { getDomainID } from './domain.db';
-import { getEndpointID, getEndpointRootID } from './endpoint.db';
+import { getAliasID, deleteAlias, disableAlias, enableAlias, getAliasStatus, getAllAliases } from './alias.db';
+import { getDomainID, getDomainRootID, getAllDomains } from './domain.db';
+import { getEndpointID, getEndpointRootID, getAllEndpoints } from './endpoint.db';
 
 class DB {
   private static instance: DB;
@@ -52,6 +52,11 @@ class Alias {
 
   async id(alias: string): Promise<string | null> {
     return getAliasID(alias, this._pool);
+  }
+
+  async all(domain?: string): Promise<string[]> {
+    const domainRootID = domain ? await getDomainRootID(domain, this._pool) : undefined;
+    return getAllAliases(this._pool, domainRootID);
   }
 
   async delete(alias: string): Promise<boolean> {
@@ -90,6 +95,14 @@ class Domain {
   async id(domain: string): Promise<string | null> {
     return getDomainID(domain, this._pool);
   }
+
+  async rootID(domain: string): Promise<string | undefined> {
+    return getDomainRootID(domain, this._pool);
+  }
+
+  async all(): Promise<string[]> {
+    return getAllDomains(this._pool);
+  }
 }
 
 class Endpoint {
@@ -101,6 +114,10 @@ class Endpoint {
 
   async rootID(endpoint: string): Promise<string | null> {
     return getEndpointRootID(endpoint, this._pool);
+  }
+
+  async all(): Promise<string[]> {
+    return getAllEndpoints(this._pool);
   }
 }
 

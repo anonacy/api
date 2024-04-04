@@ -34,4 +34,21 @@ async function getEndpointRootID(endpoint: string, pool: Pool): Promise<string |
   }
 }
 
-export { getEndpointID, getEndpointRootID };
+async function getAllEndpoints(pool: Pool): Promise<any[]> {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const result = await conn.query(`
+      SELECT uuid AS id, address AS endpoint
+      FROM address_endpoints
+    `);
+    return result;
+  } catch (err: any) {
+    throw new Error(err);
+  } finally {
+    if (conn) conn.end();
+  }
+}
+
+
+export { getEndpointID, getEndpointRootID, getAllEndpoints };

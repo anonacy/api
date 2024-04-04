@@ -47,43 +47,26 @@ app.get('/health', catchErrors( async (req, res) => {
 
 app.post('/db', catchErrors( async (req, res) => {
   const { alias, domain, endpoint } = req.body;
-  let aliasID = await db.getAliasID(alias);
-  let domainID = await db.getDomainID(domain);
-  let endpointID = await db.getEndpointID(endpoint);
+  let aliasID = await db.alias.id(alias);
+  let domainID = await db.domain.id(domain);
+  let endpointID = await db.endpoint.id(endpoint);
   res.status(200).json({ aliasID, domainID, endpointID });
 }));
 
 app.get('/domains', catchErrors( async (req, res) => {
-  const puppetInstance = await initPuppetWithConfig();
-  const result = await postalPuppet.getDomains({
-    puppetInstance
-  });
-  res.json(result);
-  await postalPuppet.closePuppet(puppetInstance);
+  const domains = await db.domain.all();
+  res.json(domains);
 }));
 
 app.get('/endpoints', catchErrors( async (req, res) => {
-  let domain;
-  if (typeof req.query.domain === 'string') domain = req.query.domain;
-  const puppetInstance = await initPuppetWithConfig();
-  const result = await postalPuppet.getEndpoints({
-    puppetInstance,
-    domain
-  });
-  res.status(200).json(result);
-  await postalPuppet.closePuppet(puppetInstance);
+  const endpoints = await db.endpoint.all();
+  res.status(200).json(endpoints);
 }));
 
 app.get('/aliases', catchErrors( async (req, res) => {
-  let domain;
-  if (typeof req.query.domain === 'string') domain = req.query.domain;
-  const puppetInstance = await initPuppetWithConfig();
-  const result = await postalPuppet.getAliases({
-    puppetInstance,
-    domain
-  });
-  res.status(200).json(result);
-  await postalPuppet.closePuppet(puppetInstance);
+  let domain = typeof req.query.domain === 'string' ? req.query.domain : undefined;
+  const aliases = await db.alias.all(domain);
+  res.status(200).json(aliases);
 }));
 
 app.get('/domain/dns', catchErrors( async (req, res) => {
@@ -141,25 +124,19 @@ app.post('/alias', catchErrors( async (req, res) => {
 
 app.put('/alias/enable', catchErrors( async (req, res) => {
   const { alias, endpoint } = req.body;
-  const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.enableAlias({
-    puppetInstance,
     alias,
     endpoint
   });
   res.status(200).json(result);
-  await postalPuppet.closePuppet(puppetInstance);
 }));
 
 app.put('/alias/disable', catchErrors( async (req, res) => {
   const { alias } = req.body;
-  const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.disableAlias({
-    puppetInstance,
     alias
   });
   res.status(200).json(result);
-  await postalPuppet.closePuppet(puppetInstance);
 }));
 
 // DELETE --------------------------------------------------------------------

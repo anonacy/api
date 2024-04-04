@@ -95,5 +95,25 @@ async function getAliasStatus(alias: string, pool: Pool): Promise<boolean> {
   }
 }
 
+async function getAllAliases(pool: Pool, domainRootID?: string): Promise<any[]> {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const result = await conn.query(`
+      SELECT CONCAT(r.name, '@', d.name) AS alias, e.address AS endpoint, d.name AS domain,
+      CASE WHEN r.mode = 'Endpoint' THEN true ELSE false END AS enabled
+      FROM routes r
+      LEFT JOIN address_endpoints e ON r.endpoint_id = e.id
+      LEFT JOIN domains d ON r.domain_id = d.id
+      ${domainRootID ? `WHERE d.id = '${domainRootID}'` : ''}
+    `);
+    return result;
+  } catch (err: any) {
+    throw new Error(err);
+  } finally {
+    if (conn) conn.end();
+  }
+}
 
-export { getAliasID, deleteAlias, disableAlias, enableAlias, getAliasStatus };
+
+export { getAliasID, deleteAlias, disableAlias, enableAlias, getAliasStatus, getAllAliases };
