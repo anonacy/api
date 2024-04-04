@@ -1,7 +1,5 @@
-// to be run when a user signs up, to add email to destinations available for forwarding in a route
-
 import type { PuppetInstance } from '../index';
-import { findDomainID } from './findDomainID';
+import DB from '../db/db';
 import { Utils } from '../utils';
 
 interface DnsRecord {
@@ -27,16 +25,8 @@ export async function checkDomain(options: {
   id: string;
 }> {
 
-  // get ID if not provided
-  let domainID: string = options.domainID || '';
-  if(!domainID) {
-    domainID = (await findDomainID({
-      puppetInstance: options.puppetInstance,
-      domain: options.domain,
-      skipLoad: false
-    })).id;
-  }
-
+  const db = DB.getInstance();
+  let domainID = await db.getDomainID(options.domain);
   if(!domainID) throw new Error('Domain not found');
 
   // Go to domain page

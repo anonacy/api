@@ -1,8 +1,10 @@
 import type { PuppetInstance } from '../index';
-import { findDomainID } from './findDomainID';
+import DB from '../db/db';
 import { Utils } from '../utils';
 
 // Ran to delete an domain
+// WARNING: Don't delete directly in db, it also clears all routes for the domain
+// could also write a function to do that
 export async function deleteDomain(options: {
   puppetInstance: PuppetInstance;
   domain: string;
@@ -11,13 +13,8 @@ export async function deleteDomain(options: {
   success: boolean;
 }> {
   try {
-    let domainID = options.domainID || '';
-    if(!domainID) {
-      domainID = (await findDomainID({
-        puppetInstance: options.puppetInstance,
-        domain: options.domain
-      })).id
-    }
+    const db = DB.getInstance();
+    const domainID = await db.getDomainID(options.domain);
 
     // Go to list of domains (no delete button on setup page)
     await options.puppetInstance.page.goto(Utils.urlDictionary("domainList"));
@@ -49,10 +46,12 @@ export async function deleteDomain(options: {
     // Submit
     await options.puppetInstance.page.waitForNavigation();
 
-    const success = (await options.puppetInstance.page.url() == Utils.urlDictionary("domainList")) ? true : false;
+    // check db that domain is gone
+    const exists = await db.getDomainID(options.domain); // should be null
+    if(exists) throw new Error("Domain still exists");
 
     return {
-      success
+      success: exists ? false : true
     };
     
   } catch (e: any) {

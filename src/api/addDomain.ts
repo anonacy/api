@@ -2,6 +2,7 @@
 
 import type { PuppetInstance } from '../index';
 import { Utils } from '../utils';
+import DB from '../db/db';
 
 // This function adds an email address to the address endpoints, finds and returns the postal id
 export async function addDomain(options: {
@@ -13,6 +14,8 @@ export async function addDomain(options: {
   id: string;
   note: string;
 }> {
+  const db = DB.getInstance();
+
   await options.puppetInstance.page.goto(Utils.urlDictionary('addDomain'));
   await options.puppetInstance.page.waitForNetworkIdle();
   
@@ -36,9 +39,14 @@ export async function addDomain(options: {
   }
   let domainID = await Utils.getIdFromUrl(options.puppetInstance.page.url());
 
-  const success = domainID ? true : false;
+  let domainID2 = await db.getDomainID(options.domain);
+
+  if(domainID !== domainID2) {
+    throw new Error("Domain ID mismatch");
+  }
+
   return {
-    success,
+    success: domainID2 ? true : false,
     domain: options.domain,
     id: domainID,
     note: "Domain added to system, please use the checkDomain endpoint to setup DNS"

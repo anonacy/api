@@ -1,5 +1,5 @@
 import type { PuppetInstance } from '../index';
-import { findEndpointID } from './findEndpointID';
+import DB from '../db/db';
 import { Utils } from '../utils';
 
 // Ran to delete an endpoint
@@ -11,13 +11,9 @@ export async function deleteEndpoint(options: {
   success: boolean;
 }> {
   try {
-    let endpointID = options.endpointID || '';
-    if(!endpointID) {
-      endpointID = (await findEndpointID({
-        puppetInstance: options.puppetInstance,
-        endpoint: options.endpoint
-      })).id
-    }
+    const db = DB.getInstance();
+    const endpointID = await db.getEndpointID(options.endpoint);
+    if(!endpointID) throw new Error('Endpoint not found');
 
     // Go to edit alias page
     await options.puppetInstance.page.goto(Utils.urlDictionary("endpointDetail", endpointID));
@@ -35,10 +31,12 @@ export async function deleteEndpoint(options: {
     await options.puppetInstance.page.click('.button.button--danger');
     await options.puppetInstance.page.waitForNavigation();
 
-    const success = (await options.puppetInstance.page.url() == Utils.urlDictionary("endpointList")) ? true : false;
+    // check db that endpoint is gone
+    const exists = await db.getEndpointID(options.endpoint); // should be null
+    if(exists) throw new Error("Endpoint still exists");
 
     return {
-      success
+      success: exists ? false : true
     };
     
   } catch (e: any) {

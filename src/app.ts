@@ -7,7 +7,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 app.use(express.json()); // for parsing application/json
-import DB from './db';
+import DB from './db/db';
 const db = DB.getInstance();
 
 // FUNCTIONS ------------------------------------------------------------------

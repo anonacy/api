@@ -1,7 +1,6 @@
 import type { PuppetInstance } from '../index';
-import { findEndpointID } from './findEndpointID';
-import { findAliasID } from './findAliasID';
 import { Utils } from '../utils';
+import DB from '../db/db';
 
 // Ran to create a new alias
 export async function addAlias(options: {
@@ -15,13 +14,10 @@ export async function addAlias(options: {
   endpoint: string;
 }> {
   const { username, domain } = await Utils.decomposeEmail(options.alias);
+  const db = DB.getInstance();
 
   // Get Endpoint ID
-  const addressEndpointID = (await findEndpointID({
-    puppetInstance: options.puppetInstance,
-    endpoint: options.endpoint,
-    skipLoad: false
-  })).id;
+  const endpointID = await db.getEndpointID(options.endpoint);
   
   // Go to new route page
   await options.puppetInstance.page.goto(Utils.urlDictionary('addAlias'));
@@ -62,7 +58,7 @@ export async function addAlias(options: {
   await options.puppetInstance.page.waitForSelector('select[id="route__endpoint"]');
   await options.puppetInstance.page.select(
     'select[id="route__endpoint"]',
-    `AddressEndpoint#${addressEndpointID}`
+    `AddressEndpoint#${endpointID}`
   );
 
   // Submit
@@ -95,17 +91,13 @@ export async function addAlias(options: {
     }
   }
 
-  // Final check to make sure alias exists
-  const aliasID = await findAliasID({
-    puppetInstance: options.puppetInstance,
-    alias: options.alias
-  })
-  const success = aliasID ? true : false;
+  // Final, check db to make sure alias exists
+  const aliasID = await db.getAliasID(options.alias);
 
   return {
-    success,
+    success: aliasID ? true : false,
     alias: options.alias,
-    id: aliasID.id,
+    id: aliasID ? aliasID : '',
     endpoint: options.endpoint
   };
 
