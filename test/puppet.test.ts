@@ -1,9 +1,14 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import { app, server } from '../app'; // import your app or server
+// import { app, server } from '../src/app';
 
 chai.use(chaiHttp);
-const { expect } = chai;
+const expect = chai.expect;
+const request = chai.request;
+
+// FIXME: Need to have server already running for now, export from app.ts breaking build
+// Can also test the prod api by changing URL
+const URL = "http://localhost:3001";
 
 let VARS = {
   domain: "testing.anonacy.com",
@@ -14,10 +19,10 @@ VARS.alias = `testing@${VARS.domain}`;
 
 
 describe('API Tests', function() {
-  this.timeout(12000);
+  this.timeout(20000); // 20 seconds
 
   it('health check', (done) => {
-    chai.request(app)
+    request(URL)
       .get('/health')
       .end((err, res) => {
         expect(res.status).to.equal(200);
@@ -26,12 +31,12 @@ describe('API Tests', function() {
   });
 
   it('add a domain', (done) => {
-    chai.request(app)
-      .post('/addDomain')
+    request(URL)
+      .post('/domain')
       // .set('Authorization', `Bearer ${TOKEN}`)
       .send({"domain": VARS.domain})
       .end((err, res) => {
-        expect(res.statusCode).to.equal(201);
+        expect(res.statusCode).to.equal(200);
         expect(res.body.success).to.be.true;
         expect(res.body.id).to.exist;
         expect(res.body.domain).to.equal(VARS.domain);
@@ -40,8 +45,8 @@ describe('API Tests', function() {
   });
 
   it('check domain was created', (done) => {
-    chai.request(app)
-      .post('/getDomains')
+    request(URL)
+      .get('/domains')
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -55,10 +60,10 @@ describe('API Tests', function() {
   });
 
   it('get dns setup details for domain', (done) => {
-    chai.request(app)
-      .post('/checkDomain')
+    request(URL)
+      .get(`/domain/dns?domain=${VARS.domain}`)
       // .set('Authorization', `Bearer ${TOKEN}`)
-      .send({"domain": VARS.domain})
+      .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
         expect(res.body.success).to.be.true;
@@ -77,11 +82,11 @@ describe('API Tests', function() {
   });
 
   it('add an endpoint', (done) => {
-    chai.request(app)
-      .post('/addEndpoint')
+    request(URL)
+      .post('/endpoint')
       .send({"endpoint": VARS.endpoint})
       .end((err, res) => {
-        expect(res.statusCode).to.equal(201);
+        expect(res.statusCode).to.equal(200);
         expect(res.body.success).to.be.true;
         expect(res.body.id).to.exist;
         expect(res.body.endpoint).to.equal(VARS.endpoint);
@@ -90,8 +95,8 @@ describe('API Tests', function() {
   });
 
   it('find the endpoint in list', (done) => {
-    chai.request(app)
-      .post('/getEndpoints')
+    request(URL)
+      .get('/endpoints')
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -105,11 +110,11 @@ describe('API Tests', function() {
   });
 
   it('add an alias', (done) => {
-    chai.request(app)
-      .post('/addAlias')
+    request(URL)
+      .post('/alias')
       .send({"alias": VARS.alias, "endpoint": VARS.endpoint})
       .end((err, res) => {
-        expect(res.statusCode).to.equal(201);
+        expect(res.statusCode).to.equal(200);
         expect(res.body.success).to.be.true;
         expect(res.body.id).to.exist;
         expect(res.body.alias).to.equal(VARS.alias);
@@ -119,8 +124,8 @@ describe('API Tests', function() {
   });
 
   it('check alias was created', (done) => {
-    chai.request(app)
-      .post('/getAliases')
+    request(URL)
+      .get('/aliases')
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -134,19 +139,19 @@ describe('API Tests', function() {
   });
 
   it('disable the alias', (done) => {
-    chai.request(app)
-      .post('/disableAlias')
+    request(URL)
+      .put('/alias/disable')
       .send({"alias": VARS.alias, "endpoint": VARS.endpoint})
       .end((err, res) => {
-        expect(res.statusCode).to.equal(201);
+        expect(res.statusCode).to.equal(200);
         expect(res.body.success).to.be.true;
         done();
       });
   });
 
   it('check alias was disabled', (done) => {
-    chai.request(app)
-      .post('/getAliases')
+    request(URL)
+      .get('/aliases')
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -159,19 +164,19 @@ describe('API Tests', function() {
   });
 
   it('enable the alias', (done) => {
-    chai.request(app)
-      .post('/enableAlias')
+    request(URL)
+      .put('/alias/enable')
       .send({"alias": VARS.alias, "endpoint": VARS.endpoint})
       .end((err, res) => {
-        expect(res.statusCode).to.equal(201);
+        expect(res.statusCode).to.equal(200);
         expect(res.body.success).to.be.true;
         done();
       });
   });
 
   it('check alias was enabled', (done) => {
-    chai.request(app)
-      .post('/getAliases')
+    request(URL)
+      .get('/aliases')
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -185,19 +190,19 @@ describe('API Tests', function() {
   });
 
   it('delete the alias', (done) => {
-    chai.request(app)
-      .post('/deleteAlias')
+    request(URL)
+      .delete('/alias')
       .send({"alias": VARS.alias})
       .end((err, res) => {
-        expect(res.statusCode).to.equal(201);
+        expect(res.statusCode).to.equal(200);
         expect(res.body.success).to.be.true;
         done();
       });
   });
 
   it('check alias was deleted', (done) => {
-    chai.request(app)
-      .post('/getAliases')
+    request(URL)
+      .get('/aliases')
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -208,19 +213,19 @@ describe('API Tests', function() {
   });
 
   it('delete the endpoint', (done) => {
-    chai.request(app)
-      .post('/deleteEndpoint')
+    request(URL)
+      .delete('/endpoint')
       .send({"endpoint": VARS.endpoint})
       .end((err, res) => {
-        expect(res.statusCode).to.equal(201);
+        expect(res.statusCode).to.equal(200);
         expect(res.body.success).to.be.true;
         done();
       });
   });
 
   it('check endpoint was deleted', (done) => {
-    chai.request(app)
-      .post('/getEndpoints')
+    request(URL)
+      .get('/endpoints')
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -231,20 +236,20 @@ describe('API Tests', function() {
   });
 
   it('delete the domain', (done) => {
-    chai.request(app)
-      .post('/deleteDomain')
+    request(URL)
+      .delete('/domain')
       // .set('Authorization', `Bearer ${TOKEN}`)
       .send({"domain": VARS.domain})
       .end((err, res) => {
-        expect(res.statusCode).to.equal(201);
+        expect(res.statusCode).to.equal(200);
         expect(res.body.success).to.be.true;
         done();
       });
   });
 
   it('check domain was deleted', (done) => {
-    chai.request(app)
-      .post('/getDomains')
+    request(URL)
+      .get('/domains')
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -254,7 +259,7 @@ describe('API Tests', function() {
       });
   });
 
-  after((done) => {
-    server.close(done);
-  });
+  // after((done) => {
+  //   server.close(done);
+  // });
 });

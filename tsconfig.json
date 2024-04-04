@@ -18,6 +18,7 @@
     "**/*.spec.ts",
     "**/*.test.ts",
     "build.config.ts",
-    "dist" // exclude the dist directory
+    "dist", // exclude the dist directory
+    "test" // exclude the test directory
   ]
 }
