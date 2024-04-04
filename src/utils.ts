@@ -1,4 +1,6 @@
 // Utility functions
+import { NextFunction, Request, Response } from 'express';
+import chalk from 'chalk';
 
 export class Utils {
   
@@ -71,6 +73,35 @@ export class Utils {
 
   static removeNewLines(str: string) {
     return str.replace(/\n/g, "");
+  }
+
+  static logRequest(req: Request, res: Response, next: NextFunction) {
+    let color = chalk.white;
+    switch (req.method) {
+      case 'GET':
+        color = chalk.green;
+        break;
+      case 'POST':
+        color = chalk.yellow;
+        break;
+      case 'PUT':
+        color = chalk.magenta;
+        break;
+      case 'DELETE':
+        color = chalk.red;
+        break;
+    }
+    const timestamp = new Date().toLocaleString('en-US', {
+      year: '2-digit',
+      month: "numeric",
+      day: 'numeric',
+      hour: '2-digit',
+      hour12: false,
+      minute: '2-digit',
+      second: '2-digit'
+    });
+    console.log(`[${timestamp}]`+ color(`[${req.method}]`) + chalk.cyan(` ${req.originalUrl}`));
+    next();
   }
 
 }

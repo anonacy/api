@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { postalPuppet } from './index';
+import { Utils } from './utils';
 
 dotenv.config();
 const app = express();
@@ -21,6 +22,8 @@ async function initPuppetWithConfig() {
   return puppetInstance;
 }
 
+app.use(Utils.logRequest);
+
 // This is a higher-order function that takes an async function and returns a new function that catches any errors and passes them to next()
 // ** It also times the response
 function catchErrors(fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) {
@@ -35,6 +38,7 @@ function catchErrors(fn: (req: Request, res: Response, next: NextFunction) => Pr
     }
   }
 }
+
 
 // GET ------------------------------------------------------------------------
 
