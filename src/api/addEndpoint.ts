@@ -1,8 +1,7 @@
-// to be run when a user signs up, to add email to destinations available for forwarding in a route
-
 import type { PuppetInstance } from '../index';
 import { findEndpointID } from './findEndpointID';
-import { Utils } from '../utils';
+import RedisInstance from '../redis';
+import Utils from '../utils';
 
 // This function adds an email address to the address endpoints, finds and returns the postal id
 export async function addEndpoint(options: {
@@ -34,15 +33,17 @@ export async function addEndpoint(options: {
     };
   }
 
-  let endpointID = '';
-  let ID_res = await findEndpointID({
+  const endpointID = (await findEndpointID({
     puppetInstance: options.puppetInstance,
     endpoint,
     skipLoad: true
-  });
+  })).id;
 
-  if(ID_res.success) {
-    endpointID = ID_res.id;
+
+  // Store endpoint ID in redis
+  if(endpointID) {
+    const redis = RedisInstance.getInstance();
+    await redis.set(`endpoint:${options.endpoint}`, endpointID);
   }
 
   const success = (await options.puppetInstance.page.url() == Utils.urlDictionary("endpointList")) ? true : false;

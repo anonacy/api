@@ -1,6 +1,7 @@
 import type { PuppetInstance } from '../index';
 import { findAliasID } from './findAliasID';
-import { Utils } from '../utils';
+import RedisInstance from '../redis';
+import Utils from '../utils';
 
 // Ran to delete an alias
 export async function deleteAlias(options: {
@@ -35,7 +36,12 @@ export async function deleteAlias(options: {
     await options.puppetInstance.page.click('.button.button--danger');
     await options.puppetInstance.page.waitForNavigation();
 
+    // Check if success by seeing if page was redirected
     const success = (await options.puppetInstance.page.url() == Utils.urlDictionary("aliasList")) ? true : false;
+
+    // Delete alias from redis
+    const redis = RedisInstance.getInstance();
+    await redis.delete(`alias:${options.alias}`);
 
     return {
       success

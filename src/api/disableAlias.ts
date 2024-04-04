@@ -1,6 +1,6 @@
 import type { PuppetInstance } from '../index';
 import { findAliasID } from './findAliasID';
-import { Utils } from '../utils';
+import Utils from '../utils';
 
 const DISABLE_SETTING = 'Hold'; // Can be: Accept, Hold, Bounce, Reject
 

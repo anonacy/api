@@ -2,7 +2,7 @@
 
 import type { PuppetInstance } from '../index';
 import { findDomainID } from './findDomainID';
-import { Utils } from '../utils';
+import Utils from '../utils';
 
 interface DnsRecord {
     title: string

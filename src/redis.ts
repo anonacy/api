@@ -42,11 +42,16 @@ class RedisInstance {
   }
 
   async set(key: string, value: string): Promise<void> {
-    await this._redis.set(key, value);
+    return await this._redis.set(key, value);
   }
 
-  async get(key: string) {
+  async get(key: string): Promise<string | null> {
+    // returns null if key doesn't exist
     return await this._redis.get(key);
+  }
+
+  async delete(key: string): Promise<void> {
+    return await this._redis.del(key);
   }
 }
 

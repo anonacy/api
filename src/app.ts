@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { postalPuppet } from './index';
-import { Utils } from './utils';
+import Utils from './utils';
 import RedisInstance from './redis';
 
 dotenv.config();

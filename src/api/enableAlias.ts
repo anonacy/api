@@ -1,7 +1,7 @@
 import type { PuppetInstance } from '../index';
 import { findAliasID } from './findAliasID';
 import { findEndpointID } from './findEndpointID';
-import { Utils } from '../utils';
+import Utils from '../utils';
 
 // Ran to re-enable an alias
 export async function enableAlias(options: {

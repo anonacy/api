@@ -1,5 +1,6 @@
 import type { PuppetInstance } from '../index';
-import { Utils } from '../utils';
+import RedisInstance from '../redis';
+import Utils from '../utils';
 
 // Get ID of a specific alias
 export async function findAliasID(options: {
@@ -10,7 +11,13 @@ export async function findAliasID(options: {
   success: boolean;
   id: string;
 }> {
-  const alias = options.alias;
+  // Check redis first
+  const redis = RedisInstance.getInstance();
+  let aliasID = (await redis.get(`alias:${options.alias}`)) || '';
+  if(aliasID) {
+    // Found in redis, return
+    return { success: true, id: aliasID };
+  }
 
   // Go to route list page
   if(!options.skipLoad) {
@@ -20,9 +27,6 @@ export async function findAliasID(options: {
 
   // Check if on login page (redirected because not authenticated), login if yes
   options.puppetInstance = await Utils.checkIfLoginPage(options.puppetInstance);
-
-  // NEXT: Find Alias ID
-  let aliasID = '';
 
   // get all a tags from routes list
   const pTags = await options.puppetInstance.page.$$('a.routeList__link');
@@ -40,7 +44,7 @@ export async function findAliasID(options: {
     
     // Check if the p tag contains the alias
     if (pElementInnerHTML) {
-      if(pElementInnerHTML.trim() == alias) {
+      if(pElementInnerHTML.trim() == options.alias) {
         // ALIAS FOUND
         // Extract ID from a href
         const href = await options.puppetInstance.page.evaluate(el => el.getAttribute('href'), pTag);
@@ -51,10 +55,15 @@ export async function findAliasID(options: {
     }
   }
 
-  const success = aliasID != '' ? true : false;
-  if(!success) throw new Error(`Alias ${alias} not found`);
+  if(aliasID) {
+    // Save to redis, since this function is only used when ID wasn't available
+    await redis.set(`alias:${options.alias}`, aliasID);
+  } else {
+    throw new Error(`Alias ${options.alias} not found`);
+  }
+
   return {
-    success,
+    success: aliasID != '' ? true : false,
     id: aliasID
   };
 

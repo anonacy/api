@@ -9,7 +9,7 @@ import chalk from 'chalk';
   - All functions are static and can be called without instantiating the class.
 */
 
-export class Utils {
+export default class Utils {
   // delays for seconds
   static async wait(seconds: number) {
     return new Promise(resolve => setTimeout(resolve, seconds * 1000));

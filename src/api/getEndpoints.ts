@@ -1,5 +1,5 @@
 import type { PuppetInstance } from '../index';
-import { Utils } from '../utils';
+import Utils from '../utils';
 
 type EndpointObject = {
   endpoint: string;

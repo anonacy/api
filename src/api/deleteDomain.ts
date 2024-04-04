@@ -1,6 +1,7 @@
 import type { PuppetInstance } from '../index';
 import { findDomainID } from './findDomainID';
-import { Utils } from '../utils';
+import RedisInstance from '../redis';
+import Utils from '../utils';
 
 // Ran to delete an domain
 export async function deleteDomain(options: {
@@ -49,8 +50,13 @@ export async function deleteDomain(options: {
     // Submit
     await options.puppetInstance.page.waitForNavigation();
 
+    // Check if success by seeing if page was redirected
     const success = (await options.puppetInstance.page.url() == Utils.urlDictionary("domainList")) ? true : false;
 
+    // Delete domain from redis
+    const redis = RedisInstance.getInstance();
+    await redis.delete(`domain:${options.domain}`);
+    
     return {
       success
     };

@@ -1,5 +1,6 @@
 import type { PuppetInstance } from '../index';
-import { Utils } from '../utils';
+import RedisInstance from '../redis';
+import Utils from '../utils';
 
 // Get ID of specific endpoint
 export async function findEndpointID(options: {
@@ -10,6 +11,14 @@ export async function findEndpointID(options: {
   success: boolean;
   id: string;
 }> {
+  // Check redis first
+  const redis = RedisInstance.getInstance();
+  let endpointID = (await redis.get(`endpoint:${options.endpoint}`)) || '';
+  if(endpointID) {
+    // Found in redis, return
+    return { success: true, id: endpointID };
+  }
+
   // Go to route list page
   if(!options.skipLoad) {
     await options.puppetInstance.page.goto(Utils.urlDictionary('endpointList'));
@@ -18,9 +27,6 @@ export async function findEndpointID(options: {
 
   // Check if on login page (redirected because not authenticated), login if yes
   options.puppetInstance = await Utils.checkIfLoginPage(options.puppetInstance);
-
-  // NEXT: Find Endpoint ID
-  let addressEndpointID = '';
 
   // get all a tags from endpoints list
   const pTags = await options.puppetInstance.page.$$('a.endpointList__link');
@@ -43,16 +49,23 @@ export async function findEndpointID(options: {
         // Extract ID from a href
         const href = await options.puppetInstance.page.evaluate(el => el.getAttribute('href'), pTag);
         if(href){
-          addressEndpointID = Utils.getIdFromUrl(href)
+          endpointID = Utils.getIdFromUrl(href)
         }
       }
     }
   }
 
-  const success = addressEndpointID != '' ? true : false;
+  if(endpointID) {
+    // Save to redis, since this function is only used when ID wasn't available
+    const redis = RedisInstance.getInstance();
+    await redis.set(`endpoint:${options.endpoint}`, endpointID);
+  } else {
+    throw new Error(`Endpoint ${options.endpoint} not found`);
+  }
+
   return {
-    success,
-    id: addressEndpointID
+    success: endpointID != '' ? true : false,
+    id: endpointID
   };
 
 

@@ -1,5 +1,6 @@
 import type { PuppetInstance } from '../index';
-import { Utils } from '../utils';
+import RedisInstance from '../redis';
+import Utils from '../utils';
 
 // Get ID of a specific domain
 export async function findDomainID(options: {
@@ -10,6 +11,14 @@ export async function findDomainID(options: {
   success: boolean;
   id: string;
 }> {
+  // Check redis first
+  const redis = RedisInstance.getInstance();
+  let domainID = (await redis.get(`domain:${options.domain}`)) || '';
+  if(domainID) {
+    // Found in redis, return
+    return { success: true, id: domainID };
+  }
+
   // Go to domain list page
   if(!options.skipLoad) {
     await options.puppetInstance.page.goto(Utils.urlDictionary("domainList"));
@@ -18,9 +27,6 @@ export async function findDomainID(options: {
 
   // Check if on login page (redirected because not authenticated), login if yes
   options.puppetInstance = await Utils.checkIfLoginPage(options.puppetInstance);
-
-  // NEXT: Find Domain ID
-  let domainID = '';
 
   // get all a tags from endpoints list
   const liItems = await options.puppetInstance.page.$$('li.domainList__item');
@@ -55,9 +61,16 @@ export async function findDomainID(options: {
     }
   }
 
-  const success = domainID ? true : false;
+  if(domainID) {
+    // Save to redis, since this function is only used when ID wasn't available
+    const redis = RedisInstance.getInstance();
+    await redis.set(`domain:${options.domain}`, domainID);
+  } else {
+    throw new Error(`Domain ${options.domain} not found`);
+  }
+
   return {
-    success,
+    success: domainID ? true : false,
     id: domainID
   };
 

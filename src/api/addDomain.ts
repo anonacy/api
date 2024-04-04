@@ -1,7 +1,6 @@
-// to be run when a user signs up, to add email to destinations available for forwarding in a route
-
 import type { PuppetInstance } from '../index';
-import { Utils } from '../utils';
+import RedisInstance from '../redis';
+import Utils from '../utils';
 
 // This function adds an email address to the address endpoints, finds and returns the postal id
 export async function addDomain(options: {
@@ -36,9 +35,14 @@ export async function addDomain(options: {
   }
   let domainID = await Utils.getIdFromUrl(options.puppetInstance.page.url());
 
-  const success = domainID ? true : false;
+  // Store domain ID in redis
+  if(domainID) {
+    const redis = RedisInstance.getInstance();
+    await redis.set(`domain:${options.domain}`, domainID);
+  }
+
   return {
-    success,
+    success: domainID ? true : false,
     domain: options.domain,
     id: domainID,
     note: "Domain added to system, please use the checkDomain endpoint to setup DNS"

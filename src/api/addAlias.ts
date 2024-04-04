@@ -1,7 +1,8 @@
 import type { PuppetInstance } from '../index';
 import { findEndpointID } from './findEndpointID';
 import { findAliasID } from './findAliasID';
-import { Utils } from '../utils';
+import RedisInstance from '../redis';
+import Utils from '../utils';
 
 // Ran to create a new alias
 export async function addAlias(options: {
@@ -96,16 +97,21 @@ export async function addAlias(options: {
   }
 
   // Final check to make sure alias exists
-  const aliasID = await findAliasID({
+  const aliasID = (await findAliasID({
     puppetInstance: options.puppetInstance,
     alias: options.alias
-  })
-  const success = aliasID ? true : false;
+  })).id
+
+  // Store alias ID in redis
+  if(aliasID) {
+    const redis = RedisInstance.getInstance();
+    await redis.set(`alias:${options.alias}`, aliasID);
+  }
 
   return {
-    success,
+    success: aliasID ? true : false,
     alias: options.alias,
-    id: aliasID.id,
+    id: aliasID,
     endpoint: options.endpoint
   };
 
