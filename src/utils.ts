@@ -55,9 +55,9 @@ export class Utils {
   // Returns URL based on action and ID (if needed)
   static urlDictionary(
     action: string, 
-    id?: string, // optional, for urls that include ids
     org: string = "anonacy", // optional, postal organization
-    server: string = "anonacy" // option, postal mail server (within organization)
+    server: string = "anonacy", // option, postal mail server (within organization)
+    id?: string, // optional, for urls that include ids
   ) {
     const URL_Dict: { [key: string]: string } = {
       "login": `https://postal.anonacy.com/login`,

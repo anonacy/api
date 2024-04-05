@@ -1,5 +1,6 @@
 // to be run when a user signs up, to add email to destinations available for forwarding in a route
 
+import { Response } from 'express';
 import type { PuppetInstance } from '../index';
 import DB from '../db/db';
 import { Utils } from '../utils';
@@ -8,17 +9,19 @@ import { Utils } from '../utils';
 export async function addEndpoint(options: {
   puppetInstance: PuppetInstance;
   endpoint: string; // email endpoint (forwardTo email)
+  res: Response;
 }): Promise<{
   success: boolean;
   endpoint: string;
   id: string;
 }> {
+  const { org, server } = options.res.locals; // which postal org and server to use
   const db = DB.getInstance();
 
   const endpoint = options.endpoint;
   // const { username, domain } = await Utils.decomposeEmail(endpoint);
 
-  await options.puppetInstance.page.goto(Utils.urlDictionary('addEndpoint'));
+  await options.puppetInstance.page.goto(Utils.urlDictionary('addEndpoint', org, server));
   await options.puppetInstance.page.waitForNetworkIdle();
   
   // Check if on login page (redirected because not authenticated), login if yes

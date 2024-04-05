@@ -27,6 +27,14 @@ async function initPuppetWithConfig() {
 // Request logging middleware
 app.use(Utils.logRequest);
 
+// server variables middleware
+// this function will take an api key in if the org is different, and assign it here
+app.use((req, res, next) => {
+  res.locals.org = "anonacy";
+  res.locals.server = process.env.NODE_ENV == "production" ? "anonacy" : "testing";
+  next();
+});
+
 // This is a higher-order function that takes an async function and returns a new function that catches any errors and passes them to next()
 function catchErrors(fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) {
   return async function(req: Request, res: Response, next: NextFunction) {
@@ -43,14 +51,6 @@ function catchErrors(fn: (req: Request, res: Response, next: NextFunction) => Pr
 
 app.get('/health', catchErrors( async (req, res) => {
   res.status(200).send({ status: 200 });
-}));
-
-app.post('/db', catchErrors( async (req, res) => {
-  const { alias, domain, endpoint } = req.body;
-  let aliasID = await db.alias.id(alias);
-  let domainID = await db.domain.id(domain);
-  let endpointID = await db.endpoint.id(endpoint);
-  res.status(200).json({ aliasID, domainID, endpointID });
 }));
 
 app.get('/domains', catchErrors( async (req, res) => {
@@ -78,7 +78,8 @@ app.get('/domain/dns', catchErrors( async (req, res) => {
   const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.checkDomain({
     puppetInstance,
-    domain
+    domain,
+    res
   });
   res.json(result);
   await postalPuppet.closePuppet(puppetInstance);
@@ -91,7 +92,8 @@ app.post('/domain', catchErrors( async (req, res) => {
   const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.addDomain({
     puppetInstance,
-    domain
+    domain,
+    res
   });
   res.status(200).json(result);
   await postalPuppet.closePuppet(puppetInstance);
@@ -102,7 +104,8 @@ app.post('/endpoint', catchErrors( async (req, res) => {
   const puppetInstance = await initPuppetWithConfig();
   const result = await postalPuppet.addEndpoint({
     puppetInstance,
-    endpoint
+    endpoint,
+    res
   });
   res.status(200).json(result);
   await postalPuppet.closePuppet(puppetInstance);
@@ -114,7 +117,8 @@ app.post('/alias', catchErrors( async (req, res) => {
   const result = await postalPuppet.addAlias({
     puppetInstance,
     alias,
-    endpoint
+    endpoint,
+    res
   });
   res.status(200).json(result);
   await postalPuppet.closePuppet(puppetInstance);

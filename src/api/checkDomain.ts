@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import type { PuppetInstance } from '../index';
 import DB from '../db/db';
 import { Utils } from '../utils';
@@ -12,11 +13,11 @@ interface DnsRecord {
     priority: number | null,
     note: string
 }
-// This function gets the status details of an added domain
+// This function gets the dns status details/instructions of an added domain
 export async function checkDomain(options: {
   puppetInstance: PuppetInstance;
   domain: string;
-  domainID?: string;
+  res: Response;
 }): Promise<{
   success: boolean;
   ok: boolean;
@@ -24,13 +25,13 @@ export async function checkDomain(options: {
   domain: string;
   id: string;
 }> {
-
+  const { org, server } = options.res.locals; // which postal org and server to use
   const db = DB.getInstance();
   let domainID = await db.domain.id(options.domain);
   if(!domainID) throw new Error('Domain not found');
 
   // Go to domain page
-  await options.puppetInstance.page.goto(Utils.urlDictionary('domainDetail', domainID));
+  await options.puppetInstance.page.goto(Utils.urlDictionary('domainDetail', org, server, domainID));
   await options.puppetInstance.page.waitForNetworkIdle();
 
   // Check if on login page (redirected because not authenticated), login if yes

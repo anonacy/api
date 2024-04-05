@@ -1,3 +1,5 @@
+import { Response } from 'express';
+
 import type { PuppetInstance } from '../index';
 import { Utils } from '../utils';
 import DB from '../db/db';
@@ -7,6 +9,7 @@ export async function addAlias(options: {
   puppetInstance: PuppetInstance;
   alias: string; //email alias
   endpoint: string; //email endpoint (forwardTo email)
+  res: Response;
 }): Promise<{
   success: boolean;
   alias: string;
@@ -14,13 +17,14 @@ export async function addAlias(options: {
   endpoint: string;
 }> {
   const { username, domain } = await Utils.decomposeEmail(options.alias);
+  const { org, server } = options.res.locals; // which postal org and server to use
   const db = DB.getInstance();
 
   // Get Endpoint ID
   const endpointID = await db.endpoint.id(options.endpoint);
   
   // Go to new route page
-  await options.puppetInstance.page.goto(Utils.urlDictionary('addAlias'));
+  await options.puppetInstance.page.goto(Utils.urlDictionary('addAlias', org, server));
   await options.puppetInstance.page.waitForNetworkIdle();
 
   // Check if on login page (redirected because not authenticated), login if yes
@@ -81,7 +85,7 @@ export async function addAlias(options: {
 
   // Check the current page URL
   const url = await options.puppetInstance.page.url();
-  if (url !== Utils.urlDictionary('aliasList')) {
+  if (url !== Utils.urlDictionary('aliasList', org, server)) {
     // This case means the page didn't refresh, there should be an error message
     const errorMessageElement = await options.puppetInstance.page.$('.formErrors');
     if (errorMessageElement) {
