@@ -31,7 +31,9 @@ app.use(Utils.logRequest);
 // this function will take an api key in if the org is different, and assign it here
 app.use((req, res, next) => {
   res.locals.org = "anonacy";
-  res.locals.server = process.env.NODE_ENV == "production" ? "anonacy" : "testing";
+  res.locals.server = "anonacy";
+  // res.locals.server = "testing";
+  // res.locals.server = process.env.NODE_ENV == "production" ? "anonacy" : "testing";
   next();
 });
 
@@ -113,7 +115,24 @@ app.post('/endpoint', catchErrors( async (req, res) => {
 
 app.post('/alias', catchErrors( async (req, res) => {
   const { alias, endpoint } = req.body;
+  // check if domain exists
+  const { domain } = Utils.decomposeEmail(alias);
+  const domainID = await db.domain.id(domain);
+  if(!domainID) {
+    res.status(400).send("Domain does not exist");
+    return;
+  }
   const puppetInstance = await initPuppetWithConfig();
+  // check if endpoint exists yet, if not, add it
+  const endpointID = await db.endpoint.id(endpoint);
+  if(!endpointID) {
+    await postalPuppet.addEndpoint({
+      puppetInstance,
+      endpoint,
+      res
+    });
+  }
+  // now add the alias route
   const result = await postalPuppet.addAlias({
     puppetInstance,
     alias,
@@ -126,21 +145,21 @@ app.post('/alias', catchErrors( async (req, res) => {
 
 // PUT ------------------------------------------------------------------------
 
-app.put('/alias/enable', catchErrors( async (req, res) => {
-  const { alias, endpoint } = req.body;
-  const success = await db.alias.enable(alias, endpoint);
-  res.status(200).json({success});
-}));
-
-app.put('/alias/disable', catchErrors( async (req, res) => {
-  const { alias } = req.body;
-  const success = await db.alias.disable(alias);
-  res.status(200).json({success});
-}));
-
-app.put('/alias/toggle', catchErrors( async (req, res) => {
-  const { alias, endpoint } = req.body;
-  const success = await db.alias.toggle(alias, endpoint);
+app.put('/alias', catchErrors( async (req, res) => {
+  const { alias, endpoint, enable } = req.body;
+  let success = false;
+  if(enable == undefined || enable == null) {
+    res.status(400).send("Enable parameter is required");
+    return;
+  }
+  if(enable === true) {
+    success = await db.alias.enable(alias, endpoint);
+  } else if (enable === false){
+    success = await db.alias.disable(alias);
+  } else {
+    res.status(400).send("Enable parameter needs to be a boolean");
+    return;
+  }
   res.status(200).json({success});
 }));
 
