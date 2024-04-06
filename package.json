@@ -1,7 +1,7 @@
 {
   "name": "@anonacy/puppet",
   "type": "module",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "packageManager": "npm@10.2.4",
   "description": "",
   "author": "hewham",
@@ -37,9 +37,10 @@
     "start": "npx cowsay -f elephant2 Starting Puppet! && npx nodemon --watch 'src/**/*.ts' --exec 'npx tsx' src/app.ts",
     "build": "npx unbuild",
     "test": "npx mocha --import=tsx test/*.test.ts",
+    "tag": "git tag $npm_package_version && git push origin $npm_package_version",
+    "deploy": "git push heroku master",
     "logs": "heroku logs --dyno=web --tail",
     "version": "echo $npm_package_name v$npm_package_version",
-    "tag": "git tag $npm_package_version && git push origin $npm_package_version",
     "typecheck": "tsc --noEmit",
     "heroku-postbuild": "npm run build && mkdir ./.cache && mv /app/.cache/puppeteer ./.cache",
     "postinstall": "npx puppeteer browsers install chrome"
