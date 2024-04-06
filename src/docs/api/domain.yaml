@@ -1,0 +1,104 @@
+tags:
+  - name: domain
+    description: ' - Domain names that domaines can use for email addresses'
+
+components:
+  schemas:
+    domain:
+      tags:
+        - domain
+      type: object
+      properties:
+        domain:
+          type: string
+          format: uri
+        dns:
+          type: object
+          properties:
+            SPF:
+              type: boolean
+            DKIM:
+              type: boolean
+            RP:
+              type: boolean
+            MX:
+              type: boolean
+            ok:
+              type: boolean
+      example:
+        domain: domain@example.com
+        dns:
+          SPF: true
+          DKIM: true
+          RP: true
+          MX: true
+          ok: true
+
+paths:
+  /domains:
+    get:
+      tags:
+        - domain
+      summary: Gets all domains
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/domains'
+  /domain:
+    get:
+      tags:
+        - domain
+      summary: Gets the dns setup details of a domain
+      parameters:
+        - in: query
+          name: domain
+          schema:
+            type: string
+          required: true
+          description: The domain name
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domain'
+    post:
+      tags:
+        - domain
+      summary: Creates a new domain
+      description: "This adds a domain to mail server. The DNS of the domain needs to be setup afterwards. A subsequent GET request to /domain endpoint will provide records and instructions to activate the domain."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/domain'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domain'
+
+    delete:
+      tags:
+        - domain
+      summary: Deletes an domain
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/domain'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domain'

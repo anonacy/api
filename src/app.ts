@@ -3,12 +3,16 @@ import dotenv from 'dotenv';
 import { postalPuppet } from './index';
 import { Utils } from './utils';
 
+
+// BASE CONFIG ----------------------------------------------------------------
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 app.use(express.json()); // for parsing application/json
+
 import DB from './db/db';
 const db = DB.getInstance();
+
 
 // FUNCTIONS ------------------------------------------------------------------
 
@@ -45,7 +49,14 @@ function catchErrors(fn: (req: Request, res: Response, next: NextFunction) => Pr
     }
   }
 }
+// SWAGGER DOCS ---------------------------------------------------------------
 
+import { spec, swaggerUi, options } from './docs/swagger';
+
+app.use("/docs", swaggerUi.serve);
+app.get("/docs", 
+swaggerUi.setup(spec, options) // docExpansion can be 'none', list', or 'full'
+);
 
 // GET ------------------------------------------------------------------------
 
@@ -69,7 +80,7 @@ app.get('/aliases', catchErrors( async (req, res) => {
   res.status(200).json(aliases);
 }));
 
-app.get('/domain/dns', catchErrors( async (req, res) => {
+app.get('/domain', catchErrors( async (req, res) => {
   const { domain } = req.query;
   if (typeof domain !== 'string') {
     res.status(400).send('Invalid domain');

@@ -100,6 +100,15 @@ export class Utils {
 
   // This formats the server logs, used on every incoming request
   static logRequest(req: Request, res: Response, next: NextFunction) {
+    const doNotLog = [
+      '/docs/swagger-ui-bundle.js',
+      '/docs/swagger-ui-standalone-preset.js',
+      '/docs/swagger-ui.css',
+      '/docs/swagger-ui-init.js',
+      '/docs/favicon-32x32.png'
+    ];
+    if(doNotLog.includes(req.originalUrl)) return next();
+
     let color = chalk.white;
     switch (req.method) {
       case 'GET':

@@ -1,0 +1,114 @@
+tags:
+  - name: alias
+    description: ' - Forwarding alias that routes emails sent to an alias address to an endpoint address'
+
+components:
+  schemas:
+    alias:
+      tags:
+        - alias
+      type: object
+      properties:
+        alias:
+          type: string
+          format: email
+        endpoint:
+          type: string
+          format: email
+        enabled:
+          type: boolean
+      example:
+        alias: alias@example.com
+        endpoint: endpoint@example.com
+        enabled: true
+
+paths:
+  /aliases:
+    get:
+      tags:
+        - alias
+      summary: Gets all aliases
+      parameters:
+        - in: query
+          name: domain
+          schema:
+            type: string
+          required: false
+          description: Filters aliases by domain name
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/alias'
+  /alias:
+    get:
+      tags:
+        - alias
+      summary: Gets details of an alias
+      parameters:
+        - in: query
+          name: alias
+          schema:
+            type: string
+          required: true
+          description: The email of the alias
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/alias'
+    post:
+      tags:
+        - alias
+      summary: Creates a new alias
+      description: "Domain names must be created before aliases can be created. Aliases can have unique usernames and unique endpoints, or they can be setup as a 'catch-all' alias that forwards all emails sent to a domain to a single endpoint. To set up a catch-all alias, use an \\* (asterisk) as the username. Example catch-all alias: [\\*@example.com]"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/alias'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/alias'
+    put:
+      tags:
+        - alias
+      summary: Enables or disables an alias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/alias'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/alias'
+    delete:
+      tags:
+        - alias
+      summary: Deletes an alias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/alias'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/alias'
