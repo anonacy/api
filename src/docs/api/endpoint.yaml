@@ -1,0 +1,88 @@
+tags:
+  - name: endpoint
+    description: ' - Email destination address that aliases can forward to'
+
+components:
+  schemas:
+    endpoint:
+      tags:
+        - endpoint
+      type: object
+      properties:
+        endpoint:
+          type: string
+          format: email
+      example:
+        endpoint: endpoint@example.com
+
+paths:
+  /endpoints:
+    get:
+      tags:
+        - endpoint
+      summary: Gets all endpoints
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/endpoint'
+
+  /endpoint:
+    get:
+      tags:
+        - endpoint
+      summary: Gets details of an endpoint
+      description: This endpoint can be used to check if an email is already exists as an endpoint. There isn't much more info to an endpoint than the email itself, which is the parameter of this request.
+      parameters:
+        - in: query
+          name: endpoint
+          schema:
+            type: string
+          required: true
+          description: The email of the endpoint
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/endpoint'
+
+    post:
+      tags:
+        - endpoint
+      summary: Creates a new endpoint
+      description: Endpoints generally don't need to be created manually, since they are created automatically when an alias is created.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/endpoint'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/endpoint'
+
+    delete:
+      tags:
+        - endpoint
+      summary: Deletes an endpoint
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/endpoint'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/endpoint'
