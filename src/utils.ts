@@ -98,6 +98,15 @@ export class Utils {
     return str.replace(/\n/g, "");
   }
 
+  // Takes an object of booleans and makes 0's and '1's, false's and true's
+  static numToBool(obj: { [key: string]: boolean }) {
+    const newObj: { [key: string]: boolean } = {};
+    for (const key in obj) {
+      newObj[key] = obj[key] ? true : false;
+    }
+    return newObj;
+  }
+
   // This formats the server logs, used on every incoming request
   static logRequest(req: Request, res: Response, next: NextFunction) {
     const doNotLog = [

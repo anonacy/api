@@ -35,6 +35,7 @@ app.use(Utils.logRequest);
 // this function will take an api key in if the org is different, and assign it here
 app.use((req, res, next) => {
   res.locals.org = "anonacy";
+  // res.locals.server = "anonacy";
   res.locals.server = process.env.NODE_ENV == "production" ? "anonacy" : "testing";
   next();
 });

@@ -11,9 +11,10 @@ components:
       properties:
         domain:
           type: string
-          format: uri
+          format: domain_name
         dns:
           type: object
+          required: false
           properties:
             SPF:
               type: boolean
@@ -25,7 +26,46 @@ components:
               type: boolean
             ok:
               type: boolean
-      example:
+        setup:
+          type: array
+          required: false
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+              type:
+                type: string
+              name:
+                type: string
+              content:
+                type: string
+              priority:
+                type: integer
+              label:
+                type: string
+              note:
+                type: string
+              ok:
+                type: boolean
+  examples:
+    body:
+      value:
+        domain: domain@example.com
+    success:
+      value:
+        success: true
+    not_ok:
+      value:
+        domain: domain@example.com
+        dns:
+          SPF: false
+          DKIM: false
+          RP: false
+          MX: false
+          ok: false
+    ok:
+      value:
         domain: domain@example.com
         dns:
           SPF: true
@@ -33,6 +73,48 @@ components:
           RP: true
           MX: true
           ok: true
+    setup:
+      value:
+        domain: domain@example.com
+        dns:
+          SPF: false
+          DKIM: false
+          RP: false
+          MX: false
+          ok: false
+        setup:
+          - title: "SPF Record"
+            type: "TXT"
+            name: "@"
+            content: "v=spf1 a mx include:spf.postal.anonacy.com ~all"
+            priority: null
+            label: "No SPF record exists for this domain"
+            ok: false
+            note: "You need to add a TXT record at the apex/root of your domain (@) with the following content. If you already send mail from another service, you may just need to add include:spf.postal.anonacy.com to your existing record."
+          - title: "DKIM Record"
+            type: "TXT"
+            name: "postal-[KEY]._domainkey"
+            content: "v=DKIM1; t=s; h=sha256; p=YOUR_DKIM_KEY;"
+            priority: null
+            label: "No TXT records were returned for postal-[KEY]._domainkey.test.anonacy.com"
+            ok: false
+            note: "You need to add a new TXT record with the name postal-[KEY]._domainkey with the following content."
+          - title: "Return Path"
+            type: "CNAME"
+            name: "psrp"
+            content: "rp.postal.anonacy.com"
+            priority: null
+            label: "There's no return path for this domain. This is OK but we recommend adding the record to improve deliverability and achieve DMARC alignment."
+            ok: false
+            note: "This is optional but we recommend adding this to improve deliverability. You should add a CNAME record at psrp.test.anonacy.com to point to the hostname below."
+          - title: "MX Records"
+            type: "MX"
+            name: "@"
+            content: "mx.postal.anonacy.com"
+            priority: 10
+            label: "None of the MX records for this domain point to us. Incoming mail won't be sent to us."
+            ok: false
+            note: "You need to add this MX record to your domain, otherwise routing will not work"
 
 paths:
   /domains:
@@ -48,12 +130,23 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/domains'
+                  $ref: '#/components/schemas/domain'
+              examples:
+                not_ok:
+                  $ref: '#/components/examples/not_ok'
+
   /domain:
     get:
       tags:
         - domain
       summary: Gets the dns setup details of a domain
+      description: "USAGE: [GET] -> {api_url}/domain?domain={domain_name}<br><br>
+        This endpoint provides information on how to setup DNS for a domain. The 'setup' object contains 4 records that need to be setup on your registrar for email forwarding to work.<br><br>
+        1. SPF (TXT) Record<br>
+        2. DKIM (TXT) Record<br>
+        3. Return Path (CNAME) Record<br>
+        4. MX (MX) Record<br><br>
+        Make sure all of the steps are followed closely. Some records go at the domain root, others have different names (name). If the domain is a subdomain, root means the subdomain. You can requery this endpoint to check if the setup is correct."
       parameters:
         - in: query
           name: domain
@@ -68,6 +161,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/domain'
+              examples:
+                setup:
+                  $ref: '#/components/examples/setup'
     post:
       tags:
         - domain
@@ -78,6 +174,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/domain'
+            examples:
+              body:
+                $ref: '#/components/examples/body'
       responses:
         200:
           description: Successful response
@@ -85,6 +184,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/domain'
+              examples:
+                not_ok:
+                  $ref: '#/components/examples/not_ok'
+                ok:
+                  $ref: '#/components/examples/ok'
 
     delete:
       tags:
@@ -95,6 +199,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/domain'
+            examples:
+              body:
+                $ref: '#/components/examples/body'
       responses:
         200:
           description: Successful response
@@ -102,3 +209,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/domain'
+              examples:
+                success:
+                  $ref: '#/components/examples/success'

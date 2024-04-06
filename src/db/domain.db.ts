@@ -34,6 +34,39 @@ async function getDomainRootID(domain: string, pool: Pool): Promise<string | und
   }
 }
 
+async function getDomain(domain: string, pool: Pool): Promise<any[]> {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const result = await conn.query(`
+      SELECT name AS domain,  uuid AS id,
+      IF(spf_status = 'OK', true, false) AS SPF, 
+      IF(dkim_status = 'OK', true, false) AS DKIM, 
+      IF(return_path_status = 'OK', true, false) AS RP, 
+      IF(mx_status = 'OK', true, false) AS MX,
+      IF(spf_status = 'OK' AND dkim_status = 'OK' AND return_path_status = 'OK' AND mx_status = 'OK', true, false) AS ok
+      FROM domains
+      WHERE name = ?
+    `, [domain]);
+    const mappedResult = result.map((row: any) => ({
+      domain: row.domain,
+      id: row.id,
+      dns: {
+        SPF: row.SPF,
+        DKIM: row.DKIM,
+        RP: row.RP,
+        MX: row.MX,
+        ok: row.ok
+      }
+    }));
+    return mappedResult[0];
+  } catch (err: any) {
+    throw new Error(err);
+  } finally {
+    if (conn) conn.end();
+  }
+}
+
 async function getAllDomains(pool: Pool): Promise<any[]> {
   let conn;
   try {
@@ -47,7 +80,21 @@ async function getAllDomains(pool: Pool): Promise<any[]> {
       IF(spf_status = 'OK' AND dkim_status = 'OK' AND return_path_status = 'OK' AND mx_status = 'OK', true, false) AS ok
       FROM domains
     `);
-    return result;
+
+    // Map over the result to create the dns object
+    const mappedResult = result.map((row: any) => ({
+      domain: row.domain,
+      id: row.id,
+      dns: {
+        SPF: row.SPF,
+        DKIM: row.DKIM,
+        RP: row.RP,
+        MX: row.MX,
+        ok: row.ok
+      }
+    }));
+
+    return mappedResult;
   } catch (err: any) {
     throw new Error(err);
   } finally {
@@ -73,4 +120,4 @@ async function deleteDomain(domain: string, pool: Pool): Promise<boolean> {
   }
 }
 
-export { getDomainID, getDomainRootID, getAllDomains, deleteDomain };
+export { getDomainID, getDomainRootID, getDomain, getAllDomains, deleteDomain };

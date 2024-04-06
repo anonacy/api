@@ -13,6 +13,14 @@ interface DnsRecord {
     priority: number | null,
     note: string
 }
+
+interface DNS {
+  SPF: boolean
+  DKIM: boolean
+  RP: boolean
+  MX: boolean
+  ok: boolean
+}
 // This function gets the dns status details/instructions of an added domain
 export async function checkDomain(options: {
   puppetInstance: PuppetInstance;
@@ -21,14 +29,28 @@ export async function checkDomain(options: {
 }): Promise<{
   success: boolean;
   ok: boolean;
-  dnsRecords: DnsRecord[];
+  setup: DnsRecord[];
+  dns: DNS,
   domain: string;
-  id: string;
 }> {
   const { org, server } = options.res.locals; // which postal org and server to use
+
+  // check if domain is already setup via db
   const db = DB.getInstance();
-  let domainID = await db.domain.id(options.domain);
-  if(!domainID) throw new Error('Domain not found');
+  const domain: any = await db.domain.get(options.domain);
+  if(!domain) throw new Error('Domain not found');
+  const domainID = domain.id;
+
+  if(domain.dns.ok) {
+    const fixedDNS: any =  Utils.numToBool(domain.dns);
+    return {
+      success: true,
+      ok: true,
+      setup: [],
+      dns: fixedDNS,
+      domain: options.domain
+    };
+  }
 
   // Go to domain page
   await options.puppetInstance.page.goto(Utils.urlDictionary('domainDetail', org, server, domainID));
@@ -152,12 +174,19 @@ export async function checkDomain(options: {
   // check if all records are ok
   const ok = dnsRecords.every(record => record.ok);
   const success = true;
+  const dnsResult = {
+    SPF: dnsRecords[0].ok,
+    DKIM: dnsRecords[1].ok,
+    RP: dnsRecords[2].ok,
+    MX: dnsRecords[3].ok,
+    ok
+  }
 
   return {
     success,
     ok,
-    dnsRecords,
-    domain: options.domain,
-    id: domainID
+    setup: dnsRecords,
+    dns: dnsResult,
+    domain: options.domain
   };
 }
