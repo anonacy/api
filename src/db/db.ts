@@ -13,7 +13,8 @@
   etc...
 */
 
-import mariadb, { Pool } from 'mariadb';
+import { Pool } from 'mariadb';
+import CONNECTION from './connection';
 import { getAliasID, deleteAlias, disableAlias, enableAlias, getAliasStatus, getAllAliases } from './alias.db';
 import { getDomainID, getDomainRootID, getDomain, getAllDomains, deleteDomain } from './domain.db';
 import { getEndpointID, getEndpointRootID, getAllEndpoints, deleteEndpoint } from './endpoint.db';
@@ -21,34 +22,29 @@ import { getEndpointID, getEndpointRootID, getAllEndpoints, deleteEndpoint } fro
 class DB {
   private static instance: DB;
   private _pool: any;
+
   public alias: Alias;
   public domain: Domain;
   public endpoint: Endpoint;
 
-  private constructor() {
-    this._pool = mariadb.createPool({
-      host: process.env.MARIADB_HOST || '127.0.0.1',
-      port: Number(process.env.MARIADB_PORT) || 3306,
-      database: process.env.MARIADB_NAME || 'postal',
-      user: process.env.MARIADB_USER || 'root',
-      password: process.env.MARIADB_PASS || 'root',
-      connectionLimit: 5
-    });
-    this.alias = new Alias(this._pool);
-    this.domain = new Domain(this._pool);
-    this.endpoint = new Endpoint(this._pool);
+  private constructor(private _serverID: number) {
+    this._pool = CONNECTION.getPool(); // this will setup the connection pool
+    
+    this.alias = new Alias(this._serverID, this._pool);
+    this.domain = new Domain(this._serverID,this._pool);
+    this.endpoint = new Endpoint(this._serverID, this._pool);
   }
 
-  public static getInstance(): DB {
+  public static getInstance(serverID: number): DB {
     if (!DB.instance) {
-      DB.instance = new DB();
+      DB.instance = new DB(serverID);
     }
     return DB.instance;
   }
 }
 
 class Alias {
-  constructor(private _pool: Pool) {}
+  constructor(private _serverID: number, private _pool: Pool) {}
 
   async id(alias: string): Promise<string | null> {
     return getAliasID(alias, this._pool);
@@ -90,7 +86,7 @@ class Alias {
 }
 
 class Domain {
-  constructor(private _pool: Pool) {}
+  constructor(private _serverID: number, private _pool: Pool) {}
 
   async id(domain: string): Promise<string | null> {
     return getDomainID(domain, this._pool);
@@ -114,7 +110,7 @@ class Domain {
 }
 
 class Endpoint {
-  constructor(private _pool: Pool) {}
+  constructor(private _serverID: number, private _pool: Pool) {}
 
   async id(endpoint: string): Promise<string | null> {
     return getEndpointID(endpoint, this._pool);
