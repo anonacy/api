@@ -21,6 +21,13 @@ components:
         alias: alias@example.com
         endpoint: endpoint@example.com
         enabled: true
+  examples:
+    alias:
+      value:
+        alias: alias@example.com
+    deleted:
+      value:
+        success: true
 
 paths:
   /aliases:
@@ -84,6 +91,7 @@ paths:
       tags:
         - alias
       summary: Enables or disables an alias
+      description: "The 'enabled' field in the request body sets the alias to be active or inactive. When an alias is disabled, emails sent to the alias will not be forwarded to the endpoint. If 'enabled' is true, the endpoint must also be specified in the body to reactivate the alias."
       requestBody:
         content:
           application/json:
@@ -105,6 +113,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/alias'
+            examples:
+              alias:
+                $ref: '#/components/examples/alias'
       responses:
         200:
           description: Successful response
@@ -112,3 +123,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/alias'
+              examples:
+                deleted:
+                  $ref: '#/components/examples/deleted'

@@ -8,7 +8,7 @@ const api = {
     info: {
       title: '@anonacy/postal-api',
       version,
-      description: "Anonacy's postal api allows simplified control over a [Postal](https://postalserver.io) open-source mail server. It is designed for email aliasing, by intelligently managing the 'Routes' system within Postal, while Postal handles the mail forwarding between smtp servers. It also provides a simple way to manage domains and email endpoints, needed for aliases. <br><br> The API can be used in broader ways, and will continually be enhanced. It works by utilizing direct mySQL queries in Postal's database, as well as using [puppeteer](https://pptr.dev) for more complex interactions. <br><br> This system is currently used to power the [anonacy](anonacy.com) and [hiddenlogin](https://hiddenlogin.com) platforms. <br><br> It is nested as the [v2] api at [api.anonacy.com/v2](https://api.anonacy.com/v2/docs)",
+      description: "Anonacy's postal api allows simplified control over a [Postal](https://postalserver.io) open-source mail server. It is designed for email aliasing, by intelligently managing the 'Routes' system within Postal, while Postal handles the mail forwarding between smtp servers. It also provides a simple way to manage domains and email endpoints, needed for aliases. <br><br> The API can be used in broader ways, and will continually be enhanced. It works by utilizing direct mySQL queries in Postal's database, as well as using [puppeteer](https://pptr.dev) for more complex interactions. <br><br> This system is now currently used to power the [anonacy](anonacy.com) and [hiddenlogin](https://hiddenlogin.com) platforms. <br><br> It is proxied as the [v2] api at [api.anonacy.com/v2](https://api.anonacy.com/v2/docs). The open-source version of the Anonacy platform will be coming soon, using the v2 postal api as the backend. Currently, the [v1](https://api.anonacy.com/v1/docs) api has been updated with logic to use the v2 api for the relevant alias management to preserve functionality of the current platform.<br><br>General Usage:<ul><li>[POST] /domain - add a domain</li><li>[GET] /domain?domain=[domain_name] - domain dns setup info</li><li>[POST] /alias - Create alias</li><li>[PUT] /alias - toggle alias enabled</li></ul><p>Detailed usage of endpoints found below. The endpoints are mounted at /v2. For example, [/domains] in these docs maps to [api.anonacy.com/v2/domains].</p>",
       contact: {
         name: "[hew@anonacy.com]",
         email: "hew@anonacy.com"
@@ -16,12 +16,12 @@ const api = {
     },
     servers: [
       {
-        url: 'http://api.postal.anonacy.com',
-        description: 'Postal API'
+        url: 'http://api.anonacy.com/v2',
+        description: 'Anonacy v2 - Postal API'
       },
       {
         url: 'http://localhost:3001',
-        description: 'Dev API'
+        description: 'Developer Self-Hosted API'
       }
     ],
     externalDocs: {

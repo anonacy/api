@@ -3,8 +3,6 @@ import type { PuppetInstance } from '../index';
 import { loginPuppet } from './loginPuppet';
 import Cookies from '../cookies';
 
-// let cookies: any = null;
-
 // Initialize the puppet session by logging into the postal control panel
 /*
   INFO:
@@ -12,7 +10,7 @@ import Cookies from '../cookies';
   - The function first checks if there are any cookies saved from a previous session.
   - If the cookies are still valid, the function will use them to log in.
     - The function will check if the cookies are expired by comparing the expiry date with the current date.
-    - It will also check that the login page wan't loaded
+    - It will also check that the login page wasn't loaded
   - If the cookies are not valid, the function will log in using the provided credentials.
 */
 export async function initPuppet(options: {

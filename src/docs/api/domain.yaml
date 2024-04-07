@@ -1,6 +1,6 @@
 tags:
   - name: domain
-    description: ' - Domain names that domaines can use for email addresses'
+    description: ' - Domain names that domains can use for email addresses'
 
 components:
   schemas:

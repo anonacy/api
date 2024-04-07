@@ -14,6 +14,10 @@ components:
           format: email
       example:
         endpoint: endpoint@example.com
+  examples:
+    success:
+      value:
+        success: true
 
 paths:
   /endpoints:
@@ -86,3 +90,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/endpoint'
+              examples:
+                success:
+                  $ref: '#/components/examples/success'

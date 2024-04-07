@@ -1,8 +1,6 @@
 import type { PuppetInstance } from '../index';
 import Cookies from '../cookies';
 
-// let cookies: any = null;
-
 // Initialize the puppet session by logging into the postal control panel
 /*
   INFO:
