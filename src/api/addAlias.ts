@@ -17,8 +17,8 @@ export async function addAlias(options: {
   endpoint: string;
 }> {
   const { username, domain } = await Utils.decomposeEmail(options.alias);
-  const { org, server } = options.res.locals; // which postal org and server to use
-  const db = DB.getInstance();
+  const { org, server, serverID } = options.res.locals; // which postal org and server to use
+  const db = DB.getInstance(serverID);
 
   // Get Endpoint ID
   const endpointID = await db.endpoint.id(options.endpoint);

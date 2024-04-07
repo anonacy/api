@@ -141,7 +141,7 @@ export class Utils {
       hour12: false,
       minute: '2-digit',
       second: '2-digit'
-    });
+    }).replace(/\s/g, '').replace(/,/g, '|');
     console.log(`[${timestamp}]`+ color(`[${req.method}]`) + chalk.cyan(` ${req.originalUrl}`));
     next();
   }

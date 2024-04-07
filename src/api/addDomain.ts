@@ -16,8 +16,8 @@ export async function addDomain(options: {
   id: string;
   note: string;
 }> {
-  const { org, server } = options.res.locals; // which postal org and server to use
-  const db = DB.getInstance();
+  const { org, server, serverID } = options.res.locals; // which postal org and server to use
+  const db = DB.getInstance(serverID);
 
   await options.puppetInstance.page.goto(Utils.urlDictionary('addDomain', org, server));
   await options.puppetInstance.page.waitForNetworkIdle();

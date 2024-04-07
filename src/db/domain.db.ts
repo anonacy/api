@@ -1,14 +1,38 @@
 import { Pool } from 'mariadb';
 
-async function getDomainID(domain: string, pool: Pool): Promise<string | null> {
+class Domain {
+  constructor(private _serverID: number, private _pool: Pool) {}
+
+  async id(domain: string): Promise<string | null> {
+    return getDomainID(domain, this._serverID, this._pool);
+  }
+
+  async rootID(domain: string): Promise<string | undefined> {
+    return getDomainRootID(domain, this._serverID, this._pool);
+  }
+
+  async all(): Promise<string[]> {
+    return getAllDomains(this._serverID, this._pool);
+  }
+
+  async get(domain: string): Promise<any[]> {
+    return getDomain(domain, this._serverID, this._pool);
+  }
+
+  async delete(domain: string): Promise<boolean> {
+    return deleteDomain(domain, this._serverID, this._pool);
+  }
+}
+
+async function getDomainID(domain: string, serverID: number, pool: Pool): Promise<string | null> {
   let conn;
   try {
     conn = await pool.getConnection();
     const rows = await conn.query(`
       SELECT uuid
       FROM domains
-      WHERE name = ?
-    `, [domain]);
+      WHERE name = ? AND owner_id = ?
+    `, [domain, serverID]);
     return rows[0] ? rows[0].uuid : null;
   } catch (err: any) {
     throw new Error(err);
@@ -17,15 +41,15 @@ async function getDomainID(domain: string, pool: Pool): Promise<string | null> {
   }
 }
 
-async function getDomainRootID(domain: string, pool: Pool): Promise<string | undefined> {
+async function getDomainRootID(domain: string, serverID: number, pool: Pool): Promise<string | undefined> {
   let conn;
   try {
     conn = await pool.getConnection();
     const rows = await conn.query(`
       SELECT id
       FROM domains
-      WHERE name = ?
-    `, [domain]);
+      WHERE name = ? AND owner_id = ?
+    `, [domain, serverID]);
     return rows[0] ? rows[0].id : undefined;
   } catch (err: any) {
     throw new Error(err);
@@ -34,7 +58,7 @@ async function getDomainRootID(domain: string, pool: Pool): Promise<string | und
   }
 }
 
-async function getDomain(domain: string, pool: Pool): Promise<any[]> {
+async function getDomain(domain: string, serverID: number, pool: Pool): Promise<any[]> {
   let conn;
   try {
     conn = await pool.getConnection();
@@ -46,8 +70,8 @@ async function getDomain(domain: string, pool: Pool): Promise<any[]> {
       IF(mx_status = 'OK', true, false) AS MX,
       IF(spf_status = 'OK' AND dkim_status = 'OK' AND return_path_status = 'OK' AND mx_status = 'OK', true, false) AS ok
       FROM domains
-      WHERE name = ?
-    `, [domain]);
+      WHERE name = ? AND owner_id = ?
+    `, [domain, serverID]);
     const mappedResult = result.map((row: any) => ({
       domain: row.domain,
       id: row.id,
@@ -67,7 +91,7 @@ async function getDomain(domain: string, pool: Pool): Promise<any[]> {
   }
 }
 
-async function getAllDomains(pool: Pool): Promise<any[]> {
+async function getAllDomains(serverID: number, pool: Pool): Promise<any[]> {
   let conn;
   try {
     conn = await pool.getConnection();
@@ -79,7 +103,8 @@ async function getAllDomains(pool: Pool): Promise<any[]> {
       IF(mx_status = 'OK', true, false) AS MX,
       IF(spf_status = 'OK' AND dkim_status = 'OK' AND return_path_status = 'OK' AND mx_status = 'OK', true, false) AS ok
       FROM domains
-    `);
+      WHERE owner_id = ?
+    `, [serverID]);
 
     // Map over the result to create the dns object
     const mappedResult = result.map((row: any) => ({
@@ -102,16 +127,16 @@ async function getAllDomains(pool: Pool): Promise<any[]> {
   }
 }
 
-async function deleteDomain(domain: string, pool: Pool): Promise<boolean> {
-  const domainID = await getDomainID(domain, pool);
+async function deleteDomain(domain: string, serverID: number, pool: Pool): Promise<boolean> {
+  const domainID = await getDomainID(domain, serverID, pool);
   if (!domainID) throw new Error('Domain not found');
   let conn;
   try {
     conn = await pool.getConnection();
     const result = await conn.query(`
       DELETE FROM domains
-      WHERE uuid = ?
-    `, [domainID]);
+      WHERE uuid = ? AND owner_id = ?
+    `, [domainID, serverID]);
     return result.affectedRows > 0;
   } catch (err: any) {
     throw new Error(err);
@@ -120,4 +145,4 @@ async function deleteDomain(domain: string, pool: Pool): Promise<boolean> {
   }
 }
 
-export { getDomainID, getDomainRootID, getDomain, getAllDomains, deleteDomain };
+export { Domain, getDomainRootID };

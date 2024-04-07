@@ -11,7 +11,9 @@ const port = process.env.PORT || 3001;
 app.use(express.json()); // for parsing application/json
 
 import DB from './db/db';
-const db = DB.getInstance();
+import CONNECTION from './db/connection';
+const conn = CONNECTION.getInstance();
+let db: DB;
 
 
 // FUNCTIONS ------------------------------------------------------------------
@@ -28,18 +30,6 @@ async function initPuppetWithConfig() {
   return puppetInstance;
 }
 
-// Request logging middleware
-app.use(Utils.logRequest);
-
-// server variables middleware
-// this function will take an api key in if the org is different, and assign it here
-app.use((req, res, next) => {
-  res.locals.org = "anonacy";
-  // res.locals.server = "anonacy";
-  res.locals.server = process.env.NODE_ENV == "production" ? "anonacy" : "testing";
-  next();
-});
-
 // This is a higher-order function that takes an async function and returns a new function that catches any errors and passes them to next()
 function catchErrors(fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) {
   return async function(req: Request, res: Response, next: NextFunction) {
@@ -50,6 +40,43 @@ function catchErrors(fn: (req: Request, res: Response, next: NextFunction) => Pr
     }
   }
 }
+
+// MIDDLEWARE -----------------------------------------------------------------
+
+// Request logging middleware
+app.use(Utils.logRequest);
+
+// server variables middleware, check postal api key and assign postal org and server
+app.use(async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    if(authHeader.split(' ')[0] == 'Bearer') {
+      const apiKey = authHeader.split(' ')[1]; // Bearer TOKEN
+      if(apiKey) {
+        const org = await conn.auth(apiKey);
+        if(org) {
+          // Set all of these to correctly filter postal. 
+          // In puppeteer code, urls need the names. In SQL querys, we need the serverID.
+          res.locals.org = org.organization_name; // string
+          res.locals.orgID = org.organization_id; // number
+          res.locals.server = org.server_name; // string
+          res.locals.serverID = org.server_id; // number
+          db = DB.getInstance(res.locals.serverID);
+          next();
+        } else {
+          res.status(401).json({ error: 'Unauthorized: API_KEY is invalid' });
+        }
+      } else {
+        res.status(401).json({ error: 'Unauthorized: No API_KEY Provided. Follow the [Authorization: Bearer API_KEY] header scheme' });
+      }
+    } else {
+      res.status(401).json({ error: 'Unauthorized: Authorization header formatted incorrectly. Follow the [Authorization: Bearer API_KEY] header scheme' });
+    }
+  }else {
+    res.status(401).json({ error: 'Unauthorized: No Authorization Header' });
+  }
+});
+
 // SWAGGER DOCS ---------------------------------------------------------------
 
 import { spec, swaggerUi, options } from './docs/swagger';
@@ -156,15 +183,15 @@ app.post('/alias', catchErrors( async (req, res) => {
 // PUT ------------------------------------------------------------------------
 
 app.put('/alias', catchErrors( async (req, res) => {
-  const { alias, endpoint, enable } = req.body;
+  const { alias, endpoint, enabled } = req.body;
   let success = false;
-  if(enable == undefined || enable == null) {
+  if(enabled == undefined || enabled == null) {
     res.status(400).send("Enable parameter is required");
     return;
   }
-  if(enable === true) {
+  if(enabled === true) {
     success = await db.alias.enable(alias, endpoint);
-  } else if (enable === false){
+  } else if (enabled === false){
     success = await db.alias.disable(alias);
   } else {
     res.status(400).send("Enable parameter needs to be a boolean");

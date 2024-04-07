@@ -15,8 +15,8 @@ export async function addEndpoint(options: {
   endpoint: string;
   id: string;
 }> {
-  const { org, server } = options.res.locals; // which postal org and server to use
-  const db = DB.getInstance();
+  const { org, server, serverID } = options.res.locals; // which postal org and server to use
+  const db = DB.getInstance(serverID);
 
   const endpoint = options.endpoint;
   // const { username, domain } = await Utils.decomposeEmail(endpoint);

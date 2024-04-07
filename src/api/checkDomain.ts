@@ -33,10 +33,10 @@ export async function checkDomain(options: {
   dns: DNS,
   domain: string;
 }> {
-  const { org, server } = options.res.locals; // which postal org and server to use
+  const { org, server, serverID } = options.res.locals; // which postal org and server to use
 
   // check if domain is already setup via db
-  const db = DB.getInstance();
+  const db = DB.getInstance(serverID);
   const domain: any = await db.domain.get(options.domain);
   if(!domain) throw new Error('Domain not found');
   const domainID = domain.id;
