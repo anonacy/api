@@ -14,7 +14,7 @@ class Alias {
     return await getAllAliases(this._serverID, this._pool, domain);
   }
 
-  async deleteAlias(alias: string): Promise<boolean> {
+  async delete(alias: string): Promise<boolean> {
     return await deleteAlias(alias, this._serverID, this._pool);
   }
 

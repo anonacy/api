@@ -62,6 +62,7 @@ app.use(async (req, res, next) => {
           res.locals.server = org.server_name; // string
           res.locals.serverID = org.server_id; // number
           db = DB.getInstance(res.locals.serverID);
+          next();
         } else {
           res.status(401).json({ error: 'Unauthorized: API_KEY is invalid' });
         }
@@ -74,7 +75,6 @@ app.use(async (req, res, next) => {
   }else {
     res.status(401).json({ error: 'Unauthorized: No Authorization Header' });
   }
-  next()
 });
 
 // SWAGGER DOCS ---------------------------------------------------------------
@@ -183,15 +183,15 @@ app.post('/alias', catchErrors( async (req, res) => {
 // PUT ------------------------------------------------------------------------
 
 app.put('/alias', catchErrors( async (req, res) => {
-  const { alias, endpoint, enable } = req.body;
+  const { alias, endpoint, enabled } = req.body;
   let success = false;
-  if(enable == undefined || enable == null) {
+  if(enabled == undefined || enabled == null) {
     res.status(400).send("Enable parameter is required");
     return;
   }
-  if(enable === true) {
+  if(enabled === true) {
     success = await db.alias.enable(alias, endpoint);
-  } else if (enable === false){
+  } else if (enabled === false){
     success = await db.alias.disable(alias);
   } else {
     res.status(400).send("Enable parameter needs to be a boolean");
