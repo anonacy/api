@@ -51,32 +51,23 @@ app.use(async (req, res, next) => {
   if (req.path.startsWith('/docs')) { // docs route bypasses apikey auth
     next();
   } else {
-    const authHeader = req.headers.authorization;
-    if (authHeader) {
-      if(authHeader.split(' ')[0] == 'Bearer') {
-        const apiKey = authHeader.split(' ')[1]; // Bearer TOKEN
-        if(apiKey) {
-          const org = await conn.auth(apiKey);
-          if(org) {
-            // Set all of these to correctly filter postal. 
-            // In puppeteer code, urls need the names. In SQL querys, we need the serverID.
-            res.locals.org = org.organization_name; // string
-            res.locals.orgID = org.organization_id; // number
-            res.locals.server = org.server_name; // string
-            res.locals.serverID = org.server_id; // number
-            db = DB.getInstance(res.locals.serverID);
-            next();
-          } else {
-            res.status(401).json({ error: 'Unauthorized: API_KEY is invalid' });
-          }
-        } else {
-          res.status(401).json({ error: 'Unauthorized: No API_KEY Provided. Follow the [Authorization: Bearer API_KEY] header scheme' });
-        }
+    let apiKey: string = String(req.headers['x-api-key']);
+    if(apiKey) {
+      const org = await conn.auth(apiKey);
+      if(org) {
+        // Set all of these to correctly filter postal. 
+        // In puppeteer code, urls need the names. In SQL querys, we need the serverID.
+        res.locals.org = org.organization_name; // string
+        res.locals.orgID = org.organization_id; // number
+        res.locals.server = org.server_name; // string
+        res.locals.serverID = org.server_id; // number
+        db = DB.getInstance(res.locals.serverID);
+        next();
       } else {
-        res.status(401).json({ error: 'Unauthorized: Authorization header formatted incorrectly. Follow the [Authorization: Bearer API_KEY] header scheme' });
+        res.status(401).json({ error: 'Unauthorized: API_KEY is invalid' });
       }
-    }else {
-      res.status(401).json({ error: 'Unauthorized: No Authorization Header' });
+    } else {
+      res.status(401).json({ error: 'Unauthorized: No API_KEY Provided. Follow the [x-api-key: API_KEY] header scheme' });
     }
   }
 });

@@ -43,7 +43,7 @@ const api = {
     ],
     components: {
       securitySchemes: {
-        ApiKeyAuth: {
+        ApiKey: {
           type: 'apiKey',
           in: 'header',
           name: 'x-api-key',
