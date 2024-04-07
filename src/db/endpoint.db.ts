@@ -1,14 +1,34 @@
 import { Pool } from 'mariadb';
 
-async function getEndpointID(endpoint: string, pool: Pool): Promise<string | null> {
+class Endpoint {
+  constructor(private _serverID: number, private _pool: Pool) {}
+
+  async id(endpoint: string): Promise<string | null> {
+    return await getEndpointID(endpoint, this._serverID, this._pool);
+  }
+
+  async rootID(endpoint: string): Promise<string | null> {
+    return await getEndpointRootID(endpoint, this._serverID, this._pool);
+  }
+
+  async all(): Promise<any[]> {
+    return await getAllEndpoints(this._serverID, this._pool);
+  }
+
+  async delete(endpoint: string): Promise<boolean> {
+    return await deleteEndpoint(endpoint, this._serverID, this._pool);
+  }
+}
+
+async function getEndpointID(endpoint: string, serverID: number, pool: Pool): Promise<string | null> {
   let conn;
   try {
     conn = await pool.getConnection();
     const rows = await conn.query(`
       SELECT uuid
       FROM address_endpoints
-      WHERE address = ?
-    `, [endpoint]);
+      WHERE address = ? AND server_id = ?
+    `, [endpoint, serverID]);
     return rows[0] ? rows[0].uuid : null;
   } catch (err: any) {
     throw new Error(err);
@@ -17,15 +37,15 @@ async function getEndpointID(endpoint: string, pool: Pool): Promise<string | nul
   }
 }
 
-async function getEndpointRootID(endpoint: string, pool: Pool): Promise<string | null> {
+async function getEndpointRootID(endpoint: string, serverID: number, pool: Pool): Promise<string | null> {
   let conn;
   try {
     conn = await pool.getConnection();
     const rows = await conn.query(`
       SELECT id
       FROM address_endpoints
-      WHERE address = ?
-    `, [endpoint]);
+      WHERE address = ? AND server_id = ?
+    `, [endpoint, serverID]);
     return rows[0] ? rows[0].id : null;
   } catch (err: any) {
     throw new Error(err);
@@ -34,14 +54,15 @@ async function getEndpointRootID(endpoint: string, pool: Pool): Promise<string |
   }
 }
 
-async function getAllEndpoints(pool: Pool): Promise<any[]> {
+async function getAllEndpoints(serverID: number, pool: Pool): Promise<any[]> {
   let conn;
   try {
     conn = await pool.getConnection();
     const result = await conn.query(`
       SELECT uuid AS id, address AS endpoint
       FROM address_endpoints
-    `);
+      WHERE server_id = ?
+    `, [serverID]);
     return result;
   } catch (err: any) {
     throw new Error(err);
@@ -50,16 +71,16 @@ async function getAllEndpoints(pool: Pool): Promise<any[]> {
   }
 }
 
-async function deleteEndpoint(endpoint: string, pool: Pool): Promise<boolean> {
-  const endpointID = await getEndpointID(endpoint, pool);
+async function deleteEndpoint(endpoint: string, serverID: number, pool: Pool): Promise<boolean> {
+  const endpointID = await getEndpointID(endpoint, serverID, pool);
   if (!endpointID) throw new Error('Endpoint not found');
   let conn;
   try {
     conn = await pool.getConnection();
     const result = await conn.query(`
       DELETE FROM address_endpoints
-      WHERE uuid = ?
-    `, [endpointID]);
+      WHERE uuid = ? AND server_id = ?
+    `, [endpointID, serverID]);
     return result.affectedRows > 0;
   } catch (err: any) {
     throw new Error(err);
@@ -69,4 +90,4 @@ async function deleteEndpoint(endpoint: string, pool: Pool): Promise<boolean> {
 }
 
 
-export { getEndpointID, getEndpointRootID, getAllEndpoints, deleteEndpoint };
+export { Endpoint, getEndpointRootID };

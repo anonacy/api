@@ -1,17 +1,57 @@
 import { Utils } from "../utils";
 import { Pool } from 'mariadb';
+import { getDomainRootID } from './domain.db';
+import { getEndpointRootID } from './endpoint.db';
 
-async function getAliasID(alias: string, pool: Pool): Promise<string | null> {
+class Alias {
+  constructor(private _serverID: number, private _pool: Pool) {}
+
+  async id(alias: string): Promise<string | null> {
+    return await getAliasID(alias, this._serverID, this._pool);
+  }
+
+  async all(domain?: string): Promise<any[]> {
+    return await getAllAliases(this._serverID, this._pool, domain);
+  }
+
+  async deleteAlias(alias: string): Promise<boolean> {
+    return await deleteAlias(alias, this._serverID, this._pool);
+  }
+
+  async status(alias: string): Promise<boolean> {
+    return await getAliasStatus(alias, this._serverID, this._pool);
+  }
+
+  async enable(alias: string, endpoint: string): Promise<boolean> {
+    return enableAlias(alias, endpoint, this._serverID, this._pool);
+  }
+
+  async disable(alias: string): Promise<boolean> {
+    return disableAlias(alias, this._serverID, this._pool);
+  }
+
+  async toggle(alias: string, endpoint: string): Promise<boolean> {
+    const enabled = await this.status(alias);
+    if (enabled) {
+      return disableAlias(alias, this._serverID, this._pool);
+    } else {
+      return enableAlias(alias, endpoint, this._serverID, this._pool);
+    }
+  }
+}
+
+
+async function getAliasID(alias: string, serverID: number, pool: Pool): Promise<string | null> {
   const { username, domain } = Utils.decomposeEmail(alias);
   let conn;
   try {
     conn = await pool.getConnection();
     const rows = await conn.query(`
-      SELECT routes.uuid
-      FROM routes
-      JOIN domains ON routes.domain_id = domains.id
-      WHERE routes.name = ? AND domains.name = ?
-    `, [username, domain]);
+    SELECT routes.uuid
+    FROM routes
+    JOIN domains ON routes.domain_id = domains.id
+    WHERE routes.name = ? AND domains.name = ? AND routes.server_id = ?
+  `, [username, domain, serverID]);
     return rows[0] ? rows[0].uuid : null;
   } catch (err: any) {
     throw new Error(err);
@@ -20,82 +60,8 @@ async function getAliasID(alias: string, pool: Pool): Promise<string | null> {
   }
 }
 
-async function deleteAlias(alias: string, pool: Pool): Promise<boolean> {
-  const aliasID = await getAliasID(alias, pool);
-  if (!aliasID) throw new Error('Alias not found');
-  let conn;
-  try {
-    conn = await pool.getConnection();
-    const result = await conn.query(`
-      DELETE FROM routes
-      WHERE uuid = ?
-    `, [aliasID]);
-    return result.affectedRows > 0;
-  } catch (err: any) {
-    throw new Error(err);
-  } finally {
-    if (conn) conn.end();
-  }
-}
-
-async function disableAlias(alias: string, pool: Pool): Promise<boolean> {
-  const aliasID = await getAliasID(alias, pool);
-  if (!aliasID) throw new Error('Alias not found');
-  let conn;
-  try {
-    conn = await pool.getConnection();
-    const result = await conn.query(`
-      UPDATE routes
-      SET endpoint_id = NULL, endpoint_type = NULL, mode = 'Hold'
-      WHERE uuid = ?
-    `, [aliasID]);
-    return result.affectedRows > 0;
-  } catch (err: any) {
-    throw new Error(err);
-  } finally {
-    if (conn) conn.end();
-  }
-}
-
-async function enableAlias(alias: string, endpointRootID: string, pool: Pool): Promise<boolean> {
-  const aliasID = await getAliasID(alias, pool);
-  if (!aliasID || !endpointRootID) throw new Error('Alias or endpoint not found');
-  let conn;
-  try {
-    conn = await pool.getConnection();
-    const result = await conn.query(`
-      UPDATE routes
-      SET endpoint_id = ?, endpoint_type = 'AddressEndpoint', mode = 'Endpoint'
-      WHERE uuid = ?
-    `, [endpointRootID, aliasID]);
-    return result.affectedRows > 0;
-  } catch (err: any) {
-    throw new Error(err);
-  } finally {
-    if (conn) conn.end();
-  }
-}
-
-async function getAliasStatus(alias: string, pool: Pool): Promise<boolean> {
-  const aliasID = await getAliasID(alias, pool);
-  if (!aliasID) throw new Error('Alias not found');
-  let conn;
-  try {
-    conn = await pool.getConnection();
-    const result = await conn.query(`
-      SELECT mode
-      FROM routes
-      WHERE uuid = ?
-    `, [aliasID]);
-    return result[0].mode === 'Endpoint';
-  } catch (err: any) {
-    throw new Error(err);
-  } finally {
-    if (conn) conn.end();
-  }
-}
-
-async function getAllAliases(pool: Pool, domainRootID?: string): Promise<any[]> {
+async function getAllAliases(serverID: number, pool: Pool, domain?: string): Promise<any[]> {
+  const domainRootID = domain ? await getDomainRootID(domain, serverID, pool) : undefined;
   let conn;
   try {
     conn = await pool.getConnection();
@@ -105,8 +71,9 @@ async function getAllAliases(pool: Pool, domainRootID?: string): Promise<any[]> 
       FROM routes r
       LEFT JOIN address_endpoints e ON r.endpoint_id = e.id
       LEFT JOIN domains d ON r.domain_id = d.id
-      ${domainRootID ? `WHERE d.id = '${domainRootID}'` : ''}
-    `);
+      WHERE r.server_id = ?
+      ${domainRootID ? ` AND d.id = '${domainRootID}'` : ''}
+    `, [serverID]);
     return result;
   } catch (err: any) {
     throw new Error(err);
@@ -115,5 +82,81 @@ async function getAllAliases(pool: Pool, domainRootID?: string): Promise<any[]> 
   }
 }
 
+async function deleteAlias(alias: string, serverID: number, pool: Pool): Promise<boolean> {
+  const aliasID = await getAliasID(alias, serverID, pool);
+  if (!aliasID) throw new Error('Alias not found');
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const result = await conn.query(`
+      DELETE FROM routes
+      WHERE uuid = ? AND server_id = ?
+    `, [aliasID, serverID]);
+    return result.affectedRows > 0;
+  } catch (err: any) {
+    throw new Error(err);
+  } finally {
+    if (conn) conn.end();
+  }
+}
 
-export { getAliasID, deleteAlias, disableAlias, enableAlias, getAliasStatus, getAllAliases };
+async function enableAlias(alias: string, endpoint: string, serverID: number, pool: Pool): Promise<boolean> {
+  const endpointRootID = await getEndpointRootID(endpoint, serverID, pool);
+  if (!endpointRootID) throw new Error('Endpoint not found');
+  const aliasID = await getAliasID(alias, serverID, pool);
+  if (!aliasID || !endpointRootID) throw new Error('Alias or endpoint not found');
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const result = await conn.query(`
+      UPDATE routes
+      SET endpoint_id = ?, endpoint_type = 'AddressEndpoint', mode = 'Endpoint'
+      WHERE uuid = ? AND server_id = ?
+    `, [endpointRootID, aliasID, serverID]);
+    return result.affectedRows > 0;
+  } catch (err: any) {
+    throw new Error(err);
+  } finally {
+    if (conn) conn.end();
+  }
+}
+
+async function disableAlias(alias: string, serverID: number, pool: Pool): Promise<boolean> {
+  const aliasID = await getAliasID(alias, serverID, pool);
+  if (!aliasID) throw new Error('Alias not found');
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const result = await conn.query(`
+      UPDATE routes
+      SET endpoint_id = NULL, endpoint_type = NULL, mode = 'Hold'
+      WHERE uuid = ? AND server_id = ?
+    `, [aliasID, serverID]);
+    return result.affectedRows > 0;
+  } catch (err: any) {
+    throw new Error(err);
+  } finally {
+    if (conn) conn.end();
+  }
+}
+
+async function getAliasStatus(alias: string, serverID: number, pool: Pool): Promise<boolean> {
+  const aliasID = await getAliasID(alias, serverID, pool);
+  if (!aliasID) throw new Error('Alias not found');
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const result = await conn.query(`
+      SELECT mode
+      FROM routes
+      WHERE uuid = ? AND server_id = ?
+    `, [aliasID, serverID]);
+    return result[0].mode === 'Endpoint';
+  } catch (err: any) {
+    throw new Error(err);
+  } finally {
+    if (conn) conn.end();
+  }
+}
+
+export { Alias };
