@@ -8,23 +8,30 @@ const api = {
     info: {
       title: '@anonacy/postal-api',
       version,
-      description: `<b>- About</b><br/><br/>Anonacy's postal api allows simplified control over a [Postal](https://postalserver.io) open-source mail server. It is designed for email aliasing, by intelligently managing the 'Routes' system within Postal, while Postal handles the mail forwarding between smtp servers. It also provides a simple way to manage domains and email endpoints, needed for aliases.
+      description: `<b>- About</b><br/><br/>Anonacy's postal api enables control over a [Postal](https://postalserver.io) mail server. It is designed for email aliasing, by managing the 'Routing' system within Postal, while Postal handles the smtp forwarding.
       <br/><br/>
-      The API can be used in broader ways, and will continually be enhanced. It works by utilizing direct mySQL queries in Postal's database, as well as using [puppeteer](https://pptr.dev) for more complex interactions.
+      The API can be used in many ways, and will continually be enhanced. It works by utilizing direct mySQL queries in Postal's database, as well as using [puppeteer](https://pptr.dev) for more complex interactions.
       <br/><br/>
-      This system is now currently used to power the [anonacy](anonacy.com) and [hiddenlogin](https://hiddenlogin.com) platforms.
+      This system is used to power the [anonacy](anonacy.com) and [hiddenlogin](https://hiddenlogin.com) platforms.
       <br/><br/>
-      It is proxied as the [v2] api at [api.anonacy.com/v2](https://api.anonacy.com/v2/docs). The open-source version of the Anonacy platform will be coming soon, using the v2 postal api as the backend. Currently, the [v1](https://api.anonacy.com/v1/docs) api has been updated with logic to use the v2 api for the relevant alias management to preserve functionality of the current platform.
+      It is mounted as the [v2] api at [api.anonacy.com/v2](https://api.anonacy.com/v2/docs). Currently, the [v1](https://api.anonacy.com/v1/docs) api has been updated with logic to use the v2 api for the relevant alias management to preserve functionality of the current platform.
       <br/><hr/>
       <b>- Authorization</b>
       <br/><br/>
-      This api uses [ApiKey](https://swagger.io/docs/specification/authentication/api-keys/) authorization. The ApiKey will be provided to you or it can be generated using the credentials system in the Postal server. The Api Key will automatically scope all requests to the Postal organization & server that it is assigned for. It needs to be attached to ALL requests using the '<b>x-api-key</b>' header.
+      All requests require the header: '<b>Authorization: Bearer APIKEY</b>'
+      <br/><br/>
+      This api uses an api key with [Bearer](https://swagger.io/docs/specification/authentication/bearer-authentication/) authorization. The api key will be provided to you or it can be generated using the credentials system in the Postal server. The api key will automatically scope all requests to the Postal organization & server that it is assigned for.
+      <br/><br/>
+      The api key needs to be attached to ALL requests using the '<b>Authorization</b>' header, with the value set as '<b>Bearer APIKEY</b>'. Always use https when making requests to the api.
       <br/><br/><hr/>
       <b>- General Usage</b>
-      <ul><li>[POST] /domain - add a domain</li><li>[GET] /domain?domain=[domain_name] - domain dns setup info</li><li>[POST] /alias - Create alias</li><li>[PUT] /alias - toggle alias enabled</li></ul>
+      <br/><br/>
+      To get started, you should first add and setup a domain name, then you can add aliases.
+      <ul><li>[POST] /domain - add a domain</li><li>[GET] /domain?domain=[domain_name] - domain dns setup info</li><li>[POST] /alias - Create alias</li><li>[PUT] /alias - toggle alias forwarding</li></ul>
       <br/>
-      Detailed usage of api endpoints found below. The endpoints are mounted at /v2. For example, [/domains] in these docs maps to [api.anonacy.com/v2/domains].
+      Full api functionality is found below, along with request and response data. The api endpoints are mounted at /v2. For example, [/domains] in these docs maps to [api.anonacy.com/v2/domains].
       <br/><br/><hr/>
+      Once licensing is in place, the source code will be made public.
       `,
       contact: {
         name: "[support@anonacy.com]",
@@ -43,17 +50,16 @@ const api = {
     ],
     components: {
       securitySchemes: {
-        ApiKey: {
-          type: 'apiKey',
-          in: 'header',
-          name: 'x-api-key',
+        Authorization: {
+          type: 'http',
+          scheme: 'bearer',
         },
       },
     },
-    externalDocs: {
-      description: 'View Source Code',
-      url: 'https://github.com/hewham/anonacy-puppet'
-    },
+    // externalDocs: {
+    //   description: 'View Source Code',
+    //   url: 'https://github.com/hewham/anonacy-puppet'
+    // },
   },
   apis: [
     './src/docs/api/domain.yaml', 
