@@ -6,9 +6,9 @@ const api = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: '@anonacy/postal-api',
+      title: '@anonacy/api [v2]',
       version,
-      description: `<b>- About</b><br/><br/>Anonacy's postal api enables control over a smtp mail server. It is designed for email aliasing, by managing the 'Routing' system within [Postal](https://postalserver.io), which handles the smtp forwarding.
+      description: `<b>- About</b><br/><br/>Anonacy's v2 api enables control over a smtp mail server. It is designed for email aliasing, by managing the 'Routing' system within [Postal](https://postalserver.io), which handles the smtp forwarding.
       <br/><br/>
       This system is used to power the [anonacy](https://anonacy.com) and [hiddenlogin](https://hiddenlogin.com) platforms.
       <br/><br/>
