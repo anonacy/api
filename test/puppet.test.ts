@@ -23,7 +23,7 @@ describe('API Tests', function() {
   it('health check', (done) => {
     request(URL)
       .get('/health')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .end((err, res) => {
         expect(res.status).to.equal(200);
         done();
@@ -33,7 +33,7 @@ describe('API Tests', function() {
   it('add a domain', (done) => {
     request(URL)
       .post('/domain')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send({"domain": VARS.domain})
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -45,7 +45,7 @@ describe('API Tests', function() {
   it('check domain was created', (done) => {
     request(URL)
       .get('/domains')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -61,7 +61,7 @@ describe('API Tests', function() {
   it('get dns setup details for domain', (done) => {
     request(URL)
       .get(`/domain?domain=${VARS.domain}`)
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -84,10 +84,22 @@ describe('API Tests', function() {
       });
   });
 
+  it('Error when trying to add domain again', (done) => {
+    request(URL)
+      .post('/domain')
+      .set('Authorization', `Bearer ${API_KEY}`)
+      .send({"domain": VARS.domain})
+      .end((err, res) => {
+        expect(res.statusCode).to.equal(500);
+        expect(res.body.error).to.equal("Domain already exists");
+        done();
+      });
+  });
+
   it('add an endpoint', (done) => {
     request(URL)
       .post('/endpoint')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send({"endpoint": VARS.endpoint})
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -99,7 +111,7 @@ describe('API Tests', function() {
   it('find the endpoint in list', (done) => {
     request(URL)
       .get('/endpoints')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -112,10 +124,22 @@ describe('API Tests', function() {
       });
   });
 
+  it('error when trying to add endpoint again', (done) => {
+    request(URL)
+      .post('/endpoint')
+      .set('Authorization', `Bearer ${API_KEY}`)
+      .send({"endpoint": VARS.endpoint})
+      .end((err, res) => {
+        expect(res.statusCode).to.equal(500);
+        expect(res.body.error).to.equal("Endpoint already exists");
+        done();
+      });
+  });
+
   it('add an alias', (done) => {
     request(URL)
       .post('/alias')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send({"alias": VARS.alias, "endpoint": VARS.endpoint})
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -128,7 +152,7 @@ describe('API Tests', function() {
   it('check alias was created', (done) => {
     request(URL)
       .get('/aliases')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -144,7 +168,7 @@ describe('API Tests', function() {
   it('disable the alias', (done) => {
     request(URL)
       .put('/alias')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send({"alias": VARS.alias, "endpoint": VARS.endpoint, "enabled": false})
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -156,7 +180,7 @@ describe('API Tests', function() {
   it('check alias was disabled', (done) => {
     request(URL)
       .get('/aliases')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -171,7 +195,7 @@ describe('API Tests', function() {
   it('enable the alias', (done) => {
     request(URL)
       .put('/alias')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send({"alias": VARS.alias, "endpoint": VARS.endpoint, "enabled": true})
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -183,7 +207,7 @@ describe('API Tests', function() {
   it('check alias was enabled', (done) => {
     request(URL)
       .get('/aliases')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -196,10 +220,22 @@ describe('API Tests', function() {
       });
   });
 
+  it('error when trying to add alias again', (done) => {
+    request(URL)
+      .post('/alias')
+      .set('Authorization', `Bearer ${API_KEY}`)
+      .send({"alias": VARS.alias, "endpoint": VARS.endpoint})
+      .end((err, res) => {
+        expect(res.statusCode).to.equal(500);
+        expect(res.body.error).to.equal("Alias already exists");
+        done();
+      });
+  });
+
   it('delete the alias', (done) => {
     request(URL)
       .delete('/alias')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send({"alias": VARS.alias})
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -211,7 +247,7 @@ describe('API Tests', function() {
   it('check alias was deleted', (done) => {
     request(URL)
       .get('/aliases')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -224,7 +260,7 @@ describe('API Tests', function() {
   it('delete the endpoint', (done) => {
     request(URL)
       .delete('/endpoint')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send({"endpoint": VARS.endpoint})
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -236,7 +272,7 @@ describe('API Tests', function() {
   it('check endpoint was deleted', (done) => {
     request(URL)
       .get('/endpoints')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -249,7 +285,7 @@ describe('API Tests', function() {
   it('delete the domain', (done) => {
     request(URL)
       .delete('/domain')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send({"domain": VARS.domain})
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
@@ -261,7 +297,7 @@ describe('API Tests', function() {
   it('check domain was deleted', (done) => {
     request(URL)
       .get('/domains')
-      .set('x-api-key', `${API_KEY}`)
+      .set('Authorization', `Bearer ${API_KEY}`)
       .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);

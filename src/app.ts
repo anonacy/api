@@ -35,8 +35,8 @@ function catchErrors(fn: (req: Request, res: Response, next: NextFunction) => Pr
   return async function(req: Request, res: Response, next: NextFunction) {
     try {
       await fn(req, res, next);
-    } catch (err) {
-      next(err);
+    } catch (err: any) {
+      next(err)
     }
   }
 }
@@ -232,17 +232,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
   res.status(500).send({ error: err.message }); // Send error message to client
 });
 
-const server = app.listen(port, () => {
+app.listen(port, () => {
   console.log("-------------------------");
   console.log(`Puppet Server is running  at ${process.env.API_DOMAIN}${process.env.NODE_ENV == 'production' ? '' : ':' + port}`);
 });
-
-/* 
-  FIXME:
-  This export breaks unbuild. not really sure why.
-  It is needed to run self served mocha tests
-  Remove it for prod builds for now, Ill fix it later
-  In the meantime, just do tests by running localhost server and using URL
-*/
-
-// export { app, server };

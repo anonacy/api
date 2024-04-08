@@ -13,12 +13,16 @@ export async function addDomain(options: {
 }): Promise<{
   success: boolean;
   domain: string;
-  id: string;
   note: string;
 }> {
   const { org, server, serverID } = options.res.locals; // which postal org and server to use
   const db = DB.getInstance(serverID);
+  
+  // check if domain already exists
+  const exists = await db.domain.exists(options.domain);
+  if(exists) throw new Error('Domain already exists');
 
+  // open add domain page
   await options.puppetInstance.page.goto(Utils.urlDictionary('addDomain', org, server));
   await options.puppetInstance.page.waitForNetworkIdle();
   
@@ -28,30 +32,30 @@ export async function addDomain(options: {
   await options.puppetInstance.page.waitForSelector('input[id="domain_name"]');
   await options.puppetInstance.page.type('input[id="domain_name"]', options.domain);
   await options.puppetInstance.page.click('[name="commit"]');
-  try {
-    await options.puppetInstance.page.waitForNavigation({ timeout: 3000, waitUntil: 'networkidle0' });
-  } catch (error) {
-    if(await options.puppetInstance.page.$$('div.formErrors')) {
-      throw new Error("Domain already added");
-    };
+
+  const navigationPromise = options.puppetInstance.page.waitForNavigation();
+  const errorMessagePromise = options.puppetInstance.page.waitForSelector('.formErrors');
+
+  // Race the promises
+  await Promise.race([navigationPromise, errorMessagePromise]);
+
+  // Check the current page URL
+  const url = await options.puppetInstance.page.url();
+  if(!Utils.urlContains(url, "setup")){
+    // This case means the page didn't refresh, there should be an error message
+    const errorMessageElement = await options.puppetInstance.page.$('.formErrors');
+    if (errorMessageElement) {
+      // The error message promise resolved first, an error message showed up
+      const errorMessage = await options.puppetInstance.page.evaluate(el => el.textContent, errorMessageElement);
+      throw new Error(errorMessage ? errorMessage : 'An error occurred');
+    }
   }
 
-  // Check if success domain is loaded
-  if(!Utils.urlContains(options.puppetInstance.page.url(), "setup")){
-    throw new Error("Failed to add domain");
-  }
-  let domainID = await Utils.getIdFromUrl(options.puppetInstance.page.url());
-
-  let domainID2 = await db.domain.id(options.domain);
-
-  if(domainID !== domainID2) {
-    throw new Error("Domain ID mismatch");
-  }
+  let domainID = await db.domain.id(options.domain);
 
   return {
-    success: domainID2 ? true : false,
+    success: domainID ? true : false,
     domain: options.domain,
-    id: domainID,
-    note: "Domain added to system, please use the checkDomain endpoint to setup DNS"
+    note: "Domain added to system, please use the GET /domain endpoint to setup DNS"
   };
 }

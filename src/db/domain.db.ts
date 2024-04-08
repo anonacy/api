@@ -11,6 +11,11 @@ class Domain {
     return getDomainRootID(domain, this._serverID, this._pool);
   }
 
+  async exists(domain: string): Promise<boolean> {
+    let id = await this.id(domain);
+    return id != null ? true : false;
+  }
+
   async all(): Promise<string[]> {
     return getAllDomains(this._serverID, this._pool);
   }

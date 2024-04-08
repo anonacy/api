@@ -10,6 +10,11 @@ class Alias {
     return await getAliasID(alias, this._serverID, this._pool);
   }
 
+  async exists(alias: string): Promise<boolean> {
+    let id = await this.id(alias);
+    return id != null ? true : false;
+  }
+
   async all(domain?: string): Promise<any[]> {
     return await getAllAliases(this._serverID, this._pool, domain);
   }

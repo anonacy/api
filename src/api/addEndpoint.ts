@@ -13,14 +13,15 @@ export async function addEndpoint(options: {
 }): Promise<{
   success: boolean;
   endpoint: string;
-  id: string;
 }> {
   const { org, server, serverID } = options.res.locals; // which postal org and server to use
   const db = DB.getInstance(serverID);
+  
+  // check if endpoint already exists
+  const exists = await db.endpoint.exists(options.endpoint);
+  if(exists) throw new Error('Endpoint already exists');
 
-  const endpoint = options.endpoint;
-  // const { username, domain } = await Utils.decomposeEmail(endpoint);
-
+  // open add endpoint page
   await options.puppetInstance.page.goto(Utils.urlDictionary('addEndpoint', org, server));
   await options.puppetInstance.page.waitForNetworkIdle();
   
@@ -29,7 +30,7 @@ export async function addEndpoint(options: {
 
 
   await options.puppetInstance.page.waitForSelector('input[id="address_endpoint_address"]');
-  await options.puppetInstance.page.type('input[id="address_endpoint_address"]', endpoint);
+  await options.puppetInstance.page.type('input[id="address_endpoint_address"]', options.endpoint);
   await options.puppetInstance.page.click('[name="commit"]');
   try {
     await options.puppetInstance.page.waitForNavigation({ timeout: 3000, waitUntil: 'networkidle0' });
@@ -40,11 +41,10 @@ export async function addEndpoint(options: {
   }
 
   // check db for endpoint
-  let endpointID = await db.endpoint.id(endpoint);
+  let endpointID = await db.endpoint.id(options.endpoint);
 
   return {
     success: endpointID ? true : false,
-    endpoint,
-    id: endpointID ? endpointID : ''
+    endpoint: options.endpoint
   };
 }

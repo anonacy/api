@@ -13,12 +13,15 @@ export async function addAlias(options: {
 }): Promise<{
   success: boolean;
   alias: string;
-  id: string;
   endpoint: string;
 }> {
   const { username, domain } = await Utils.decomposeEmail(options.alias);
   const { org, server, serverID } = options.res.locals; // which postal org and server to use
   const db = DB.getInstance(serverID);
+  
+  // check if alias already exists
+  const exists = await db.alias.exists(options.alias);
+  if(exists) throw new Error('Alias already exists');
 
   // Get Endpoint ID
   const endpointID = await db.endpoint.id(options.endpoint);
@@ -101,7 +104,6 @@ export async function addAlias(options: {
   return {
     success: aliasID ? true : false,
     alias: options.alias,
-    id: aliasID ? aliasID : '',
     endpoint: options.endpoint
   };
 

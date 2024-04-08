@@ -11,6 +11,11 @@ class Endpoint {
     return await getEndpointRootID(endpoint, this._serverID, this._pool);
   }
 
+  async exists(endpoint: string): Promise<boolean> {
+    let id = await this.id(endpoint);
+    return id != null ? true : false;
+  }
+
   async all(): Promise<any[]> {
     return await getAllEndpoints(this._serverID, this._pool);
   }
