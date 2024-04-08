@@ -74,7 +74,7 @@ paths:
       tags:
         - alias
       summary: Creates a new alias
-      description: "Domain names must be created before aliases can be created. Aliases can have unique usernames and unique endpoints, or they can be setup as a 'catch-all' alias that forwards all emails sent to a domain to a single endpoint. To set up a catch-all alias, use an \\* (asterisk) as the username. Example catch-all alias: [\\*@example.com]"
+      description: "Domain names must be created before aliases can be created. Endpoints do NOT need to exist, as they will be dynamically created if they don't. Aliases can have unique usernames and unique endpoints, or they can be setup as a 'catch-all' alias that forwards all emails sent to a domain to a single endpoint. To set up a catch-all alias, use an \\* (asterisk) as the username. Example catch-all alias: [\\*@example.com]"
       requestBody:
         content:
           application/json:
