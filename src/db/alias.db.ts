@@ -27,20 +27,20 @@ class Alias {
     return await getAliasStatus(alias, this._serverID, this._pool);
   }
 
-  async enable(alias: string, endpoint: string): Promise<boolean> {
-    return enableAlias(alias, endpoint, this._serverID, this._pool);
+  async enable(alias: string,): Promise<boolean> {
+    return enableAlias(alias, this._serverID, this._pool);
   }
 
   async disable(alias: string): Promise<boolean> {
     return disableAlias(alias, this._serverID, this._pool);
   }
 
-  async toggle(alias: string, endpoint: string): Promise<boolean> {
+  async toggle(alias: string): Promise<boolean> {
     const enabled = await this.status(alias);
     if (enabled) {
       return disableAlias(alias, this._serverID, this._pool);
     } else {
-      return enableAlias(alias, endpoint, this._serverID, this._pool);
+      return enableAlias(alias, this._serverID, this._pool);
     }
   }
 }
@@ -105,19 +105,17 @@ async function deleteAlias(alias: string, serverID: number, pool: Pool): Promise
   }
 }
 
-async function enableAlias(alias: string, endpoint: string, serverID: number, pool: Pool): Promise<boolean> {
-  const endpointRootID = await getEndpointRootID(endpoint, serverID, pool);
-  if (!endpointRootID) throw new Error('Endpoint not found');
+async function enableAlias(alias: string, serverID: number, pool: Pool): Promise<boolean> {
   const aliasID = await getAliasID(alias, serverID, pool);
-  if (!aliasID || !endpointRootID) throw new Error('Alias or endpoint not found');
+  if (!aliasID) throw new Error('Alias not found');
   let conn;
   try {
     conn = await pool.getConnection();
     const result = await conn.query(`
       UPDATE routes
-      SET endpoint_id = ?, endpoint_type = 'AddressEndpoint', mode = 'Endpoint'
+      SET mode = 'Endpoint'
       WHERE uuid = ? AND server_id = ?
-    `, [endpointRootID, aliasID, serverID]);
+    `, [aliasID, serverID]);
     return result.affectedRows > 0;
   } catch (err: any) {
     throw new Error(err);
@@ -134,7 +132,7 @@ async function disableAlias(alias: string, serverID: number, pool: Pool): Promis
     conn = await pool.getConnection();
     const result = await conn.query(`
       UPDATE routes
-      SET endpoint_id = NULL, endpoint_type = NULL, mode = 'Hold'
+      SET mode = 'Hold'
       WHERE uuid = ? AND server_id = ?
     `, [aliasID, serverID]);
     return result.affectedRows > 0;

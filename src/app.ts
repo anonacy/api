@@ -118,7 +118,6 @@ app.get('/aliases', catchErrors( async (req, res) => {
   const db = DB.getInstance(res.locals.serverID);
   let domain = typeof req.query.domain === 'string' ? req.query.domain : undefined;
   const aliases = await db.alias.all(domain);
-  console.log(aliases);
   res.status(200).json(aliases);
 }));
 
@@ -212,7 +211,7 @@ app.post('/alias', catchErrors( async (req, res) => {
 // PUT ------------------------------------------------------------------------
 
 app.put('/alias', catchErrors( async (req, res) => {
-  const { alias, endpoint, enabled } = req.body;
+  const { alias, enabled } = req.body;
   let success = false;
   if(enabled == undefined || enabled == null) {
     res.status(400).send("Enable parameter is required");
@@ -220,7 +219,7 @@ app.put('/alias', catchErrors( async (req, res) => {
   }
   const db = DB.getInstance(res.locals.serverID);
   if(enabled === true) {
-    success = await db.alias.enable(alias, endpoint);
+    success = await db.alias.enable(alias);
   } else if (enabled === false){
     success = await db.alias.disable(alias);
   } else {
