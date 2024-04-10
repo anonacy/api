@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { postalPuppet } from './index';
 import { Utils } from './utils';
-
+import { version } from '../package.json';
 
 // BASE CONFIG ----------------------------------------------------------------
 dotenv.config();
@@ -145,7 +145,7 @@ app.get('/auth', catchErrors( async (req, res) => {
       server: res.locals.server,
       serverID: res.locals.serverID
     }
-    res.status(200).json({ success: true, ...data })
+    res.status(200).json({ success: true, version, ...data })
   } else {
     res.status(401).json({ success: false })
   };
