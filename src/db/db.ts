@@ -20,7 +20,7 @@ import { Domain } from './domain.db';
 import { Endpoint } from './endpoint.db';
 
 class DB {
-  private static instance: DB;
+  // private static instance: DB;
   private _pool: Pool;
 
   public alias: Alias;
@@ -36,10 +36,11 @@ class DB {
   }
 
   public static getInstance(serverID: number): DB {
-    if (!DB.instance) {
-      DB.instance = new DB(serverID);
-    }
-    return DB.instance;
+    return new DB(serverID);
+    // if (!DB.instance) {
+    //   DB.instance = new DB(serverID);
+    // }
+    // return DB.instance;
   }
 }
 

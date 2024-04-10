@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import { postalPuppet } from './index';
 import { Utils } from './utils';
 
@@ -9,11 +10,11 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 app.use(express.json()); // for parsing application/json
+app.use(cors());
 
 import DB from './db/db';
 import CONNECTION from './db/connection';
 const conn = CONNECTION.getInstance();
-let db: DB;
 
 
 // FUNCTIONS ------------------------------------------------------------------
@@ -70,7 +71,6 @@ app.use(async (req, res, next) => {
             res.locals.orgID = org.organization_id; // number
             res.locals.server = org.server_name; // string
             res.locals.serverID = org.server_id; // number
-            db = DB.getInstance(res.locals.serverID);
             next();
           } else {
             res.status(401).json({ error: 'Unauthorized: API_KEY is invalid' });
@@ -103,18 +103,22 @@ app.get('/health', catchErrors( async (req, res) => {
 }));
 
 app.get('/domains', catchErrors( async (req, res) => {
+  const db = DB.getInstance(res.locals.serverID);
   const domains = await db.domain.all();
   res.json(domains);
 }));
 
 app.get('/endpoints', catchErrors( async (req, res) => {
+  const db = DB.getInstance(res.locals.serverID);
   const endpoints = await db.endpoint.all();
   res.status(200).json(endpoints);
 }));
 
 app.get('/aliases', catchErrors( async (req, res) => {
+  const db = DB.getInstance(res.locals.serverID);
   let domain = typeof req.query.domain === 'string' ? req.query.domain : undefined;
   const aliases = await db.alias.all(domain);
+  console.log(aliases);
   res.status(200).json(aliases);
 }));
 
@@ -133,6 +137,20 @@ app.get('/domain', catchErrors( async (req, res) => {
   res.json(result);
   await postalPuppet.closePuppet(puppetInstance);
 }));
+
+app.get('/auth', catchErrors( async (req, res) => {
+  if (res.locals.serverID) {
+    let data = {
+      org: res.locals.org,
+      orgID: res.locals.orgID,
+      server: res.locals.server,
+      serverID: res.locals.serverID
+    }
+    res.status(200).json({ success: true, ...data })
+  } else {
+    res.status(401).json({ success: false })
+  };
+}))
 
 // POST -----------------------------------------------------------------------
 
@@ -164,6 +182,7 @@ app.post('/alias', catchErrors( async (req, res) => {
   const { alias, endpoint } = req.body;
   // check if domain exists
   const { domain } = Utils.decomposeEmail(alias);
+  const db = DB.getInstance(res.locals.serverID);
   const domainID = await db.domain.id(domain);
   if(!domainID) {
     res.status(400).send("Domain does not exist");
@@ -199,6 +218,7 @@ app.put('/alias', catchErrors( async (req, res) => {
     res.status(400).send("Enable parameter is required");
     return;
   }
+  const db = DB.getInstance(res.locals.serverID);
   if(enabled === true) {
     success = await db.alias.enable(alias, endpoint);
   } else if (enabled === false){
@@ -214,18 +234,21 @@ app.put('/alias', catchErrors( async (req, res) => {
 
 app.delete('/domain', catchErrors( async (req, res) => {
   const { domain } = req.body;
+  const db = DB.getInstance(res.locals.serverID);
   const success = await db.domain.delete(domain);
   res.status(200).json({success});
 }));
 
 app.delete('/endpoint', catchErrors( async (req, res) => {
   const { endpoint } = req.body;
+  const db = DB.getInstance(res.locals.serverID);
   const success = await db.endpoint.delete(endpoint);
   res.status(200).json({success});
 }));
 
 app.delete('/alias', catchErrors( async (req, res) => {
   const { alias } = req.body;
+  const db = DB.getInstance(res.locals.serverID);
   const success = await db.alias.delete(alias);
   res.status(200).json({success});
 }));

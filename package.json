@@ -1,11 +1,11 @@
 {
   "name": "@anonacy/puppet",
   "type": "module",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "packageManager": "npm@10.2.4",
   "description": "",
   "author": "hewham",
-  "license": "MIT",
+  "license": "AGPL",
   "keywords": [],
   "sideEffects": false,
   "exports": {
@@ -46,6 +46,7 @@
     "postinstall": "npx puppeteer browsers install chrome"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.11.19",
@@ -62,6 +63,7 @@
   },
   "dependencies": {
     "chalk": "^5.3.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "mariadb": "^3.3.0",
