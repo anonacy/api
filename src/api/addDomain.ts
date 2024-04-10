@@ -4,6 +4,7 @@ import { Response } from 'express';
 import type { PuppetInstance } from '../index';
 import { Utils } from '../utils';
 import DB from '../db/db';
+import { DNS } from '../types/types';
 
 // This function adds an email address to the address endpoints, finds and returns the postal id
 export async function addDomain(options: {
@@ -13,6 +14,7 @@ export async function addDomain(options: {
 }): Promise<{
   success: boolean;
   domain: string;
+  dns: DNS;
   note: string;
 }> {
   const { org, server, serverID } = options.res.locals; // which postal org and server to use
@@ -56,6 +58,7 @@ export async function addDomain(options: {
   return {
     success: domainID ? true : false,
     domain: options.domain,
+    dns: { SPF: false, DKIM: false, RP: false, MX: false, ok: false },
     note: "Domain added to system, please use the GET /domain endpoint to setup DNS"
   };
 }

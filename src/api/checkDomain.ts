@@ -2,25 +2,8 @@ import { Response } from 'express';
 import type { PuppetInstance } from '../index';
 import DB from '../db/db';
 import { Utils } from '../utils';
+import { DNS, DnsRecord } from '../types/types';
 
-interface DnsRecord {
-    title: string
-    type: string
-    name: string
-    content: string
-    ok: boolean
-    label: string
-    priority: number | null,
-    note: string
-}
-
-interface DNS {
-  SPF: boolean
-  DKIM: boolean
-  RP: boolean
-  MX: boolean
-  ok: boolean
-}
 // This function gets the dns status details/instructions of an added domain
 export async function checkDomain(options: {
   puppetInstance: PuppetInstance;

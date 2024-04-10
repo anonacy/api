@@ -14,6 +14,7 @@ export async function addAlias(options: {
   success: boolean;
   alias: string;
   endpoint: string;
+  enabled: boolean;
 }> {
   const { username, domain } = await Utils.decomposeEmail(options.alias);
   const { org, server, serverID } = options.res.locals; // which postal org and server to use
@@ -104,7 +105,8 @@ export async function addAlias(options: {
   return {
     success: aliasID ? true : false,
     alias: options.alias,
-    endpoint: options.endpoint
+    endpoint: options.endpoint,
+    enabled: true
   };
 
 
