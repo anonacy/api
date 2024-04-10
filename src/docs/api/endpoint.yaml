@@ -77,12 +77,15 @@ paths:
     delete:
       tags:
         - endpoint
-      summary: Deletes an endpoint
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/endpoint'
+      summary: "[DISABLED] Deletes an endpoint"
+      description: Deleting endpoints is currently disabled, do to issues it causes with existing aliases that are still set to forward to it.
+      parameters:
+        - in: query
+          name: endpoint
+          schema:
+            type: string
+          required: true
+          description: The endpoint email or url
       responses:
         200:
           description: Successful response

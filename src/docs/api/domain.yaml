@@ -193,15 +193,15 @@ paths:
     delete:
       tags:
         - domain
-      summary: Deletes an domain
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/domain'
-            examples:
-              body:
-                $ref: '#/components/examples/body'
+      summary: "[DISABLED] Deletes an domain"
+      description: Deleting domains is currently disabled, do to issues it causes with existing aliases that use the domain.
+      parameters:
+        - in: query
+          name: domain
+          schema:
+            type: string
+          required: true
+          description: The domain name
       responses:
         200:
           description: Successful response

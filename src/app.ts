@@ -232,21 +232,43 @@ app.put('/alias', catchErrors( async (req, res) => {
 // DELETE --------------------------------------------------------------------
 
 app.delete('/domain', catchErrors( async (req, res) => {
-  const { domain } = req.body;
-  const db = DB.getInstance(res.locals.serverID);
-  const success = await db.domain.delete(domain);
-  res.status(200).json({success});
+  if(process.env.NODE_ENV == 'production'){
+    res.status(403).json({success: false, error: "Deleting domains is not allowed"});
+    return;
+  } else {
+    const domain = String(req.query.domain);
+    if(!domain) {
+      res.status(400).send("domain parameter is required");
+      return;
+    }
+    const db = DB.getInstance(res.locals.serverID);
+    const success = await db.domain.delete(domain);
+    res.status(200).json({success});
+  }
 }));
 
 app.delete('/endpoint', catchErrors( async (req, res) => {
-  const { endpoint } = req.body;
-  const db = DB.getInstance(res.locals.serverID);
-  const success = await db.endpoint.delete(endpoint);
-  res.status(200).json({success});
+  if(process.env.NODE_ENV == 'production'){
+    res.status(403).json({success: false, error: "Deleting endpoints is not allowed"});
+    return;
+  } else {
+    const endpoint = String(req.query.endpoint);
+    if(!endpoint) {
+      res.status(400).send("endpoint parameter is required");
+      return;
+    }
+    const db = DB.getInstance(res.locals.serverID);
+    const success = await db.endpoint.delete(endpoint);
+    res.status(200).json({success});
+  }
 }));
 
 app.delete('/alias', catchErrors( async (req, res) => {
-  const { alias } = req.body;
+  const alias = String(req.query.alias);
+  if(!alias) {
+    res.status(400).send("alias parameter is required");
+    return;
+  }
   const db = DB.getInstance(res.locals.serverID);
   const success = await db.alias.delete(alias);
   res.status(200).json({success});
@@ -256,7 +278,7 @@ app.delete('/alias', catchErrors( async (req, res) => {
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
-  console.error(err.stack); // Log error stack to console
+  console.error(`Error: ${err.message}`); // Log error stack to console
   res.status(500).send({ error: err.message }); // Send error message to client
 });
 

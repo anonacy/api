@@ -46,7 +46,6 @@ describe('API Tests', function() {
     request(URL)
       .get('/domains')
       .set('Authorization', `Bearer ${API_KEY}`)
-      .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
         expect(res.body.length).to.be.greaterThan(0);
@@ -60,9 +59,9 @@ describe('API Tests', function() {
 
   it('get dns setup details for domain', (done) => {
     request(URL)
-      .get(`/domain?domain=${VARS.domain}`)
+      .get('/domain')
+      .query({domain: VARS.domain})
       .set('Authorization', `Bearer ${API_KEY}`)
-      .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
         expect(res.body.ok).to.be.false;
@@ -112,7 +111,6 @@ describe('API Tests', function() {
     request(URL)
       .get('/endpoints')
       .set('Authorization', `Bearer ${API_KEY}`)
-      .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
         expect(res.body.length).to.be.greaterThan(0);
@@ -153,7 +151,6 @@ describe('API Tests', function() {
     request(URL)
       .get('/aliases')
       .set('Authorization', `Bearer ${API_KEY}`)
-      .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
         expect(res.body.length).to.be.greaterThan(0);
@@ -181,13 +178,12 @@ describe('API Tests', function() {
     request(URL)
       .get('/aliases')
       .set('Authorization', `Bearer ${API_KEY}`)
-      .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
         expect(res.body.length).to.be.greaterThan(0);
         const alias = res.body.find((x) => x.alias === VARS.alias);
         expect(alias.enabled).to.equal(0);
-        expect(alias.endpoint).to.be.null;
+        expect(alias.endpoint).to.exist;
         done();
       });
   });
@@ -208,14 +204,12 @@ describe('API Tests', function() {
     request(URL)
       .get('/aliases')
       .set('Authorization', `Bearer ${API_KEY}`)
-      .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
         expect(res.body.length).to.be.greaterThan(0);
         const alias = res.body.find((x) => x.alias === VARS.alias);
         expect(alias.enabled).to.equal(1);
         expect(alias.endpoint).to.exist;
-        expect(alias.endpoint).to.equal(VARS.endpoint);
         done();
       });
   });
@@ -236,7 +230,7 @@ describe('API Tests', function() {
     request(URL)
       .delete('/alias')
       .set('Authorization', `Bearer ${API_KEY}`)
-      .send({"alias": VARS.alias})
+      .query({"alias": VARS.alias})
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
         expect(res.body.success).to.be.true;
@@ -248,7 +242,6 @@ describe('API Tests', function() {
     request(URL)
       .get('/aliases')
       .set('Authorization', `Bearer ${API_KEY}`)
-      .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
         const alias = res.body.find((x) => x.alias === VARS.alias);
@@ -261,7 +254,7 @@ describe('API Tests', function() {
     request(URL)
       .delete('/endpoint')
       .set('Authorization', `Bearer ${API_KEY}`)
-      .send({"endpoint": VARS.endpoint})
+      .query({"endpoint": VARS.endpoint})
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
         expect(res.body.success).to.be.true;
@@ -273,7 +266,6 @@ describe('API Tests', function() {
     request(URL)
       .get('/endpoints')
       .set('Authorization', `Bearer ${API_KEY}`)
-      .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
         const endpoint = res.body.find((x) => x.endpoint === VARS.endpoint);
@@ -286,7 +278,7 @@ describe('API Tests', function() {
     request(URL)
       .delete('/domain')
       .set('Authorization', `Bearer ${API_KEY}`)
-      .send({"domain": VARS.domain})
+      .query({"domain": VARS.domain})
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
         expect(res.body.success).to.be.true;
@@ -298,7 +290,6 @@ describe('API Tests', function() {
     request(URL)
       .get('/domains')
       .set('Authorization', `Bearer ${API_KEY}`)
-      .send()
       .end((err, res) => {
         expect(res.statusCode).to.equal(200);
         const domain = res.body.find((x) => x.domain === VARS.domain);

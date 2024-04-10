@@ -108,14 +108,13 @@ paths:
       tags:
         - alias
       summary: Deletes an alias
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/alias'
-            examples:
-              alias:
-                $ref: '#/components/examples/alias'
+      parameters:
+        - in: query
+          name: alias
+          schema:
+            type: string
+          required: true
+          description: The email of the alias
       responses:
         200:
           description: Successful response
