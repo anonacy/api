@@ -50,6 +50,16 @@ export async function checkDomain(options: {
   }, buttonText);
   await options.puppetInstance.page.waitForNetworkIdle();
 
+  // check if on list page
+  const isListPage = !(await options.puppetInstance.page.url().includes('setup'));
+
+  // go back to domain page if on list page
+  if(isListPage) {
+    await options.puppetInstance.page.goto(Utils.urlDictionary('domainDetail', org, server, domainID));
+    await options.puppetInstance.page.waitForNetworkIdle();
+  }
+
+
   // Create domain summary
   /*
   INFO: 4 records to check:
@@ -134,7 +144,7 @@ export async function checkDomain(options: {
   dnsRecords.push({
     title: pageInnerHtmlList[13],
     type: pageInnerHtmlList[16],
-    name: pageInnerHtmlList[17],
+    name: "psrp",
     content: pageInnerHtmlList[18],
     priority: null,
     label: pageInnerHtmlList[14],
