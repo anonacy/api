@@ -1,7 +1,7 @@
-## @anonacy/postal-api
+## @anonacy/api
 
 ### About
-Anonacy's postal api enables simplified control over a Postal open-source mail server. 
+Anonacy's v2 api enables simplified control over a [Postal](https://docs.postalserver.io/) open-source mail server. 
 
 It is designed for email aliasing, by managing the 'Routing' system within Postal, while Postal handles the mail forwarding between smtp servers. 
 
