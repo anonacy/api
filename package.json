@@ -43,7 +43,9 @@
     "version": "echo $npm_package_name v$npm_package_version",
     "typecheck": "tsc --noEmit",
     "heroku-postbuild": "npm run build && mkdir ./.cache && mv /app/.cache/puppeteer ./.cache",
-    "postinstall": "npx puppeteer browsers install chrome"
+    "postinstall": "npx puppeteer browsers install chrome",
+    "docker": "docker buildx build --push --platform linux/amd64,linux/arm64 -t anonacy/api:latest .",
+    "docker:builder": "docker buildx create --use"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
