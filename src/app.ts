@@ -8,7 +8,7 @@ import { version } from '../package.json';
 // BASE CONFIG ----------------------------------------------------------------
 dotenv.config();
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.API_PORT || 3001;
 app.use(express.json()); // for parsing application/json
 app.use(cors());
 
@@ -22,7 +22,7 @@ const conn = CONNECTION.getInstance();
 // Function to initialize puppet with config
 async function initPuppetWithConfig() {
   const { puppetInstance } = await postalPuppet.initPuppet({
-    postalControlPanel: process.env.POSTAL_CONTROL_PANEL || '',
+    postalControlPanel: process.env.POSTAL_SUBDOMAIN || '',
     postalUrl: process.env.POSTAL_URL || '',
     postalUser: process.env.POSTAL_USER || '',
     postalPass: process.env.POSTAL_PASS || ''
