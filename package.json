@@ -2,7 +2,7 @@
   "name": "@anonacy/puppet",
   "type": "module",
   "version": "2.1.0",
-  "packageManager": "npm@10.2.4",
+  "packageManager": "pnpm@9.0.1",
   "description": "",
   "author": "hewham",
   "license": "AGPL",
@@ -31,19 +31,19 @@
   ],
   "engines": {
     "node": ">=20",
-    "npm": ">=8"
+    "pnpm": ">=8"
   },
   "scripts": {
-    "start": "npx cowsay -f elephant2 Starting Puppet! && npx nodemon --watch 'src/**/*.ts' --exec 'npx tsx' src/app.ts",
-    "build": "npx unbuild",
-    "test": "npx mocha --import=tsx test/*.test.ts",
+    "start": "pnpx cowsay -f elephant2 Starting Puppet! && pnpx nodemon --watch 'src/**/*.ts' --exec 'pnpx tsx' src/app.ts",
+    "build": "pnpx unbuild",
+    "test": "pnpx mocha --import=tsx test/*.test.ts",
     "tag": "git tag $npm_package_version && git push origin $npm_package_version",
     "deploy": "git push heroku master",
     "logs": "heroku logs --dyno=web --tail",
     "version": "echo $npm_package_name v$npm_package_version",
     "typecheck": "tsc --noEmit",
-    "heroku-postbuild": "npm run build && mkdir ./.cache && mv /app/.cache/puppeteer ./.cache",
-    "postinstall": "npx puppeteer browsers install chrome",
+    "heroku-postbuild": "pnpm run build && mkdir ./.cache && mv /app/.cache/puppeteer ./.cache",
+    "postinstall": "pnpx puppeteer browsers install chrome",
     "docker": "docker buildx build --push --platform linux/amd64,linux/arm64 -t anonacy/api:latest .",
     "docker:tagged": "docker buildx build --push --platform linux/amd64,linux/arm64 -t anonacy/api:$npm_package_version .",
     "docker:builder": "docker buildx create --use"
