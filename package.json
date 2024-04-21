@@ -1,7 +1,7 @@
 {
   "name": "@anonacy/puppet",
   "type": "module",
-  "version": "2.0.4",
+  "version": "2.1.0",
   "packageManager": "npm@10.2.4",
   "description": "",
   "author": "hewham",
@@ -43,7 +43,9 @@
     "version": "echo $npm_package_name v$npm_package_version",
     "typecheck": "tsc --noEmit",
     "heroku-postbuild": "npm run build && mkdir ./.cache && mv /app/.cache/puppeteer ./.cache",
-    "postinstall": "npx puppeteer browsers install chrome"
+    "postinstall": "npx puppeteer browsers install chrome",
+    "docker": "docker buildx build --push --platform linux/amd64,linux/arm64 -t anonacy/api:latest .",
+    "docker:b": "docker buildx build --platform linux/amd64,linux/arm64 -t anonacy/api:latest ."
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
