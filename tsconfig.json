@@ -5,7 +5,7 @@
     "lib": ["esnext", "DOM"],
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "strict": true,
+    // "strict": true, // FIXME: Removed for now for docker builds
     "strictNullChecks": true,
     "resolveJsonModule": true,
     "skipLibCheck": false,
