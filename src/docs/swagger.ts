@@ -38,7 +38,7 @@ const api = {
     },
     servers: [
       {
-        url: 'http://api.anonacy.com/v2',
+        url: 'http://api2.anonacy.com',
         description: 'Anonacy v2 - Postal API'
       },
       {
@@ -62,7 +62,8 @@ const api = {
   apis: [
     './src/docs/api/domain.yaml', 
     './src/docs/api/endpoint.yaml', 
-    './src/docs/api/alias.yaml'
+    './src/docs/api/alias.yaml',
+    './src/docs/api/message.yaml'
   ],
 };
 

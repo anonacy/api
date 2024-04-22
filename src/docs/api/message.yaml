@@ -1,0 +1,77 @@
+tags:
+  - name: message
+    description: ' - Email message throughput status logs'
+
+# EXAMPLE:
+# {
+# "id": 7,
+# "scope": "incoming",
+# "rcpt_to": "hello@catchall.anonacy.com",
+# "mail_from": "hamiltonhew@gmail.com",
+# "status": "SoftFail",
+# "route_id": 434,
+# "domain_id": 29,
+# "endpoint_id": 179,
+# "endpoint_type": "AddressEndpoint",
+# "timestamp": "1713807142.337569",
+# "last_delivery_attempt": "1713808435.519959",
+# "spam": 0,
+# "spam_score": "0.00",
+# "endpoint": null
+# }
+
+components:
+  schemas:
+    message:
+      tags:
+        - message
+      type: object
+      properties:
+        id:
+          type: integer
+        scope:
+          type: string
+        rcpt_to:
+          type: string
+          format: email
+        mail_from:
+          type: string
+          format: email
+        status:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        endpoint_id:
+          type: integer
+        endpoint_type:
+          type: string
+      example:
+        id: 1
+        scope: incoming
+        rcpt_to: alias@anonacy.com
+        mail_from: sender@anonacy.com
+        status: Sent
+        timestamp: 1713807142.337569
+        endpoint_id: 1
+        endpoint_type: AddressEndpoint
+  examples:
+    success:
+      value:
+        success: true
+
+paths:
+  /messages:
+    get:
+      tags:
+        - message
+      summary: Gets all messages
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/message'
