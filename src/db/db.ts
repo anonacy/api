@@ -34,7 +34,7 @@ class DB {
     this.alias = new Alias(this._serverID, this._pool);
     this.domain = new Domain(this._serverID,this._pool);
     this.endpoint = new Endpoint(this._serverID, this._pool);
-    this.message = new Message(this._serverID);
+    this.message = new Message(this._serverID, this._pool);
   }
 
   public static getInstance(serverID: number): DB {
