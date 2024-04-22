@@ -18,6 +18,7 @@ import CONNECTION from './connection';
 import { Alias } from './alias.db';
 import { Domain } from './domain.db';
 import { Endpoint } from './endpoint.db';
+import { Message } from './message.db';
 
 class DB {
   private _pool: Pool;
@@ -25,6 +26,7 @@ class DB {
   public alias: Alias;
   public domain: Domain;
   public endpoint: Endpoint;
+  public message: Message;
 
   private constructor(private _serverID: number) {
     this._pool = CONNECTION.getPool(); // this will setup the connection pool
@@ -32,6 +34,7 @@ class DB {
     this.alias = new Alias(this._serverID, this._pool);
     this.domain = new Domain(this._serverID,this._pool);
     this.endpoint = new Endpoint(this._serverID, this._pool);
+    this.message = new Message(this._serverID);
   }
 
   public static getInstance(serverID: number): DB {

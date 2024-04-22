@@ -121,6 +121,12 @@ app.get('/aliases', catchErrors( async (req, res) => {
   res.status(200).json(aliases);
 }));
 
+app.get('/messages', catchErrors( async (req, res) => {
+  const db = DB.getInstance(res.locals.serverID);
+  const messages = await db.message.all();
+  res.status(200).json(messages);
+}));
+
 app.get('/domain', catchErrors( async (req, res) => {
   const { domain } = req.query;
   if (typeof domain !== 'string') {
