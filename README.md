@@ -3,9 +3,7 @@
 ## About
 Anonacy's v2 api enables simplified control over a [Postal](https://docs.postalserver.io/) open-source mail server. 
 
-It is designed for email aliasing, by managing the 'Routing' system within Postal, while Postal handles the mail forwarding between smtp servers. 
-
-It works by utilizing direct mySQL queries in Postal's database, as well as using puppeteer for more complex interactions.
+It is designed for email aliasing and can be easily deployed using docker on the same machine as Postal.
 
 You can use the [@anonacy/app](https://github.com/anonacy/app) project as a UI for the api.
 
