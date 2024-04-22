@@ -1,6 +1,6 @@
 import mariadb, { Pool } from 'mariadb';
 
-class Message {
+class Forward {
   constructor(private _serverID: number, private _pool: Pool) {}
 
   async all() {
@@ -26,7 +26,7 @@ async function getAllMessages(serverPool: Pool): Promise<any[]> {
   try {
     conn = await serverPool.getConnection();
     const result = await conn.query(`
-      SELECT id, scope, rcpt_to, mail_from, status, route_id, domain_id, endpoint_id, endpoint_type, timestamp, last_delivery_attempt, spam, spam_score
+      SELECT id, scope, rcpt_to AS alias, mail_from AS sender, status, route_id, domain_id, endpoint_id, endpoint_type, timestamp, last_delivery_attempt, spam, spam_score
       FROM messages
       WHERE scope = 'incoming'
       ORDER BY timestamp DESC
@@ -87,4 +87,4 @@ async function getAllMessages(serverPool: Pool): Promise<any[]> {
 // }
 
 
-export { Message };
+export { Forward };
