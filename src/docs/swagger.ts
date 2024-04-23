@@ -12,7 +12,7 @@ const api = {
       <br/><br/>
       This system is used to power the [anonacy](https://anonacy.com) and [hiddenlogin](https://hiddenlogin.com) platforms.
       <br/><br/>
-      It is mounted as the [v2] api at [api.anonacy.com/v2](https://api.anonacy.com/v2/docs/). Currently, the [v1](https://api.anonacy.com/v1/docs) api has been updated with logic to use the v2 api for the relevant alias management to preserve functionality of the current platform.
+      It is mounted as the [v2] api at [api2.anonacy.com](https://api2.anonacy.com/docs/). Currently, the [v1](https://api.anonacy.com/v1/docs) api has been updated with logic to use the v2 api for the relevant alias management to preserve functionality of the current platform.
       <br/><hr/>
       <b>- Authorization</b>
       <br/><br/>
@@ -24,12 +24,11 @@ const api = {
       <br/><br/><hr/>
       <b>- General Usage</b>
       <br/><br/>
-      To get started, you should first add and setup a domain name, then you can add aliases.
-      <ul><li>[POST] /domain - add a domain</li><li>[GET] /domain - domain dns setup info</li><li>[POST] /alias - Create alias</li></ul>
+      The most basic use case is - add and setup a domain name, then add an alias:
+      <ul><li>[POST] /domain - add a domain</li><li>[GET] /domain - domain dns setup info</li><li>[POST] /alias - create alias</li></ul>
       <br/>
-      Full api functionality is found below, along with request and response data. The api endpoints are mounted at /v2. For example, [/domains] in these docs maps to [api.anonacy.com/v2/domains].
+      Full api functionality is found below, along with request and response data.
       <br/><br/><hr/>
-      Once licensing is in place, the source code will be made public.
       `,
       contact: {
         name: "[support@anonacy.com]",
@@ -54,10 +53,10 @@ const api = {
         },
       },
     },
-    // externalDocs: {
-    //   description: 'View Source Code',
-    //   url: 'https://github.com/hewham/anonacy-puppet'
-    // },
+    externalDocs: {
+      description: 'View Source Code',
+      url: 'https://github.com/anonacy/api'
+    },
   },
   apis: [
     './src/docs/api/domain.yaml', 

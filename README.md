@@ -1,11 +1,23 @@
 # @anonacy/api
 
+![api image](docs/graphic.svg)
+
 ## About
 Anonacy's v2 api enables simplified control over a [Postal](https://docs.postalserver.io/) open-source mail server. 
 
 It is designed for email aliasing and can be easily deployed using docker on the same machine as Postal.
 
 You can use the [@anonacy/app](https://github.com/anonacy/app) project as a UI for the api.
+
+## Features
+
+| Available                 | Planned                        |
+|---------------------------|--------------------------------|
+| ✅ Email Alias Routing             | 🕑 Webhooks                       |
+| ✅ Address Endpoints   | 🕑 URL Endpoints for aliases      |
+| ✅ Domain Management         | 🕑 IP Pooling                     |
+| ✅ DNS Record Setup          | 🕑 User Authentication |
+| ✅ Delivery Status Logs   | 🕑 Org & Server Management        |
 
 ## Authorization
 
