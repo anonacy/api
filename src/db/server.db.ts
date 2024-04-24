@@ -9,6 +9,7 @@ async function checkApiKey(apiKey: string, pool: Pool): Promise<any> {
       organizations.id AS organization_id, 
       organizations.name AS organization_name, 
       servers.id AS server_id, 
+      servers.permalink AS server_permalink, 
       servers.name AS server_name
     FROM credentials
     INNER JOIN servers ON credentials.server_id = servers.id

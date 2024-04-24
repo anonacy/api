@@ -2,7 +2,6 @@
 
 The anonacy api is an interface for an open source Postal mail server. A pre-requisite is setting up your own Postal instance.
 
-
 **You need to have a working installation of Postal before setting up the anonacy api.**
 
 Follow the guide at [postalserver.io](https://docs.postalserver.io/getting-started)

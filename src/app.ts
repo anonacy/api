@@ -22,7 +22,7 @@ const conn = CONNECTION.getInstance();
 // Function to initialize puppet with config
 async function initPuppetWithConfig() {
   const { puppetInstance } = await postalPuppet.initPuppet({
-    postalControlPanel: process.env.POSTAL_CONTROL_PANEL || '',
+    postalSubdomain: process.env.SUBDOMAIN || '',
     postalUrl: process.env.POSTAL_URL || '',
     postalUser: process.env.POSTAL_USER || '',
     postalPass: process.env.POSTAL_PASS || ''
@@ -69,7 +69,8 @@ app.use(async (req, res, next) => {
             // In puppeteer code, urls need the names. In SQL querys, we need the serverID.
             res.locals.org = org.organization_name; // string
             res.locals.orgID = org.organization_id; // number
-            res.locals.server = org.server_name; // string
+            res.locals.serverName = org.server_name; // string
+            res.locals.server = org.server_permalink; // string
             res.locals.serverID = org.server_id; // number
             next();
           } else {
@@ -149,6 +150,7 @@ app.get('/auth', catchErrors( async (req, res) => {
       org: res.locals.org,
       orgID: res.locals.orgID,
       server: res.locals.server,
+      serverName: res.locals.serverName,
       serverID: res.locals.serverID
     }
     res.status(200).json({ success: true, version, ...data })

@@ -13,7 +13,7 @@ export async function loginPuppet(options: {
 }> {
   try {
     const globalCookies = Cookies.getInstance();
-    const url = `https://${process.env.POSTAL_CONTROL_PANEL || ''}.${process.env.POSTAL_URL || ''}`;
+    const url = `https://${process.env.POSTAL_SUBDOMAIN || ''}.${process.env.POSTAL_URL || ''}`;
     await options.puppetInstance.page.goto(`${url}/login`);
     await options.puppetInstance.page.locator(`[name="email_address"]`).fill(process.env.POSTAL_USER || '');
     await options.puppetInstance.page.locator('[name="password"]').fill(process.env.POSTAL_PASS || '');

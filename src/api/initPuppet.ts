@@ -14,7 +14,7 @@ import Cookies from '../cookies';
   - If the cookies are not valid, the function will log in using the provided credentials.
 */
 export async function initPuppet(options: {
-  postalControlPanel: string;
+  postalSubdomain: string;
   postalUrl: string;
   postalUser: string;
   postalPass: string;
@@ -40,7 +40,7 @@ export async function initPuppet(options: {
       
       if(!isExpired) {
         // cookies saved and still valid, should already be logged in
-        const url = `https://${options.postalControlPanel}.${options.postalUrl}`;
+        const url = `https://${options.postalSubdomain}.${options.postalUrl}`;
         const browser = await puppeteer.launch({
           args: ['--no-sandbox'],
           headless: ((process.env.NODE_ENV === 'production' || process.env.RUN_HEADLESS == "TRUE") ? true : false)
@@ -55,7 +55,7 @@ export async function initPuppet(options: {
 
 
     // No cookies, login
-    const url = `https://${options.postalControlPanel}.${options.postalUrl}`;
+    const url = `https://${options.postalSubdomain}.${options.postalUrl}`;
     const browser = await puppeteer.launch({
       args: ['--no-sandbox'],
       headless: ((process.env.NODE_ENV === 'production' || process.env.RUN_HEADLESS == "TRUE") ? true : false)

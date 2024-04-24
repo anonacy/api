@@ -76,7 +76,7 @@ export async function checkDomain(options: {
   await Promise.all(rawPageContentElements.map(async element => {
     await options.puppetInstance.page.evaluate(el => {
       el.querySelector('div.u-margin.buttonSet')?.remove(); // INFO: the question mark checks if it exists, like an if statement since it could be null
-      el.querySelectorAll('span.label').forEach(label => {
+      el.querySelectorAll('span.label')?.forEach(label => {
         label.remove();
       });
     }, element);
@@ -94,7 +94,7 @@ export async function checkDomain(options: {
   // Get workable object of page content
   const pageInnerHtmlList = await options.puppetInstance.page.evaluate(el => {
     const innerHtmlArray: any = [];
-    el.querySelectorAll('*').forEach((child, i) => {
+    el.querySelectorAll('*')?.forEach((child, i) => {
       // INFO: we remove new lines and bold tags, and trim the innerHTML
       innerHtmlArray.push(child.innerHTML?.replace(/[\r\n]+/g, ' ').replace(/<b>|<\/b>/g, '').trim());
     });
