@@ -1,7 +1,7 @@
 {
   "name": "@anonacy/api",
   "type": "module",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "packageManager": "npm@10.2.4",
   "description": "",
   "author": "hewham",

@@ -128,6 +128,12 @@ app.get('/messages', catchErrors( async (req, res) => {
   res.status(200).json(messages);
 }));
 
+app.get('/webhooks', catchErrors( async (req, res) => {
+  const db = DB.getInstance(res.locals.serverID);
+  const webhooks = await db.webhook.all();
+  res.status(200).json(webhooks);
+}));
+
 app.get('/domain', catchErrors( async (req, res) => {
   const { domain } = req.query;
   if (typeof domain !== 'string') {
@@ -216,6 +222,18 @@ app.post('/alias', catchErrors( async (req, res) => {
   await postalPuppet.closePuppet(puppetInstance);
 }));
 
+app.post('/webhook', catchErrors( async (req, res) => {
+  const { webhook } = req.body;
+  const puppetInstance = await initPuppetWithConfig();
+  const result = await postalPuppet.addWebhook({
+    puppetInstance,
+    webhook,
+    res
+  });
+  res.status(200).json(result);
+  await postalPuppet.closePuppet(puppetInstance);
+}));
+
 // PUT ------------------------------------------------------------------------
 
 app.put('/alias', catchErrors( async (req, res) => {
@@ -230,6 +248,25 @@ app.put('/alias', catchErrors( async (req, res) => {
     success = await db.alias.enable(alias);
   } else if (enabled === false){
     success = await db.alias.disable(alias);
+  } else {
+    res.status(400).send("Enable parameter needs to be a boolean");
+    return;
+  }
+  res.status(200).json({success});
+}));
+
+app.put('/webhook', catchErrors( async (req, res) => {
+  const { webhook, enabled } = req.body;
+  let success = false;
+  if(enabled == undefined || enabled == null) {
+    res.status(400).send("Enable parameter is required");
+    return;
+  }
+  const db = DB.getInstance(res.locals.serverID);
+  if(enabled === true) {
+    success = await db.webhook.enable(webhook);
+  } else if (enabled === false){
+    success = await db.webhook.disable(webhook);
   } else {
     res.status(400).send("Enable parameter needs to be a boolean");
     return;
@@ -279,6 +316,17 @@ app.delete('/alias', catchErrors( async (req, res) => {
   }
   const db = DB.getInstance(res.locals.serverID);
   const success = await db.alias.delete(alias);
+  res.status(200).json({success});
+}));
+
+app.delete('/webhook', catchErrors( async (req, res) => {
+  const webhook = String(req.query.webhook);
+  if(!webhook) {
+    res.status(400).send("webhook parameter is required");
+    return;
+  }
+  const db = DB.getInstance(res.locals.serverID);
+  const success = await db.webhook.delete(webhook);
   res.status(200).json({success});
 }));
 

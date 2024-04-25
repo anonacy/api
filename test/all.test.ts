@@ -14,7 +14,7 @@ const randomNumber = Math.floor(Math.random() * 10000);
 const VARS = {
   domain: `test${randomNumber}.anonacy.com`,
   endpoint: `test${randomNumber}@anonacy.com`,
-  alias: `test${randomNumber}@test${randomNumber}.anonacy.com`,
+  alias: `test${randomNumber}@test${randomNumber}.anonacy.com`
 }
 
 describe('API Tests', function() {

@@ -62,6 +62,7 @@ const api = {
     './src/docs/api/domain.yaml', 
     './src/docs/api/endpoint.yaml', 
     './src/docs/api/alias.yaml',
+    './src/docs/api/webhook.yaml',
     './src/docs/api/message.yaml'
   ],
 };

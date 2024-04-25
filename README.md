@@ -30,8 +30,8 @@ https://api2.anonacy.com/docs/ or by running your own instance and navigating to
 
 ## Installation
 
-* To host the api yourself, follow the guide in [install.md](./INSTALL.md)
-* To contribute to the api or host locally, follow the guide in [contributing.md](./CONTRIBUTING.md)
+* To deploy the api yourself, follow the guide in [install.md](./INSTALL.md)
+* To contribute to the api or run locally, follow the guide in [contributing.md](./CONTRIBUTING.md)
 
 ***
 
