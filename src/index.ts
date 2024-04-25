@@ -5,6 +5,7 @@ import { loginPuppet } from './api/loginPuppet';
 import { closePuppet } from './api/closePuppet';
 import { addEndpoint } from './api/addEndpoint';
 import { addAlias } from './api/addAlias';
+import { addWebhook } from './api/addWebhook';
 import { addDomain } from './api/addDomain';
 import { checkDomain } from './api/checkDomain';
 
@@ -20,6 +21,7 @@ export const postalPuppet = {
   closePuppet,
   addEndpoint,
   addAlias,
+  addWebhook,
   addDomain,
   checkDomain
 };

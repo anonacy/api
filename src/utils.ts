@@ -24,6 +24,15 @@ export class Utils {
     };
   }
 
+  static randomString(length: number = 8) {
+    let result = '';
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+  }
+
   // Gets ID from URL if it is in 2nd to last part (optional)
   // example.com/some/route/!ID!/edit
   static getIdFromUrl(url: string, placement: number = 2) {
@@ -69,7 +78,11 @@ export class Utils {
       "domainDetail": `https://postal.anonacy.com/org/${org}/servers/${server}/domains/${id}/setup`,
       "addEndpoint": `https://postal.anonacy.com/org/${org}/servers/${server}/address_endpoints/new`,
       "endpointList": `https://postal.anonacy.com/org/${org}/servers/${server}/address_endpoints`,
-      "endpointDetail": `https://postal.anonacy.com/org/${org}/servers/${server}/address_endpoints/${id}/edit`
+      "endpointDetail": `https://postal.anonacy.com/org/${org}/servers/${server}/address_endpoints/${id}/edit`,
+      "addWebhook": `https://postal.anonacy.com/org/${org}/servers/${server}/webhooks/new`,
+      "webhookDetails": `https://postal.anonacy.com/org/${org}/servers/${server}/webhooks/${id}/edit`,
+      
+
     }
 
     if(action.toLowerCase().includes("detail") && !id) {
