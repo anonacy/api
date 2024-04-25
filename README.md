@@ -13,11 +13,12 @@ You can use the [@anonacy/app](https://github.com/anonacy/app) project as a UI f
 
 | Available                 | Planned                        |
 |---------------------------|--------------------------------|
-| ✅ Email Alias Routing             | 🕑 Webhooks                       |
-| ✅ Address Endpoints   | 🕑 URL Endpoints for aliases      |
-| ✅ Domain Management         | 🕑 IP Pooling                     |
-| ✅ DNS Record Setup          | 🕑 User Authentication |
-| ✅ Delivery Status Logs   | 🕑 Org & Server Management        |
+| ✅ Email Alias Routing    | 🕑 URL Endpoints for aliases    |
+| ✅ Address Endpoints      | 🕑 User Authentication          |
+| ✅ Domain Management      | 🕑 Org & Server Management      |
+| ✅ DNS Record Setup       | 🕑 User Authentication          |
+| ✅ Delivery Status Logs   |                                 |
+| ✅ Webhooks               |                                 |
 
 ## Authorization
 

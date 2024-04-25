@@ -13,6 +13,7 @@ export async function addWebhook(options: {
 }): Promise<{
   success: boolean;
   webhook: string;
+  enabled: boolean;
 }> {
   const { org, server, serverID } = options.res.locals; // which postal org and server to use
   const db = DB.getInstance(serverID);
@@ -47,6 +48,7 @@ export async function addWebhook(options: {
 
   return {
     success: webhookID ? true : false,
-    webhook: options.webhook
+    webhook: options.webhook,
+    enabled: true
   };
 }
