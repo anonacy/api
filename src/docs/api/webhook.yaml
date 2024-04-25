@@ -1,0 +1,96 @@
+tags:
+  - name: webhook
+    description: ' - Webhooks for Message Delivery Events'
+
+components:
+  schemas:
+    webhook:
+      tags:
+        - webhook
+      type: object
+      properties:
+        webhook:
+          type: string
+          format: email
+        enabled:
+          type: boolean
+      example:
+        webhook: https://example.com/webhook
+        enabled: 1
+  examples:
+    success:
+      value:
+        success: true
+
+paths:
+  /webhooks:
+    get:
+      tags:
+        - webhook
+      summary: Gets all webhooks
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/webhook'
+
+    post:
+      tags:
+        - webhook
+      summary: Creates a new webhook
+      description: "A webhook is a URL that will receive a POST request with a JSON payload when a message event occurs. Events are: MessageSent, MessageDelayed, MessageDeliveryFailed, MessageHeld, MessageBounced, DomainDNSError."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/webhook'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/webhook'
+    put:
+      tags:
+        - webhook
+      summary: Enables or disables an webhook
+      description: "The 'enabled' field in the request body sets the webhook to be active or inactive"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/webhook'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/webhook'
+
+    delete:
+      tags:
+        - webhook
+      summary: "Deletes an webhook"
+      parameters:
+        - in: query
+          name: webhook
+          schema:
+            type: string
+          required: true
+          description: The webhook email or url
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/webhook'
+              examples:
+                success:
+                  $ref: '#/components/examples/success'
