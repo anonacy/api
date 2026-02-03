@@ -1,6 +1,32 @@
 # Use an official Node.js runtime as the base image
 FROM node:20
 
+# Install Chrome dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    gnupg \
+    ca-certificates \
+    fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libcups2 \
+    libdbus-1-3 \
+    libdrm2 \
+    libgbm1 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    xdg-utils \
+    libxss1 \
+    libxtst6 \
+    --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
 # Default environment variables (fallbacks only)
 # These will be overridden by .env file or hosting service environment variables
 ENV API_DOMAIN='127.0.0.1'
@@ -16,6 +42,10 @@ ENV MARIADB_PORT='3306'
 ENV MARIADB_USER='root'
 ENV MARIADB_PASS=''
 ENV MARIADB_NAME='postal'
+
+# Set Puppeteer environment variables to use system Chrome
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
+ENV PUPPETEER_CACHE_DIR=/usr/src/anonacy-api/.cache/puppeteer
 
 # Set the working directory in the Docker container
 WORKDIR /usr/src/anonacy-api
