@@ -141,13 +141,16 @@ app.get('/domain', catchErrors( async (req, res) => {
     return;
   }
   const puppetInstance = await initPuppetWithConfig();
-  const result = await postalPuppet.checkDomain({
-    puppetInstance,
-    domain,
-    res
-  });
-  res.json(result);
-  await postalPuppet.closePuppet(puppetInstance);
+  try {
+    const result = await postalPuppet.checkDomain({
+      puppetInstance,
+      domain,
+      res
+    });
+    res.json(result);
+  } finally {
+    await postalPuppet.closePuppet(puppetInstance);
+  }
 }));
 
 app.get('/auth', catchErrors( async (req, res) => {
@@ -170,25 +173,31 @@ app.get('/auth', catchErrors( async (req, res) => {
 app.post('/domain', catchErrors( async (req, res) => {
   const { domain } = req.body;
   const puppetInstance = await initPuppetWithConfig();
-  const result = await postalPuppet.addDomain({
-    puppetInstance,
-    domain,
-    res
-  });
-  res.status(200).json(result);
-  await postalPuppet.closePuppet(puppetInstance);
+  try {
+    const result = await postalPuppet.addDomain({
+      puppetInstance,
+      domain,
+      res
+    });
+    res.status(200).json(result);
+  } finally {
+    await postalPuppet.closePuppet(puppetInstance);
+  }
 }));
 
 app.post('/endpoint', catchErrors( async (req, res) => {
   const { endpoint } = req.body;
   const puppetInstance = await initPuppetWithConfig();
-  const result = await postalPuppet.addEndpoint({
-    puppetInstance,
-    endpoint,
-    res
-  });
-  res.status(200).json(result);
-  await postalPuppet.closePuppet(puppetInstance);
+  try {
+    const result = await postalPuppet.addEndpoint({
+      puppetInstance,
+      endpoint,
+      res
+    });
+    res.status(200).json(result);
+  } finally {
+    await postalPuppet.closePuppet(puppetInstance);
+  }
 }));
 
 app.post('/alias', catchErrors( async (req, res) => {
@@ -202,36 +211,42 @@ app.post('/alias', catchErrors( async (req, res) => {
     return;
   }
   const puppetInstance = await initPuppetWithConfig();
-  // check if endpoint exists yet, if not, add it
-  const endpointID = await db.endpoint.id(endpoint);
-  if(!endpointID) {
-    await postalPuppet.addEndpoint({
+  try {
+    // check if endpoint exists yet, if not, add it
+    const endpointID = await db.endpoint.id(endpoint);
+    if(!endpointID) {
+      await postalPuppet.addEndpoint({
+        puppetInstance,
+        endpoint,
+        res
+      });
+    }
+    // now add the alias route
+    const result = await postalPuppet.addAlias({
       puppetInstance,
+      alias,
       endpoint,
       res
     });
+    res.status(200).json(result);
+  } finally {
+    await postalPuppet.closePuppet(puppetInstance);
   }
-  // now add the alias route
-  const result = await postalPuppet.addAlias({
-    puppetInstance,
-    alias,
-    endpoint,
-    res
-  });
-  res.status(200).json(result);
-  await postalPuppet.closePuppet(puppetInstance);
 }));
 
 app.post('/webhook', catchErrors( async (req, res) => {
   const { webhook } = req.body;
   const puppetInstance = await initPuppetWithConfig();
-  const result = await postalPuppet.addWebhook({
-    puppetInstance,
-    webhook,
-    res
-  });
-  res.status(200).json(result);
-  await postalPuppet.closePuppet(puppetInstance);
+  try {
+    const result = await postalPuppet.addWebhook({
+      puppetInstance,
+      webhook,
+      res
+    });
+    res.status(200).json(result);
+  } finally {
+    await postalPuppet.closePuppet(puppetInstance);
+  }
 }));
 
 // PUT ------------------------------------------------------------------------

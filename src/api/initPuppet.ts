@@ -66,12 +66,6 @@ export async function initPuppet(options: {
     const puppetInstance: PuppetInstance = (await loginPuppet({
       puppetInstance: { browser, page, url } as PuppetInstance 
     })).puppetInstance;
-    
-    // close the browser after a certain amount of time to clear memory
-    // if error occurs, browsers will stay open and eventually crash the server, otherwise
-    setTimeout(() => {
-      browser.close();
-    }, ((Number(process.env.BROWSER_TIMEOUT) || 30) * 1000)); // default is 30 seconds
 
     return {
       puppetInstance: puppetInstance
